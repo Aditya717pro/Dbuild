@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { siteConfig } from '../../config/siteConfig.js';
 

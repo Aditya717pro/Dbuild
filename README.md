@@ -26,8 +26,8 @@ Express API (Vercel serverless, exported from backend/api/index.js)
 Self-managed PostgreSQL on AWS EC2
 ```
 
-- Frontend and backend live in this one repository under `frontend/` and `backend/`.
-- The frontend never touches the database; it only calls `/api/...` through `frontend/src/services/api.js`.
+- Frontend and backend live in this one repository under `frontend/` and `backend/`, and deploy together as two [Vercel Services](https://vercel.com/docs/services) in one project.
+- The frontend never touches the database; it only calls `/api/...` through `frontend/src/services/api.js`. The public `/api/*` rewrite routes those same-origin calls to the backend service.
 - The backend never calls `app.listen()` in production. `backend/api/index.js` exports the Express app, and `backend/server.js` is for local development only.
 - Database access uses the least-privilege `appuser` role (DML only, no DDL, not a superuser).
 
@@ -49,7 +49,6 @@ Self-managed PostgreSQL on AWS EC2
 │   ├── scripts/create-admin.js # Bootstrap/reset an admin account
 │   ├── utils/                  # jwt, audit, async handler, errors
 │   ├── server.js               # Local dev server ONLY
-│   ├── vercel.json             # /api/* rewrites to the function
 │   └── .env.example
 ├── frontend/
 │   ├── src/
@@ -59,8 +58,8 @@ Self-managed PostgreSQL on AWS EC2
 │   │   ├── pages/              # Login, dashboards, CRUD, attendance, announcements
 │   │   ├── services/api.js     # Single API client, attaches JWT
 │   │   └── utils/
-│   ├── vercel.json             # SPA rewrites
 │   └── .env.example
+├── vercel.json                 # Services + public routing (/api and SPA)
 └── .gitignore
 ```
 
@@ -70,7 +69,7 @@ Self-managed PostgreSQL on AWS EC2
 
 - Node.js 18+ and npm
 - PostgreSQL (the EC2 instance, or a local PostgreSQL for development)
-- Two Vercel projects (one for `frontend/`, one for `backend/`)
+- One Vercel project deployed with Services (see section 4)
 
 ---
 
@@ -184,29 +183,31 @@ cd backend  && npm run lint && npm run check
 cd frontend && npm run lint && npm run build
 ```
 
+To run both services together with the same routing as production, install the Vercel CLI and run `vercel dev` from the repository root.
+
 ---
 
 ## 3. Environment variables
 
-### Backend (`backend/.env` / Vercel backend project)
+### Backend (`backend/.env` / Vercel services project)
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `DATABASE_URL` | Yes | PostgreSQL connection string for the EC2 database (use `appuser`). |
 | `DB_CA_CERT` | Yes for TLS | PEM CA certificate used to verify the database server. |
 | `JWT_SECRET` | Yes | Signs short-lived JWTs (>= 32 random chars). |
-| `FRONTEND_URL` | Yes | Allowed CORS origin(s). Comma-separated for multiple. |
+| `FRONTEND_URL` | No | Allowed CORS origin(s). Comma-separated. Not needed for same-origin calls in the services deployment. |
 | `JWT_EXPIRES_IN` | No | Token lifetime, default `2h`. |
 | `PG_POOL_MAX` | No | Pool size, default 3 (clamped to 1–3). |
 | `PGSSLMODE` | No | Set `disable` only for a local DB without TLS. |
 | `NODE_ENV` | No | `production` hides stack traces. |
 | `PORT` | No | Local dev server port, default 5000. |
 
-### Frontend (Vercel frontend project)
+### Frontend (Vercel services project)
 
 | Variable | Purpose |
 | --- | --- |
-| `VITE_API_BASE_URL` | Full backend API base including `/api`, e.g. `https://REPLACE_WITH_BACKEND_PROJECT.vercel.app/api`. |
+| `VITE_API_BASE_URL` | API base URL including `/api`. Keep the default `/api` so calls stay same-origin and use the services rewrite. |
 
 > Vite embeds `VITE_*` variables at build time. After changing it, redeploy the frontend.
 
@@ -226,23 +227,20 @@ git remote add origin REPLACE_WITH_YOUR_GIT_REMOTE
 git push -u origin main
 ```
 
-### 4.2 Backend project
+### 4.2 Services project
 
 1. Import the repository in Vercel.
-2. Set **Root Directory** to `backend`.
-3. Framework preset: **Other** (no build step needed).
-4. Add env vars: `DATABASE_URL`, `DB_CA_CERT`, `JWT_SECRET`, `FRONTEND_URL`, and optionally `JWT_EXPIRES_IN`, `PG_POOL_MAX`.
-5. Deploy. `backend/vercel.json` rewrites `/api/*` to `api/index.js`, and the routes are mounted under `/api`.
-6. Verify `https://REPLACE_WITH_BACKEND_PROJECT.vercel.app/api/health` reports `{"status":"ok","database":"up"}`.
+2. Leave **Root Directory** at the repository root. The root `vercel.json` defines both services:
+   - `frontend` (Vite) serves the public site at `/`.
+   - `backend` (Node) serves the API under `/api/*`.
+3. If Vercel prompts for a framework preset, select **Services**. Otherwise it reads `vercel.json` and builds both services.
+4. Add the backend env vars: `DATABASE_URL`, `DB_CA_CERT`, `JWT_SECRET`, and optionally `FRONTEND_URL`, `JWT_EXPIRES_IN`, `PG_POOL_MAX`.
+5. Deploy. Top-level rewrites send `/api/*` to the `backend` service and everything else to `frontend`; `frontend` rewrites client-side routes to `index.html`.
+6. Verify `https://REPLACE_WITH_PROJECT.vercel.app/api/health` reports `{"status":"ok","database":"up"}`.
 
-### 4.3 Frontend project
+`VITE_API_BASE_URL` defaults to `/api`, so the browser calls the same origin and no separate backend URL is needed. Set `FRONTEND_URL` only if you call the API from a different origin.
 
-1. Import the same repository again.
-2. Set **Root Directory** to `frontend`.
-3. Framework preset: **Vite**. Build command `npm run build`, output `dist`.
-4. Add `VITE_API_BASE_URL=https://REPLACE_WITH_BACKEND_PROJECT.vercel.app/api`.
-5. Deploy. `frontend/vercel.json` rewrites SPA routes to `index.html`.
-6. Set the backend project's `FRONTEND_URL` to the final frontend origin (e.g. `https://REPLACE_WITH_FRONTEND_PROJECT.vercel.app`) and redeploy the backend so CORS allows it. Multiple origins can be comma-separated.
+To run both services together locally with the same routing, run `vercel dev` from the repository root.
 
 ### 4.4 Post-deploy checklist
 
@@ -306,11 +304,12 @@ All protected endpoints require `Authorization: Bearer <jwt>`. Every permission 
 | `DATABASE_URL is not configured` | Backend env var missing. |
 | Health returns 503 | `DATABASE_URL`, EC2 reachability, security group, TLS/CA (`DB_CA_CERT`). |
 | Login always fails | Admin exists? Password correct? Account active? Check `users.role`. |
-| CORS error in browser | `FRONTEND_URL` must exactly match the frontend origin; redeploy backend after changing. |
-| Frontend calls the wrong host | `VITE_API_BASE_URL` is embedded at build time; redeploy after changing. |
+| CORS error in browser | Same-origin calls should not need `FRONTEND_URL`; if you call the API from another origin, set it exactly and redeploy. |
+| Frontend calls the wrong host | `VITE_API_BASE_URL` should normally be `/api`; it is embedded at build time, so redeploy after changing. |
 | `permission denied for table ...` | Run `grants.sql` as the table owner and verify `appuser` has DML grants. |
 | `password authentication failed for user "appuser"` | Update the password in `grants.sql`/database and `DATABASE_URL`. |
-| Vercel API 404 for `/api/...` | Confirm backend Root Directory is `backend` and `backend/vercel.json` is present. |
+| Vercel API 404 for `/api/...` | Confirm the root `vercel.json` is present, `services.backend.root` is `backend`, and the public `/api/(.*)` rewrite targets `backend`. |
+| Service build or runtime settings ignored | Keep fields such as `functions`, `framework`, and commands inside each service in the root `vercel.json`. |
 
 ---
 
