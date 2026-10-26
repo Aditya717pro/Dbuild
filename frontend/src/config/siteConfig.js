@@ -85,19 +85,6 @@ export const siteConfig = {
       to: '/faculty',
     },
     {
-      label: 'ACADEMICS',
-      to: '/academics',
-      hasDropdown: true,
-      children: [
-        { label: 'Academic Regulations', to: '/academics/regulations' },
-        { label: 'Curriculum & Credit Framework', to: '/academics/curriculum' },
-        { label: 'Syllabus & Course Scheme', to: '/academics/syllabus' },
-        { label: 'Flexible Credit Framework', to: '/academics/cbcs' },
-        { label: 'Examinations Office', to: '/academics/coe' },
-        { label: 'Exam Timetable & Seating', to: '/academics/timetable' },
-      ],
-    },
-    {
       label: 'CAREER DEVELOPMENT',
       to: '/career-development',
       hasDropdown: true,
@@ -155,7 +142,6 @@ export const siteConfig = {
     { label: 'About HIT', to: '/about' },
     { label: 'Admission', to: '/admission' },
     { label: 'Departments', to: '/departments' },
-    { label: 'Academics', to: '/academics' },
     { label: 'Placements', to: '/career-development/placements' },
     { label: 'Contact Us', to: '/contact' },
   ],

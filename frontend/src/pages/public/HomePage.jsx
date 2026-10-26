@@ -115,7 +115,7 @@ export default function HomePage() {
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-amber-400/10 blur-2xl" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-blue-400/10 blur-2xl" aria-hidden="true" />
 
-          <div className="relative grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center">
+          <div className="relative">
             <div>
               <span className="inline-flex rounded-full border border-amber-300/30 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200">
                 Academic Departments
@@ -130,22 +130,6 @@ export default function HomePage() {
                 View all departments
                 <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
               </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-              {siteConfig.departments.map((dept) => (
-                <div
-                  key={dept.slug}
-                  className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 backdrop-blur-sm"
-                >
-                  <span className="flex h-7 w-9 shrink-0 items-center justify-center rounded bg-white/15 text-[9px] font-black text-amber-200">
-                    {dept.code}
-                  </span>
-                  <span className="min-w-0 truncate text-[11px] font-semibold text-blue-50">
-                    {dept.name}
-                  </span>
-                </div>
-              ))}
             </div>
           </div>
         </Link>
