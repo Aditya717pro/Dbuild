@@ -3,7 +3,7 @@ import { writeAudit } from '../utils/audit.js';
 import { httpError } from '../utils/httpError.js';
 
 async function getAccessibleCourse(user, courseId) {
-  const { rows } = await query('SELECT id, code, name, faculty_id FROM courses WHERE id = $1', [courseId]);
+  const { rows } = await query('SELECT id, code, name, faculty_id FROM courses WHERE id = ?', [courseId]);
   const course = rows[0];
   if (!course) {
     throw httpError(404, 'Course not found');
@@ -27,10 +27,10 @@ export async function session(req, res) {
      JOIN students s ON s.user_id = e.student_id
      JOIN users u ON u.id = s.user_id
      LEFT JOIN attendance a
-       ON a.student_id = e.student_id AND a.course_id = e.course_id AND a.date = $2
-     WHERE e.course_id = $1
+       ON a.student_id = e.student_id AND a.course_id = e.course_id AND a.\`date\` = ?
+     WHERE e.course_id = ?
      ORDER BY s.roll_no`,
-    [courseId, date],
+    [date, courseId],
   );
 
   return res.json({ course, date, students: rows });
@@ -45,10 +45,11 @@ export async function submit(req, res) {
     byStudent.set(record.student_id, record.status);
   }
   const studentIds = [...byStudent.keys()];
+  const placeholders = studentIds.map(() => '?').join(', ');
 
   const enrolled = await query(
-    'SELECT student_id FROM enrollments WHERE course_id = $1 AND student_id = ANY($2::int[])',
-    [courseId, studentIds],
+    `SELECT student_id FROM enrollments WHERE course_id = ? AND student_id IN (${placeholders})`,
+    [courseId, ...studentIds],
   );
   if (enrolled.rows.length !== studentIds.length) {
     throw httpError(400, 'One or more students are not enrolled in this course');
@@ -57,10 +58,9 @@ export async function submit(req, res) {
   await withTransaction(async (client) => {
     for (const [studentId, status] of byStudent) {
       await client.query(
-        `INSERT INTO attendance (student_id, course_id, date, status, marked_by)
-         VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT (student_id, course_id, date)
-         DO UPDATE SET status = EXCLUDED.status, marked_by = EXCLUDED.marked_by`,
+        `INSERT INTO attendance (student_id, course_id, \`date\`, status, marked_by)
+         VALUES (?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE status = VALUES(status), marked_by = VALUES(marked_by)`,
         [studentId, courseId, date, status, req.user.id],
       );
     }
@@ -85,12 +85,12 @@ export async function submit(req, res) {
 export async function myAttendance(req, res) {
   const { rows } = await query(
     `SELECT c.id AS course_id, c.code, c.name,
-            count(a.id) FILTER (WHERE a.status = 'present')::int AS present,
-            count(a.id)::int AS total
+            CAST(COALESCE(SUM(a.status = 'present'), 0) AS UNSIGNED) AS present,
+            CAST(COUNT(a.id) AS UNSIGNED) AS total
      FROM enrollments e
      JOIN courses c ON c.id = e.course_id
      LEFT JOIN attendance a ON a.course_id = e.course_id AND a.student_id = e.student_id
-     WHERE e.student_id = $1
+     WHERE e.student_id = ?
      GROUP BY c.id, c.code, c.name
      ORDER BY c.code`,
     [req.user.id],
@@ -110,13 +110,13 @@ export async function courseSummary(req, res) {
 
   const { rows } = await query(
     `SELECT s.user_id AS student_id, s.roll_no, u.name,
-            count(a.id) FILTER (WHERE a.status = 'present')::int AS present,
-            count(a.id)::int AS total
+            CAST(COALESCE(SUM(a.status = 'present'), 0) AS UNSIGNED) AS present,
+            CAST(COUNT(a.id) AS UNSIGNED) AS total
      FROM enrollments e
      JOIN students s ON s.user_id = e.student_id
      JOIN users u ON u.id = s.user_id
      LEFT JOIN attendance a ON a.course_id = e.course_id AND a.student_id = e.student_id
-     WHERE e.course_id = $1
+     WHERE e.course_id = ?
      GROUP BY s.user_id, s.roll_no, u.name
      ORDER BY s.roll_no`,
     [courseId],

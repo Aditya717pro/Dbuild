@@ -21,15 +21,15 @@ React + Vite + Tailwind (Vercel)
         │  HTTPS, JWT in Authorization header
         ▼
 Express API (Vercel serverless, exported from backend/api/index.js)
-        │  pg Pool + TLS (DATABASE_URL + DB_CA_CERT)
+        │  mysql2 Pool + TLS (MYSQL_URL + MYSQL_CA_CERT)
         ▼
-Self-managed PostgreSQL on AWS EC2
+Self-managed MySQL 8.0+ on AWS EC2 (Ubuntu)
 ```
 
 - Frontend and backend live in this one repository under `frontend/` and `backend/`, and deploy together as two [Vercel Services](https://vercel.com/docs/services) in one project.
 - The frontend never touches the database; it only calls `/api/...` through `frontend/src/services/api.js`. The public `/api/*` rewrite routes those same-origin calls to the backend service.
 - The backend never calls `app.listen()` in production. `backend/api/index.js` exports the Express app, and `backend/server.js` is for local development only.
-- Database access uses the least-privilege `appuser` role (DML only, no DDL, not a superuser).
+- Database access uses the least-privilege `appuser` account (DML only, no DDL, not an administrator).
 
 ---
 
@@ -41,9 +41,9 @@ Self-managed PostgreSQL on AWS EC2
 │   ├── api/index.js            # Express app export (Vercel entrypoint)
 │   ├── controllers/            # Request handlers
 │   ├── db/
-│   │   ├── schema.sql          # Idempotent schema
-│   │   ├── grants.sql          # Least-privilege appuser role
-│   │   └── pool.js             # pg Pool (reused, TLS, max 3)
+│   │   ├── schema.sql          # Idempotent MySQL schema
+│   │   ├── grants.sql          # Least-privilege appuser account
+│   │   └── pool.js             # mysql2 Pool (reused, TLS, max 3)
 │   ├── middleware/             # auth, roles, validation, errors, rate limits
 │   ├── routes/                 # REST routes with role checks
 │   ├── scripts/create-admin.js # Bootstrap/reset an admin account
@@ -68,8 +68,10 @@ Self-managed PostgreSQL on AWS EC2
 ## Prerequisites
 
 - Node.js 18+ and npm
-- PostgreSQL (the EC2 instance, or a local PostgreSQL for development)
+- MySQL 8.0.16+ (the EC2 instance, or a local MySQL for development)
 - One Vercel project deployed with Services (see section 4)
+
+> MySQL 8.0.16 or newer is required because the schema uses `CHECK` constraints.
 
 ---
 
@@ -77,55 +79,75 @@ Self-managed PostgreSQL on AWS EC2
 
 All values below are **placeholders**. Replace them with your own; never commit real credentials.
 
-### 1.1 Create the database and owner
+### 1.1 Install MySQL
 
-SSH into the Ubuntu EC2 instance and run as the PostgreSQL superuser:
+On Ubuntu:
 
 ```bash
-sudo -u postgres psql
+sudo apt update
+sudo apt install mysql-server
+sudo systemctl enable --now mysql
+sudo mysql_secure_installation
+```
+
+### 1.2 Create the database and owner
+
+Connect as the MySQL administrator:
+
+```bash
+sudo mysql
 ```
 
 ```sql
-CREATE DATABASE college_portal;
-CREATE ROLE college_owner LOGIN PASSWORD 'REPLACE_WITH_DB_OWNER_PASSWORD';
-ALTER DATABASE college_portal OWNER TO college_owner;
-\c college_portal
-GRANT ALL ON SCHEMA public TO college_owner;
+CREATE DATABASE college_portal
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+
+CREATE USER 'college_owner'@'localhost'
+  IDENTIFIED BY 'REPLACE_WITH_DB_OWNER_PASSWORD';
+
+GRANT ALL PRIVILEGES ON college_portal.* TO 'college_owner'@'localhost';
+
+FLUSH PRIVILEGES;
 ```
 
-### 1.2 Apply the schema and grants
+### 1.3 Apply the schema and grants
 
-Copy `backend/db/schema.sql` and `backend/db/grants.sql` to the instance, then run **as the table owner** (not as postgres, not as appuser):
+Copy `backend/db/schema.sql` and `backend/db/grants.sql` to the instance.
+
+Run the schema as the table owner:
 
 ```bash
-psql "postgresql://college_owner:REPLACE_WITH_DB_OWNER_PASSWORD@localhost:5432/college_portal" \
-  -f schema.sql
-
-# Edit grants.sql first and replace REPLACE_WITH_STRONG_PASSWORD, then:
-psql "postgresql://college_owner:REPLACE_WITH_DB_OWNER_PASSWORD@localhost:5432/college_portal" \
-  -f grants.sql
+mysql -u college_owner -p college_portal < schema.sql
 ```
 
-`schema.sql` is idempotent (`CREATE TABLE/INDEX IF NOT EXISTS`), and `grants.sql` is idempotent (guarded role creation + repeatable grants).
+Edit `grants.sql` first and replace `REPLACE_WITH_STRONG_PASSWORD`. Then run it as the MySQL administrator, because creating the application user requires the `CREATE USER` privilege:
 
-The app role `appuser` gets:
+```bash
+sudo mysql < grants.sql
+```
 
-- `CONNECT` on the database, `USAGE` on schema `public`
-- `SELECT, INSERT, UPDATE, DELETE` on tables
-- `USAGE, SELECT` on sequences (needed for generated IDs)
-- **No** `CREATE/ALTER/DROP`, no superuser, no role management
+`schema.sql` is idempotent (`CREATE TABLE IF NOT EXISTS`), and `grants.sql` is idempotent (guarded user creation + repeatable grants).
 
-### 1.3 TLS and network access
+The application user `appuser` gets:
 
-The backend requires TLS by default (`rejectUnauthorized: true`). Provide the CA certificate that signs your PostgreSQL server certificate via `DB_CA_CERT` (PEM, with `\n` escapes if stored on one line).
+- `SELECT, INSERT, UPDATE, DELETE` on `college_portal.*`
+- **No** `CREATE/ALTER/DROP`, no user management, no administrative privileges
 
-- For a self-signed server certificate, put that CA/public certificate in `DB_CA_CERT`; do not disable verification.
-- Keep port `5432` closed to the public internet. In the EC2 security group, allow `5432` only from trusted addresses. Vercel serverless egress IPs are not fixed, so use a network design appropriate for your environment (for example, a bastion/VPN/private connectivity or a tightly scoped allowlist). Do not open `5432` to `0.0.0.0/0`.
-- Confirm `listen_addresses`, `pg_hba.conf`, and the certificate are configured for TLS.
+Adjust `'appuser'@'%'` in `grants.sql` if you want to restrict the allowed client host.
 
-### 1.4 Create the first admin account
+### 1.4 TLS and network access
 
-From `backend/` with a valid `DATABASE_URL`:
+The backend connects with TLS by default (`rejectUnauthorized: true`). Provide the CA certificate that signs your MySQL server certificate via `MYSQL_CA_CERT` (PEM, with `\n` escapes if stored on one line).
+
+- For a self-signed server certificate, put that CA/public certificate in `MYSQL_CA_CERT`; do not disable verification.
+- Keep port `3306` closed to the public internet. In the EC2 security group, allow `3306` only from trusted addresses. Vercel serverless egress IPs are not fixed, so use a network design appropriate for your environment (for example, a bastion/VPN/private connectivity or a tightly scoped allowlist). Do not open `3306` to `0.0.0.0/0`.
+- Confirm `bind-address`, MySQL TLS settings, and the firewall/security group are configured for your environment.
+- For managed production environments, consider `require_secure_transport=ON` in the MySQL server configuration.
+
+### 1.5 Create the first admin account
+
+From `backend/` with a valid `MYSQL_URL`:
 
 ```bash
 # Windows PowerShell
@@ -151,11 +173,11 @@ npm install
 
 Fill in `backend/.env`:
 
-- `DATABASE_URL` — e.g. `postgresql://appuser:...@localhost:5432/college_portal`
-- `DB_CA_CERT` — CA PEM if your database uses TLS
+- `MYSQL_URL` — e.g. `mysql://appuser:...@localhost:3306/college_portal`
+- `MYSQL_CA_CERT` — CA PEM if your database uses TLS
 - `JWT_SECRET` — 32+ random characters (`openssl rand -hex 32`)
 - `FRONTEND_URL` — `http://localhost:5173`
-- `PGSSLMODE=disable` — only for a local PostgreSQL without TLS
+- `MYSQL_SSL=disable` — only for a local MySQL without TLS
 
 Run:
 
@@ -193,13 +215,13 @@ To run both services together with the same routing as production, install the V
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Yes | PostgreSQL connection string for the EC2 database (use `appuser`). |
-| `DB_CA_CERT` | Yes for TLS | PEM CA certificate used to verify the database server. |
+| `MYSQL_URL` | Yes | MySQL connection string for the EC2 database (use `appuser`). |
+| `MYSQL_CA_CERT` | Yes for TLS | PEM CA certificate used to verify the database server. |
 | `JWT_SECRET` | Yes | Signs short-lived JWTs (>= 32 random chars). |
 | `FRONTEND_URL` | No | Allowed CORS origin(s). Comma-separated. Not needed for same-origin calls in the services deployment. |
 | `JWT_EXPIRES_IN` | No | Token lifetime, default `2h`. |
-| `PG_POOL_MAX` | No | Pool size, default 3 (clamped to 1–3). |
-| `PGSSLMODE` | No | Set `disable` only for a local DB without TLS. |
+| `MYSQL_POOL_MAX` | No | Pool size, default 3 (clamped to 1–3). |
+| `MYSQL_SSL` | No | Set `disable` only for a local DB without TLS. |
 | `NODE_ENV` | No | `production` hides stack traces. |
 | `PORT` | No | Local dev server port, default 5000. |
 
@@ -234,7 +256,7 @@ git push -u origin main
    - `frontend` (Vite) serves the public site at `/`.
    - `backend` (Node) serves the API under `/api/*`.
 3. If Vercel prompts for a framework preset, select **Services**. Otherwise it reads `vercel.json` and builds both services.
-4. Add the backend env vars: `DATABASE_URL`, `DB_CA_CERT`, `JWT_SECRET`, and optionally `FRONTEND_URL`, `JWT_EXPIRES_IN`, `PG_POOL_MAX`.
+4. Add the backend env vars: `MYSQL_URL`, `MYSQL_CA_CERT`, `JWT_SECRET`, and optionally `FRONTEND_URL`, `JWT_EXPIRES_IN`, `MYSQL_SSL`, `MYSQL_POOL_MAX`.
 5. Deploy. Top-level rewrites send `/api/*` to the `backend` service and everything else to `frontend`; `frontend` rewrites client-side routes to `index.html`.
 6. Verify `https://REPLACE_WITH_PROJECT.vercel.app/api/health` reports `{"status":"ok","database":"up"}`.
 
@@ -242,10 +264,10 @@ git push -u origin main
 
 To run both services together locally with the same routing, run `vercel dev` from the repository root.
 
-### 4.4 Post-deploy checklist
+### 4.3 Post-deploy checklist
 
 - `GET /api/health` returns 200 and `database: up`.
-- Login works with the admin account created in step 1.4.
+- Login works with the admin account created in step 1.5.
 - An unauthenticated API request returns 401.
 - A student token cannot read another student's data or write admin resources.
 - The database port is not publicly open, and TLS verification is enabled.
@@ -278,7 +300,7 @@ All protected endpoints require `Authorization: Bearer <jwt>`. Every permission 
 ### Edge cases handled
 
 - Duplicate enrollment → HTTP 409 (unique constraint).
-- Attendance submitted twice for the same student/course/date → upsert (`ON CONFLICT ... DO UPDATE`).
+- Attendance submitted twice for the same student/course/date → upsert (`ON DUPLICATE KEY UPDATE`).
 - Faculty marking attendance for a course they do not teach → 403.
 - Students reading other students' data → filtered/queries scoped to their own ID.
 - Inactive accounts → rejected at login and on every authenticated request.
@@ -291,7 +313,7 @@ All protected endpoints require `Authorization: Bearer <jwt>`. Every permission 
 - Parameterized SQL everywhere (no string interpolation of user input).
 - `helmet`, CORS restricted to `FRONTEND_URL`, JSON body size limit, login rate limiting.
 - `bcryptjs` password hashing (bcrypt algorithm) and short-lived JWTs.
-- Least-privilege `appuser` database role; TLS verification with a supplied CA.
+- Least-privilege `appuser` database account; TLS verification with a supplied CA.
 - `audit_logs` records logins, user/profile changes, course/department changes, enrollments, attendance submissions, and announcement changes.
 - Secrets come only from environment variables; `.env`, keys, and certificates are gitignored.
 
@@ -301,13 +323,16 @@ All protected endpoints require `Authorization: Bearer <jwt>`. Every permission 
 
 | Symptom | Check |
 | --- | --- |
-| `DATABASE_URL is not configured` | Backend env var missing. |
-| Health returns 503 | `DATABASE_URL`, EC2 reachability, security group, TLS/CA (`DB_CA_CERT`). |
+| `MYSQL_URL is not configured` | Backend env var missing. |
+| Health returns 503 | `MYSQL_URL`, EC2 reachability, security group, TLS/CA (`MYSQL_CA_CERT`). |
+| `Access denied for user 'appuser'@...` | Update the password in `grants.sql`/database and `MYSQL_URL`; confirm the account host matches the client. |
+| `Unknown database 'college_portal'` | Create the database and apply `schema.sql`. |
+| `Table ... doesn't exist` | Run `schema.sql` as the database owner. |
+| `Can't connect to MySQL server` | Check MySQL is running, `bind-address`, port `3306`, and the EC2 security group. |
 | Login always fails | Admin exists? Password correct? Account active? Check `users.role`. |
 | CORS error in browser | Same-origin calls should not need `FRONTEND_URL`; if you call the API from another origin, set it exactly and redeploy. |
 | Frontend calls the wrong host | `VITE_API_BASE_URL` should normally be `/api`; it is embedded at build time, so redeploy after changing. |
-| `permission denied for table ...` | Run `grants.sql` as the table owner and verify `appuser` has DML grants. |
-| `password authentication failed for user "appuser"` | Update the password in `grants.sql`/database and `DATABASE_URL`. |
+| `permission denied` / `command denied` | Re-run `grants.sql` as the MySQL administrator and verify `appuser` has DML grants only. |
 | Vercel API 404 for `/api/...` | Confirm the root `vercel.json` is present, `services.backend.root` is `backend`, and the public `/api/(.*)` rewrite targets `backend`. |
 | Service build or runtime settings ignored | Keep fields such as `functions`, `framework`, and commands inside each service in the root `vercel.json`. |
 

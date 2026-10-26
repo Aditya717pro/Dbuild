@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
-import getPool from '../db/pool.js';
+import getPool, { query } from '../db/pool.js';
 
 const name = process.env.ADMIN_NAME;
 const email = process.env.ADMIN_EMAIL;
@@ -18,16 +18,20 @@ if (password.length < 8) {
 }
 
 const hash = await bcrypt.hash(password, 10);
+const normalizedEmail = email.toLowerCase();
 
 try {
-  const { rows } = await getPool().query(
+  await query(
     `INSERT INTO users (name, email, password_hash, role, is_active)
-     VALUES ($1, lower($2), $3, 'admin', TRUE)
-     ON CONFLICT (email)
-     DO UPDATE SET name = EXCLUDED.name, password_hash = EXCLUDED.password_hash,
-                   role = 'admin', is_active = TRUE
-     RETURNING id, name, email, role`,
-    [name, email, hash],
+     VALUES (?, ?, ?, 'admin', 1)
+     ON DUPLICATE KEY UPDATE name = VALUES(name), password_hash = VALUES(password_hash),
+                   role = 'admin', is_active = 1`,
+    [name, normalizedEmail, hash],
+  );
+
+  const { rows } = await query(
+    'SELECT id, name, email, role FROM users WHERE email = ?',
+    [normalizedEmail],
   );
   console.log('Admin user ready:', rows[0].email, `(id ${rows[0].id})`);
 } catch (err) {

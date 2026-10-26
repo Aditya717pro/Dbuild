@@ -23,7 +23,7 @@ export const authenticate = asyncHandler(async (req, res, next) => {
   }
 
   const { rows } = await query(
-    'SELECT id, name, email, role, is_active FROM users WHERE id = $1',
+    'SELECT id, name, email, role, is_active FROM users WHERE id = ?',
     [id],
   );
   const user = rows[0];

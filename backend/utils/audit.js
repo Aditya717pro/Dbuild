@@ -9,7 +9,7 @@ export async function writeAudit(client, actorId, action, entity, entityId) {
   try {
     await runner.query(
       `INSERT INTO audit_logs (user_id, action, entity, entity_id)
-       VALUES ($1, $2, $3, $4)`,
+       VALUES (?, ?, ?, ?)`,
       [actorId ?? null, action, entity, entityId == null ? null : String(entityId)],
     );
   } catch (err) {

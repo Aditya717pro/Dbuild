@@ -13,37 +13,42 @@ const SELECT_SQL = `
   LEFT JOIN departments d ON d.id = c.department_id`;
 
 const FILTERS = `
-  WHERE ($1::int IS NULL OR e.course_id = $1)
-    AND ($2::int IS NULL OR e.student_id = $2)
-    AND ($3 = '' OR u.name ILIKE '%' || $3 || '%'
-         OR s.roll_no ILIKE '%' || $3 || '%'
-         OR c.code ILIKE '%' || $3 || '%'
-         OR c.name ILIKE '%' || $3 || '%')`;
+  WHERE (? IS NULL OR e.course_id = ?)
+    AND (? IS NULL OR e.student_id = ?)
+    AND (? = '' OR u.name LIKE CONCAT('%', ?, '%')
+         OR s.roll_no LIKE CONCAT('%', ?, '%')
+         OR c.code LIKE CONCAT('%', ?, '%')
+         OR c.name LIKE CONCAT('%', ?, '%'))`;
 
 export async function list(req, res) {
   const courseId = req.query.course_id ? Number(req.query.course_id) : null;
   const studentId = req.query.student_id ? Number(req.query.student_id) : null;
   const search = req.query.search || '';
+  const filterParams = [
+    courseId, courseId,
+    studentId, studentId,
+    search, search, search, search, search,
+  ];
   let rows;
 
   if (req.user.role === 'admin') {
     ({ rows } = await query(
       `${SELECT_SQL} ${FILTERS} ORDER BY c.code, s.roll_no`,
-      [courseId, studentId, search],
+      filterParams,
     ));
   } else if (req.user.role === 'faculty') {
     ({ rows } = await query(
       `${SELECT_SQL} ${FILTERS}
-         AND c.faculty_id = $4
+         AND c.faculty_id = ?
        ORDER BY c.code, s.roll_no`,
-      [courseId, studentId, search, req.user.id],
+      [...filterParams, req.user.id],
     ));
   } else {
     ({ rows } = await query(
       `${SELECT_SQL} ${FILTERS}
-         AND e.student_id = $4
+         AND e.student_id = ?
        ORDER BY c.code`,
-      [courseId, studentId, search, req.user.id],
+      [...filterParams, req.user.id],
     ));
   }
 
@@ -54,23 +59,26 @@ export async function create(req, res) {
   const { student_id: studentId, course_id: courseId } = req.body;
 
   const student = await query(
-    "SELECT s.user_id FROM students s JOIN users u ON u.id = s.user_id WHERE s.user_id = $1 AND u.is_active",
+    'SELECT s.user_id FROM students s JOIN users u ON u.id = s.user_id WHERE s.user_id = ? AND u.is_active',
     [studentId],
   );
   if (!student.rows[0]) {
     throw httpError(400, 'Student does not exist or is inactive');
   }
 
-  const course = await query('SELECT id FROM courses WHERE id = $1', [courseId]);
+  const course = await query('SELECT id FROM courses WHERE id = ?', [courseId]);
   if (!course.rows[0]) {
     throw httpError(400, 'Course does not exist');
   }
 
-  const { rows } = await query(
+  const { insertId } = await query(
     `INSERT INTO enrollments (student_id, course_id)
-     VALUES ($1, $2)
-     RETURNING id, student_id, course_id, created_at`,
+     VALUES (?, ?)`,
     [studentId, courseId],
+  );
+  const { rows } = await query(
+    'SELECT id, student_id, course_id, created_at FROM enrollments WHERE id = ?',
+    [insertId],
   );
   await writeAudit(null, req.user.id, 'enrollment.create', 'enrollments', rows[0].id);
 
@@ -79,7 +87,7 @@ export async function create(req, res) {
 
 export async function remove(req, res) {
   const { id } = req.params;
-  const { rowCount } = await query('DELETE FROM enrollments WHERE id = $1', [id]);
+  const { rowCount } = await query('DELETE FROM enrollments WHERE id = ?', [id]);
   if (!rowCount) {
     throw httpError(404, 'Enrollment not found');
   }

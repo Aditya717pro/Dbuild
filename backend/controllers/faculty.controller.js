@@ -14,10 +14,10 @@ const SELECT_SQL = `
   LEFT JOIN departments d ON d.id = f.department_id`;
 
 const FILTERS = `
-  WHERE ($1 = '' OR u.name ILIKE '%' || $1 || '%'
-         OR u.email ILIKE '%' || $1 || '%'
-         OR f.designation ILIKE '%' || $1 || '%')
-    AND ($2::int IS NULL OR f.department_id = $2)`;
+  WHERE (? = '' OR u.name LIKE CONCAT('%', ?, '%')
+         OR u.email LIKE CONCAT('%', ?, '%')
+         OR f.designation LIKE CONCAT('%', ?, '%'))
+    AND (? IS NULL OR f.department_id = ?)`;
 
 export async function list(req, res) {
   const search = req.query.search || '';
@@ -25,13 +25,16 @@ export async function list(req, res) {
   let rows;
 
   if (req.user.role === 'admin') {
-    ({ rows } = await query(`${SELECT_SQL} ${FILTERS} ORDER BY u.name`, [search, departmentId]));
+    ({ rows } = await query(
+      `${SELECT_SQL} ${FILTERS} ORDER BY u.name`,
+      [search, search, search, search, departmentId, departmentId],
+    ));
   } else {
     ({ rows } = await query(
       `${SELECT_SQL} ${FILTERS}
-         AND f.department_id = (SELECT department_id FROM faculty WHERE user_id = $3)
+         AND f.department_id = (SELECT department_id FROM faculty WHERE user_id = ?)
        ORDER BY u.name`,
-      [search, departmentId, req.user.id],
+      [search, search, search, search, departmentId, departmentId, req.user.id],
     ));
   }
 
@@ -48,21 +51,29 @@ export async function create(req, res) {
   const member = await withTransaction(async (client) => {
     const userResult = await client.query(
       `INSERT INTO users (name, email, password_hash, role)
-       VALUES ($1, $2, $3, 'faculty')
-       RETURNING id, name, email, role, is_active, created_at`,
+       VALUES (?, ?, ?, 'faculty')`,
       [name, email, passwordHash],
     );
-    const user = userResult.rows[0];
+    const userId = userResult.insertId;
 
-    const facultyResult = await client.query(
+    const user = (await client.query(
+      `SELECT id, name, email, role, is_active, created_at FROM users WHERE id = ?`,
+      [userId],
+    )).rows[0];
+
+    await client.query(
       `INSERT INTO faculty (user_id, department_id, designation)
-       VALUES ($1, $2, $3)
-       RETURNING user_id, department_id, designation, created_at`,
-      [user.id, departmentId ?? null, designation ?? null],
+       VALUES (?, ?, ?)`,
+      [userId, departmentId ?? null, designation ?? null],
     );
 
-    await writeAudit(client, req.user.id, 'faculty.create', 'faculty', user.id);
-    return { ...user, ...facultyResult.rows[0] };
+    const profile = (await client.query(
+      `SELECT user_id, department_id, designation, created_at FROM faculty WHERE user_id = ?`,
+      [userId],
+    )).rows[0];
+
+    await writeAudit(client, req.user.id, 'faculty.create', 'faculty', userId);
+    return { ...user, ...profile };
   });
 
   return res.status(201).json({ faculty: member });
@@ -75,31 +86,39 @@ export async function update(req, res) {
   } = req.body;
 
   const member = await withTransaction(async (client) => {
-    const existing = await client.query('SELECT role FROM users WHERE id = $1', [id]);
+    const existing = await client.query('SELECT role FROM users WHERE id = ?', [id]);
     if (!existing.rows[0] || existing.rows[0].role !== 'faculty') {
       throw httpError(404, 'Faculty member not found');
     }
 
-    const userResult = await client.query(
-      `UPDATE users SET name = $1, email = $2, is_active = $3 WHERE id = $4
-       RETURNING id, name, email, role, is_active`,
+    await client.query(
+      `UPDATE users SET name = ?, email = ?, is_active = ? WHERE id = ?`,
       [name, email, isActive, id],
     );
 
+    const user = (await client.query(
+      `SELECT id, name, email, role, is_active FROM users WHERE id = ?`,
+      [id],
+    )).rows[0];
+
     if (password) {
       const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-      await client.query('UPDATE users SET password_hash = $1 WHERE id = $2', [hash, id]);
+      await client.query('UPDATE users SET password_hash = ? WHERE id = ?', [hash, id]);
     }
 
-    const facultyResult = await client.query(
-      `UPDATE faculty SET department_id = $1, designation = $2
-       WHERE user_id = $3
-       RETURNING user_id, department_id, designation, created_at`,
+    await client.query(
+      `UPDATE faculty SET department_id = ?, designation = ?
+       WHERE user_id = ?`,
       [departmentId ?? null, designation ?? null, id],
     );
 
+    const profile = (await client.query(
+      `SELECT user_id, department_id, designation, created_at FROM faculty WHERE user_id = ?`,
+      [id],
+    )).rows[0] ?? {};
+
     await writeAudit(client, req.user.id, 'faculty.update', 'faculty', id);
-    return { ...userResult.rows[0], ...facultyResult.rows[0] };
+    return { ...user, ...profile };
   });
 
   return res.json({ faculty: member });
@@ -107,12 +126,12 @@ export async function update(req, res) {
 
 export async function remove(req, res) {
   const { id } = req.params;
-  const existing = await query('SELECT role FROM users WHERE id = $1', [id]);
+  const existing = await query('SELECT role FROM users WHERE id = ?', [id]);
   if (!existing.rows[0] || existing.rows[0].role !== 'faculty') {
     throw httpError(404, 'Faculty member not found');
   }
 
-  await query('DELETE FROM users WHERE id = $1 AND role = $2', [id, 'faculty']);
+  await query('DELETE FROM users WHERE id = ? AND role = ?', [id, 'faculty']);
   await writeAudit(null, req.user.id, 'faculty.delete', 'faculty', id);
   return res.json({ message: 'Faculty member deleted' });
 }
@@ -125,7 +144,7 @@ export async function roster(req, res) {
       throw httpError(400, 'department_id is required');
     }
   } else {
-    const { rows } = await query('SELECT department_id FROM faculty WHERE user_id = $1', [req.user.id]);
+    const { rows } = await query('SELECT department_id FROM faculty WHERE user_id = ?', [req.user.id]);
     departmentId = rows[0]?.department_id ?? null;
     if (!departmentId) {
       return res.json({ students: [], department: null });
@@ -138,11 +157,11 @@ export async function roster(req, res) {
      FROM students s
      JOIN users u ON u.id = s.user_id
      LEFT JOIN departments d ON d.id = s.department_id
-     WHERE s.department_id = $1
+     WHERE s.department_id = ?
      ORDER BY s.year, s.roll_no`,
     [departmentId],
   );
 
-  const dept = await query('SELECT id, name, code FROM departments WHERE id = $1', [departmentId]);
+  const dept = await query('SELECT id, name, code FROM departments WHERE id = ?', [departmentId]);
   return res.json({ students: rows, department: dept.rows[0] || null });
 }

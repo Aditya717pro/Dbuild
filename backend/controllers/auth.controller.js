@@ -10,7 +10,7 @@ export async function login(req, res) {
   const { email, password } = req.body;
 
   const { rows } = await query(
-    'SELECT id, name, email, password_hash, role, is_active FROM users WHERE email = $1',
+    'SELECT id, name, email, password_hash, role, is_active FROM users WHERE email = ?',
     [email],
   );
   const user = rows[0];
@@ -23,7 +23,7 @@ export async function login(req, res) {
     throw httpError(403, 'This account has been deactivated. Contact an administrator.');
   }
 
-  await query('UPDATE users SET last_login_at = now() WHERE id = $1', [user.id]);
+  await query('UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?', [user.id]);
   await writeAudit(null, user.id, 'auth.login', 'users', user.id);
 
   const token = signToken(user);
@@ -41,7 +41,7 @@ export async function me(req, res) {
     const { rows } = await query(
       `SELECT s.roll_no, s.department_id, s.year, d.name AS department_name
        FROM students s LEFT JOIN departments d ON d.id = s.department_id
-       WHERE s.user_id = $1`,
+       WHERE s.user_id = ?`,
       [user.id],
     );
     profile = rows[0] || null;
@@ -49,7 +49,7 @@ export async function me(req, res) {
     const { rows } = await query(
       `SELECT f.department_id, f.designation, d.name AS department_name
        FROM faculty f LEFT JOIN departments d ON d.id = f.department_id
-       WHERE f.user_id = $1`,
+       WHERE f.user_id = ?`,
       [user.id],
     );
     profile = rows[0] || null;
@@ -61,7 +61,7 @@ export async function me(req, res) {
 export async function changePassword(req, res) {
   const { current_password: currentPassword, new_password: newPassword } = req.body;
 
-  const { rows } = await query('SELECT password_hash FROM users WHERE id = $1', [req.user.id]);
+  const { rows } = await query('SELECT password_hash FROM users WHERE id = ?', [req.user.id]);
   const stored = rows[0];
   if (!stored) {
     throw httpError(404, 'User not found');
@@ -76,7 +76,7 @@ export async function changePassword(req, res) {
   }
 
   const hash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
-  await query('UPDATE users SET password_hash = $1 WHERE id = $2', [hash, req.user.id]);
+  await query('UPDATE users SET password_hash = ? WHERE id = ?', [hash, req.user.id]);
   await writeAudit(null, req.user.id, 'auth.change_password', 'users', req.user.id);
 
   return res.json({ message: 'Password updated' });
