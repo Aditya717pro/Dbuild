@@ -12,6 +12,71 @@
   }
 }
 
+@layer utilities {
+  @keyframes hit-progress {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(320%);
+    }
+  }
+
+  @keyframes loader-letter {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0) scale(1);
+    }
+    45% {
+      transform: translateY(-11px) rotate(-4deg) scale(1.08);
+    }
+  }
+
+  @keyframes loader-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes loader-blob {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    33% {
+      transform: translate3d(24px, -28px, 0) scale(1.12);
+    }
+    66% {
+      transform: translate3d(-18px, 20px, 0) scale(0.94);
+    }
+  }
+
+  .animate-hit-progress {
+    animation: hit-progress 1s ease-in-out infinite;
+  }
+
+  .animate-loader-letter {
+    animation: loader-letter 0.9s ease-in-out infinite;
+  }
+
+  .animate-loader-spin {
+    animation: loader-spin 3.2s linear infinite;
+  }
+
+  .animate-loader-blob {
+    animation: loader-blob 7s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-hit-progress,
+    .animate-loader-letter,
+    .animate-loader-spin,
+    .animate-loader-blob {
+      animation: none;
+    }
+  }
+}
+
 @layer components {
   .card {
     @apply rounded-xl border border-slate-200 bg-white shadow-sm;

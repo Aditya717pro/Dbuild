@@ -36,9 +36,8 @@ function PublicPageLayout({ title, subtitle, breadcrumbs = [], subNav = [], chil
                 {subNav.map((item) => {
                   const isActive =
                     location.pathname === item.to ||
-                    (location.pathname === '/admission' && item.to === '/admission/programmes') ||
                     (location.pathname === '/academics' && item.to === '/academics/regulations') ||
-                    (location.pathname === '/accreditation' && item.to === '/accreditation/nba');
+                    (location.pathname === '/accreditation' && item.to === '/accreditation/quality');
                   return (
                     <Link
                       key={item.to}
@@ -70,7 +69,7 @@ function PublicPageLayout({ title, subtitle, breadcrumbs = [], subNav = [], chil
 // ---------------- ABOUT PAGES ---------------- //
 export function AboutPage({ section = 'about' }) {
   const subNav = [
-    { label: 'About VCET', to: '/about' },
+    { label: 'About HIT', to: '/about' },
     { label: 'Objectives & Vision', to: '/about/objectives' },
     { label: 'Secretary Message', to: '/about/secretary-message' },
     { label: 'Governing Council', to: '/about/governing-council' },
@@ -80,8 +79,8 @@ export function AboutPage({ section = 'about' }) {
 
   return (
     <PublicPageLayout
-      title="About VCET"
-      subtitle="Velalar College of Engineering and Technology (Autonomous) — 25 Years of Academic Excellence"
+      title="About HIT"
+      subtitle="Hogwarts Institute of Technology, Bengaluru — 75 Years of Academic Excellence"
       breadcrumbs={[{ label: 'About', to: '/about' }, { label: section.toUpperCase() }]}
       subNav={subNav}
     >
@@ -89,28 +88,28 @@ export function AboutPage({ section = 'about' }) {
         <div className="space-y-6 lg:col-span-2">
           {section === 'about' && (
             <div className="card p-6 space-y-4">
-              <h2 className="text-xl font-bold text-[#0b3d91]">About VCET</h2>
+              <h2 className="text-xl font-bold text-[#0b3d91]">About HIT</h2>
               <p className="text-sm leading-relaxed text-slate-700">
-                Velalar College of Engineering and Technology (Autonomous), established in the year 2001, is one of the premier self-financing engineering institutions in Tamil Nadu. The institution is run by Vellalar Educational Trust, which has been serving the cause of education for over five decades.
+                Hogwarts Institute of Technology is a leading private institute established in 1951 in Koramangala, Bengaluru. For more than seven decades, HIT has combined rigorous engineering education with research, innovation, and an unwavering commitment to student success.
               </p>
               <p className="text-sm leading-relaxed text-slate-700">
-                VCET is approved by AICTE, New Delhi, affiliated to Anna University, Chennai, and accredited with 'A+' Grade by NAAC. Seven undergraduate engineering programmes are accredited by the National Board of Accreditation (NBA).
+                HIT is recognised for its future-focused curriculum, internationally benchmarked teaching, and strong industry partnerships. Programmes across engineering, management, and the sciences are designed to prepare graduates for leadership in a rapidly changing world.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
                 <div className="rounded-lg bg-blue-50 p-3 text-center border border-blue-100">
-                  <p className="text-xl font-extrabold text-[#0b3d91]">2001</p>
+                  <p className="text-xl font-extrabold text-[#0b3d91]">1951</p>
                   <p className="text-xs text-slate-600">Established</p>
                 </div>
                 <div className="rounded-lg bg-blue-50 p-3 text-center border border-blue-100">
-                  <p className="text-xl font-extrabold text-[#0b3d91]">NAAC A+</p>
-                  <p className="text-xs text-slate-600">Accredited</p>
+                  <p className="text-xl font-extrabold text-[#0b3d91]">QS 5★</p>
+                  <p className="text-xs text-slate-600">Rated</p>
                 </div>
                 <div className="rounded-lg bg-blue-50 p-3 text-center border border-blue-100">
-                  <p className="text-xl font-extrabold text-[#0b3d91]">7 Depts</p>
-                  <p className="text-xs text-slate-600">NBA Accredited</p>
+                  <p className="text-xl font-extrabold text-[#0b3d91]">40+</p>
+                  <p className="text-xs text-slate-600">Global Partners</p>
                 </div>
                 <div className="rounded-lg bg-blue-50 p-3 text-center border border-blue-100">
-                  <p className="text-xl font-extrabold text-[#0b3d91]">25 Years</p>
+                  <p className="text-xl font-extrabold text-[#0b3d91]">75 Years</p>
                   <p className="text-xs text-slate-600">of Excellence</p>
                 </div>
               </div>
@@ -141,9 +140,9 @@ export function AboutPage({ section = 'about' }) {
             <div className="card p-6 space-y-4">
               <h2 className="text-xl font-bold text-[#0b3d91]">Secretary's Message</h2>
               <div className="rounded-lg bg-slate-50 p-4 border-l-4 border-[#0b3d91] italic text-sm text-slate-700">
-                "Our vision has always been to empower students from all walks of life with quality technical education. VCET stands committed to nurturing disciplined innovators who will lead tomorrow's technology transformations."
+                "Our vision has always been to empower students from all walks of life with quality technical education. HIT stands committed to nurturing disciplined innovators who will lead tomorrow's technology transformations."
               </div>
-              <p className="text-xs font-bold text-slate-900 text-right">— Thiru. S. D. Chandrasekar, Secretary</p>
+              <p className="text-xs font-bold text-slate-900 text-right">— Dr. S. D. Chandrasekar, Secretary</p>
             </div>
           )}
 
@@ -156,7 +155,7 @@ export function AboutPage({ section = 'about' }) {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900">Dr. M. Jayaraman</h3>
-                  <p className="text-xs text-[#0b3d91] font-semibold">Principal, VCET</p>
+                  <p className="text-xs text-[#0b3d91] font-semibold">Principal, HIT</p>
                   <p className="text-xs text-slate-500">Ph.D. in Mechanical Engineering • 30+ Years Academic & Administrative Experience</p>
                 </div>
               </div>
@@ -168,9 +167,9 @@ export function AboutPage({ section = 'about' }) {
 
           {(section === 'governing-council' || section === 'committees') && (
             <div className="card p-6 space-y-4">
-              <h2 className="text-xl font-bold text-[#0b3d91]">Statutory Bodies & Committees</h2>
+              <h2 className="text-xl font-bold text-[#0b3d91]">Governance & Academic Committees</h2>
               <p className="text-sm text-slate-700">
-                VCET operates under statutory governance councils comprising industry luminaries, university representatives, and eminent academicians.
+                HIT operates under governance councils comprising industry leaders, global university partners, and eminent academicians.
               </p>
               <div className="space-y-2 text-sm">
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
@@ -179,7 +178,7 @@ export function AboutPage({ section = 'about' }) {
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
                   <p className="font-bold text-slate-800">Academic Council</p>
-                  <p className="text-xs text-slate-600">Approves autonomous regulations, curricula, and examination schemes.</p>
+                  <p className="text-xs text-slate-600">Approves academic regulations, curricula, and examination schemes.</p>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
                   <p className="font-bold text-slate-800">Board of Studies (BoS)</p>
@@ -211,90 +210,344 @@ export function AboutPage({ section = 'about' }) {
 }
 
 // ---------------- ADMISSION PAGES ---------------- //
-export function AdmissionPage({ section = 'admission' }) {
+export function AdmissionPage({ section = 'admission', courseSlug }) {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
+    dateOfBirth: '',
     mobile: '',
     email: '',
+    examName: '',
     degree: 'B.E. Computer Science and Engineering',
-    category: 'Government Quota (TNEA Single Window)',
+    category: 'Merit-Based Admission',
     marks: '',
     message: '',
   });
 
   const subNav = [
-    { label: 'Programmes Offered', to: '/admission/programmes' },
     { label: 'Fees Structure', to: '/admission/fees-structure' },
     { label: 'Admission Procedure', to: '/admission/procedure' },
-    { label: 'Online Enquiry Form', to: '/admission/enquiry' },
   ];
 
-  const normSection = (section || 'programmes').toLowerCase();
+  const normSection = (section || 'ug').toLowerCase();
   const isFees = normSection === 'fees-structure' || normSection === 'fees' || normSection === 'fee-structure';
   const isProcedure = normSection === 'procedure' || normSection === 'admission-procedure';
   const isEnquiry = normSection === 'enquiry' || normSection === 'online-enquiry';
-  const isProgrammes = !isFees && !isProcedure && !isEnquiry;
+  const isUG = normSection === 'ug' || normSection === 'undergraduate' || normSection === 'admission' || normSection === 'programmes';
+  const isPG = normSection === 'pg' || normSection === 'postgraduate';
+  const isProgrammes = !isFees && !isProcedure && !isEnquiry && !isUG && !isPG;
 
-  const activeSectionTitle = isFees
+  const ugProgrammes = [
+    {
+      slug: 'computer-science-and-engineering',
+      name: 'Computer Science and Engineering',
+      code: 'CSE',
+      degree: 'B.E.',
+      intake: 180,
+      accredited: true,
+      description: 'Build a strong foundation in algorithms, software engineering, distributed systems, and artificial intelligence while working in modern computing laboratories. The programme combines core computer science with industry internships and a final-year capstone project.',
+    },
+    {
+      slug: 'information-technology',
+      name: 'Information Technology',
+      code: 'IT',
+      degree: 'B.Tech',
+      intake: 120,
+      accredited: false,
+      description: 'Focus on enterprise systems, cloud infrastructure, cybersecurity, and full-stack development. Students gain hands-on experience through industry-sponsored projects, live client work, and modern DevOps practices.',
+    },
+    {
+      slug: 'artificial-intelligence-and-data-science',
+      name: 'Artificial Intelligence and Data Science',
+      code: 'AI & DS',
+      degree: 'B.Tech',
+      intake: 120,
+      accredited: false,
+      description: 'Learn machine learning, data engineering, statistical modelling, and generative AI. The curriculum includes applied projects with real-world datasets and access to high-performance GPU computing resources.',
+    },
+    {
+      slug: 'artificial-intelligence-and-machine-learning',
+      name: 'Artificial Intelligence and Machine Learning',
+      code: 'AI & ML',
+      degree: 'B.Tech',
+      intake: 60,
+      accredited: false,
+      description: 'Develop expertise in deep learning, computer vision, natural language processing, and intelligent systems. Studio-based courses prepare students for AI product engineering, research, and responsible AI practice.',
+    },
+    {
+      slug: 'electronics-and-communication-engineering',
+      name: 'Electronics and Communication Engineering',
+      code: 'ECE',
+      degree: 'B.E.',
+      intake: 180,
+      accredited: true,
+      description: 'Study embedded systems, VLSI, communication systems, and signal processing in advanced electronics laboratories. The programme blends circuit design with modern semiconductor, IoT, and wireless applications.',
+    },
+    {
+      slug: 'electrical-and-electronics-engineering',
+      name: 'Electrical and Electronics Engineering',
+      code: 'EEE',
+      degree: 'B.E.',
+      intake: 120,
+      accredited: false,
+      description: 'Explore power systems, renewable energy, control engineering, and electric mobility. Students work on smart-grid and sustainable energy projects with guidance from industry mentors.',
+    },
+    {
+      slug: 'mechanical-engineering',
+      name: 'Mechanical Engineering',
+      code: 'MECH',
+      degree: 'B.E.',
+      intake: 60,
+      accredited: true,
+      description: 'Combine design, thermodynamics, robotics, and advanced manufacturing in a project-led curriculum. Students gain practical experience with CAD, simulation, and precision engineering facilities.',
+    },
+    {
+      slug: 'civil-engineering',
+      name: 'Civil Engineering',
+      code: 'CIVIL',
+      degree: 'B.E.',
+      intake: 60,
+      accredited: false,
+      description: 'Focus on sustainable infrastructure, structural engineering, transportation, and construction technology. Field studies and live projects connect classroom learning to real-world urban development.',
+    },
+    {
+      slug: 'bio-medical-engineering',
+      name: 'Bio-Medical Engineering',
+      code: 'BME',
+      degree: 'B.E.',
+      intake: 60,
+      accredited: true,
+      description: 'Bridge engineering and healthcare through medical instrumentation, biomechanics, and diagnostic imaging. Students collaborate with hospitals and medtech partners on applied projects.',
+    },
+    {
+      slug: 'medical-electronics',
+      name: 'Medical Electronics',
+      code: 'MDE',
+      degree: 'B.E.',
+      intake: 60,
+      accredited: false,
+      description: 'Specialise in medical electronics, embedded health devices, and clinical signal processing. The programme prepares engineers for the fast-growing healthcare technology sector.',
+    },
+  ];
+
+  const pgProgrammes = [
+    {
+      slug: 'me-computer-science-and-engineering',
+      name: 'Computer Science and Engineering',
+      code: 'M.E. CSE',
+      degree: 'M.E.',
+      intake: 18,
+      eligibility: 'B.E. / B.Tech in CSE / IT / Software Engineering + GATE / GRE',
+      description: 'Advance your expertise in distributed computing, machine learning, and secure software systems. The programme includes research seminars, a supervised dissertation, and industry collaboration.',
+    },
+    {
+      slug: 'me-applied-electronics',
+      name: 'Applied Electronics',
+      code: 'M.E. AE',
+      degree: 'M.E.',
+      intake: 18,
+      eligibility: 'B.E. / B.Tech in ECE / EEE / E&I + GATE / GRE',
+      description: 'Deepen your knowledge of embedded systems, VLSI, communication, and electronic product design. Laboratory-intensive courses support advanced research and industry projects.',
+    },
+    {
+      slug: 'me-vlsi-design',
+      name: 'VLSI Design',
+      code: 'M.E. VLSI',
+      degree: 'M.E.',
+      intake: 18,
+      eligibility: 'B.E. / B.Tech in ECE / EEE / CSE / IT / E&I + GATE / GRE',
+      description: 'Specialise in digital and analog VLSI design, verification, low-power circuits, and chip architecture. Students work with industry-standard EDA tools and fabrication-aware design flows.',
+    },
+    {
+      slug: 'master-of-business-administration',
+      name: 'Master of Business Administration',
+      code: 'MBA',
+      degree: 'MBA',
+      intake: 60,
+      eligibility: "Bachelor's degree with minimum 50% + CAT / MAT / GMAT",
+      description: 'Develop leadership, strategy, finance, marketing, and operations expertise through case-based learning. Industry internships, live consulting projects, and a global immersion prepare you for modern business roles.',
+    },
+  ];
+
+  const allCourses = [
+    ...ugProgrammes.map((course) => ({
+      ...course,
+      level: 'UG',
+      levelPath: 'ug',
+      duration: '4 Years',
+      eligibility:
+        course.eligibility ||
+        'Completed 10+2, A-Levels, IB, or an equivalent qualification with Mathematics, Physics, and Chemistry, and a minimum aggregate of 60%.',
+    })),
+    ...pgProgrammes.map((course) => ({
+      ...course,
+      level: 'PG',
+      levelPath: 'pg',
+      duration: '2 Years',
+    })),
+  ];
+
+  const selectedCourse = courseSlug
+    ? allCourses.find((course) => course.slug === courseSlug)
+    : null;
+
+  const activeSectionTitle = selectedCourse
+    ? selectedCourse.name
+    : isFees
     ? 'Fees Structure'
     : isProcedure
     ? 'Admission Procedure'
     : isEnquiry
-    ? 'Online Enquiry Form'
+    ? 'Application Form'
+    : isUG
+    ? 'UG Programmes'
+    : isPG
+    ? 'PG Programmes'
     : 'Programmes Offered';
 
-  const ugProgrammes = [
-    { name: 'Computer Science and Engineering', code: 'CSE', degree: 'B.E.', intake: 180, nba: true },
-    { name: 'Information Technology', code: 'IT', degree: 'B.Tech', intake: 120, nba: false },
-    { name: 'Artificial Intelligence and Data Science', code: 'AI & DS', degree: 'B.Tech', intake: 120, nba: false },
-    { name: 'Artificial Intelligence and Machine Learning', code: 'AI & ML', degree: 'B.Tech', intake: 60, nba: false },
-    { name: 'Electronics and Communication Engineering', code: 'ECE', degree: 'B.E.', intake: 180, nba: true },
-    { name: 'Electrical and Electronics Engineering', code: 'EEE', degree: 'B.E.', intake: 120, nba: false },
-    { name: 'Mechanical Engineering', code: 'MECH', degree: 'B.E.', intake: 60, nba: true },
-    { name: 'Civil Engineering', code: 'CIVIL', degree: 'B.E.', intake: 60, nba: false },
-    { name: 'Bio-Medical Engineering', code: 'BME', degree: 'B.E.', intake: 60, nba: true },
-    { name: 'Medical Electronics', code: 'MDE', degree: 'B.E.', intake: 60, nba: false },
-  ];
-
-  const pgProgrammes = [
-    { name: 'Computer Science and Engineering', code: 'M.E. CSE', degree: 'M.E.', intake: 18, eligibility: 'B.E. / B.Tech in CSE / IT / Software Engg + CEETA-PG / GATE' },
-    { name: 'Applied Electronics', code: 'M.E. AE', degree: 'M.E.', intake: 18, eligibility: 'B.E. / B.Tech in ECE / EEE / E&I + CEETA-PG / GATE' },
-    { name: 'VLSI Design', code: 'M.E. VLSI', degree: 'M.E.', intake: 18, eligibility: 'B.E. / B.Tech in ECE / EEE / CSE / IT / E&I + CEETA-PG / GATE' },
-    { name: 'Master of Business Administration', code: 'MBA', degree: 'MBA', intake: 60, eligibility: 'Recognized Bachelor Degree (10+2+3/4) with min 50% + TANCET / MAT' },
-  ];
+  const courseHighlights = selectedCourse
+    ? [
+        `${selectedCourse.degree} curriculum aligned with current industry practice`,
+        'Experiential learning through laboratories, live projects, and internships',
+        selectedCourse.level === 'UG'
+          ? 'Flexible credit framework with industry-aligned electives'
+          : 'Research seminars and a supervised dissertation',
+        'Dedicated placement, mentoring, and career development support',
+      ]
+    : [];
 
   return (
     <PublicPageLayout
-      title="Admissions 2026 - 2027"
-      subtitle="Velalar College of Engineering and Technology (Autonomous), Erode — TNEA Code: 2723"
-      breadcrumbs={[{ label: 'Admission', to: '/admission' }, { label: activeSectionTitle }]}
-      subNav={subNav}
+      title={selectedCourse ? selectedCourse.name : 'Admissions 2026 - 2027'}
+      subtitle={
+        selectedCourse
+          ? `${selectedCourse.degree} · ${selectedCourse.duration} · Full-time · Bengaluru`
+          : 'Hogwarts Institute of Technology, Bengaluru — Merit-Based Admissions'
+      }
+      breadcrumbs={
+        selectedCourse
+          ? [
+              { label: 'Admission', to: '/admission' },
+              {
+                label: selectedCourse.level === 'UG' ? 'UG Programmes' : 'PG Programmes',
+                to: `/admission/${selectedCourse.levelPath}`,
+              },
+              { label: selectedCourse.name },
+            ]
+          : [{ label: 'Admission', to: '/admission' }, { label: activeSectionTitle }]
+      }
+      subNav={selectedCourse ? [] : subNav}
     >
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main Content Area */}
         <div className="space-y-6 lg:col-span-2">
+          {selectedCourse && (
+            <div className="card overflow-hidden">
+              <div
+                className={`border-b border-slate-200 p-6 ${
+                  selectedCourse.level === 'UG'
+                    ? 'bg-gradient-to-r from-blue-50/80 to-white'
+                    : 'bg-gradient-to-r from-amber-50/80 to-white'
+                }`}
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                      selectedCourse.level === 'UG'
+                        ? 'bg-blue-100 text-[#0b3d91]'
+                        : 'bg-amber-100 text-amber-900'
+                    }`}
+                  >
+                    {selectedCourse.level} Programme
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-600">
+                    {selectedCourse.code}
+                  </span>
+                  {selectedCourse.accredited && (
+                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                      Professionally Accredited
+                    </span>
+                  )}
+                </div>
+                <h2 className="mt-3 text-2xl font-extrabold text-[#0b3d91]">
+                  {selectedCourse.degree} {selectedCourse.name}
+                </h2>
+                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+                  {selectedCourse.description}
+                </p>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <a
+                    href="#course-application"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#0b3d91] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-blue-800"
+                  >
+                    Apply / Register &rarr;
+                  </a>
+                  <Link
+                    to={`/admission/${selectedCourse.levelPath}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0b3d91] hover:underline"
+                  >
+                    &larr; Back to {selectedCourse.level} Programmes
+                  </Link>
+                </div>
+              </div>
+
+              <div className="grid gap-3 p-6 sm:grid-cols-3">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Duration</p>
+                  <p className="mt-1 text-base font-black text-slate-900">{selectedCourse.duration}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Sanctioned Intake</p>
+                  <p className="mt-1 text-base font-black text-slate-900">{selectedCourse.intake} seats</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Mode</p>
+                  <p className="mt-1 text-base font-black text-slate-900">Full-time</p>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-200 p-6">
+                <h3 className="text-sm font-bold text-slate-900">Programme Highlights</h3>
+                <ul className="mt-3 grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
+                  {courseHighlights.map((highlight) => (
+                    <li key={highlight} className="flex items-start gap-2 rounded-lg bg-slate-50 p-2.5">
+                      <span className="mt-0.5 font-bold text-emerald-600">✓</span>
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="border-t border-slate-200 bg-blue-50/50 p-5">
+                <p className="text-xs leading-relaxed text-slate-700">
+                  <strong className="text-[#0b3d91]">Eligibility:</strong> {selectedCourse.eligibility}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* 1. PROGRAMMES OFFERED */}
-          {isProgrammes && (
+          {(isProgrammes || isUG || isPG) && !selectedCourse && (
             <div className="space-y-6">
               {/* Undergraduate Card */}
+              {!isPG && (
               <div className="card p-6 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
                   <div>
                     <span className="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-[#0b3d91]">
-                      4-Year Autonomous Degree
+                      4-Year Undergraduate Degree
                     </span>
                     <h2 className="mt-1 text-xl font-bold text-[#0b3d91]">
                       Undergraduate (B.E. / B.Tech) Programmes
                     </h2>
                   </div>
                   <div className="text-xs text-slate-500">
-                    Academic Year 2026 - 2027 • Approved by AICTE
+                    Academic Year 2026 - 2027 • Merit-Based Admissions
                   </div>
                 </div>
 
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Admission to undergraduate programmes is carried out via Government Single Window Counselling (TNEA Code: <strong className="text-slate-900">2723</strong>) and Consortium Management Quota. All programmes follow Choice-Based Credit System (CBCS) under Autonomous Regulations.
+                  Admission to undergraduate programmes is based on academic merit in the qualifying examination, followed by a personal interview. All programmes follow a flexible credit framework with industry-aligned electives and experiential learning.
                 </p>
 
                 <div className="overflow-x-auto rounded-lg border border-slate-200">
@@ -310,8 +563,18 @@ export function AdmissionPage({ section = 'admission' }) {
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       {ugProgrammes.map((dept) => (
-                        <tr key={dept.code} className="hover:bg-slate-50 transition">
-                          <td className="p-3 font-semibold text-slate-900">{dept.name}</td>
+                        <tr key={dept.code} className="group hover:bg-blue-50/40 transition">
+                          <td className="p-3 font-semibold text-slate-900">
+                            <Link
+                              to={`/admission/ug/${dept.slug}`}
+                              className="inline-flex items-center gap-1.5 text-slate-900 transition hover:text-[#0b3d91] hover:underline"
+                            >
+                              {dept.name}
+                              <span className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-[#0b3d91]">
+                                &rarr;
+                              </span>
+                            </Link>
+                          </td>
                           <td className="p-3">
                             <span className="rounded bg-slate-100 px-2 py-0.5 font-bold text-slate-700 text-[11px]">
                               {dept.degree}
@@ -320,12 +583,12 @@ export function AdmissionPage({ section = 'admission' }) {
                           <td className="p-3 text-slate-600 font-mono font-bold">{dept.code}</td>
                           <td className="p-3 text-center font-bold text-[#0b3d91]">{dept.intake}</td>
                           <td className="p-3">
-                            {dept.nba ? (
+                            {dept.accredited ? (
                               <span className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2.5 py-0.5 font-bold text-emerald-800 text-[10px]">
-                                <span>✓</span> NBA Accredited
+                                <span>✓</span> Professionally Accredited
                               </span>
                             ) : (
-                              <span className="text-slate-500 font-medium text-[11px]">Anna Univ / AICTE</span>
+                              <span className="text-slate-500 font-medium text-[11px]">Merit-Based</span>
                             )}
                           </td>
                         </tr>
@@ -335,7 +598,7 @@ export function AdmissionPage({ section = 'admission' }) {
                       <tr>
                         <td className="p-3" colSpan={3}>Total Undergraduate Sanctioned Intake</td>
                         <td className="p-3 text-center text-[#0b3d91] font-black">980 Seats</td>
-                        <td className="p-3 text-xs text-slate-500 font-semibold">Autonomous R-2022</td>
+                        <td className="p-3 text-xs text-slate-500 font-semibold">Credit Framework 2026</td>
                       </tr>
                     </tfoot>
                   </table>
@@ -344,12 +607,14 @@ export function AdmissionPage({ section = 'admission' }) {
                 <div className="rounded-lg bg-blue-50/70 p-3.5 border border-blue-100 text-xs text-slate-700 flex items-start gap-2">
                   <span className="text-base text-[#0b3d91]">ℹ️</span>
                   <div>
-                    <strong className="text-[#0b3d91]">UG Eligibility:</strong> Passed 10+2 / HSC Examination with Mathematics, Physics, and Chemistry as compulsory subjects with prescribed minimum aggregate percentage (OC: 45%, BC/BCM/MBC/SC/ST: 40%).
+                    <strong className="text-[#0b3d91]">UG Eligibility:</strong> Completed 10+2, A-Levels, IB, or an equivalent qualification with Mathematics, Physics, and Chemistry, and a minimum aggregate of 60% (or equivalent).
                   </div>
                 </div>
               </div>
+              )}
 
               {/* Postgraduate Card */}
+              {!isUG && (
               <div className="card p-6 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
                   <div>
@@ -361,7 +626,7 @@ export function AdmissionPage({ section = 'admission' }) {
                     </h2>
                   </div>
                   <div className="text-xs text-slate-500">
-                    Affiliated to Anna University • CEETA-PG / TANCET
+                    Merit-Based Admission • GATE / GRE / GMAT
                   </div>
                 </div>
 
@@ -378,8 +643,18 @@ export function AdmissionPage({ section = 'admission' }) {
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       {pgProgrammes.map((p) => (
-                        <tr key={p.code} className="hover:bg-slate-50 transition">
-                          <td className="p-3 font-semibold text-slate-900">{p.name}</td>
+                        <tr key={p.code} className="group hover:bg-amber-50/40 transition">
+                          <td className="p-3 font-semibold text-slate-900">
+                            <Link
+                              to={`/admission/pg/${p.slug}`}
+                              className="inline-flex items-center gap-1.5 text-slate-900 transition hover:text-[#0b3d91] hover:underline"
+                            >
+                              {p.name}
+                              <span className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-[#0b3d91]">
+                                &rarr;
+                              </span>
+                            </Link>
+                          </td>
                           <td className="p-3">
                             <span className="rounded bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 font-bold text-[11px]">
                               {p.degree}
@@ -394,12 +669,14 @@ export function AdmissionPage({ section = 'admission' }) {
                   </table>
                 </div>
               </div>
+              )}
 
               {/* Research Centres Card */}
+              {isProgrammes && (
               <div className="card p-6 space-y-4">
-                <h2 className="text-xl font-bold text-[#0b3d91]">Recognized Anna University Research Centres</h2>
+                <h2 className="text-xl font-bold text-[#0b3d91]">Doctoral Research Centres</h2>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  The following departments at VCET are officially recognized by Anna University, Chennai as Collaborative Research Centres for pursuing full-time and part-time Ph.D. degrees:
+                  The following departments at HIT are designated as doctoral research centres by the HIT Research Council for full-time and part-time Ph.D. programmes:
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200">
@@ -420,6 +697,7 @@ export function AdmissionPage({ section = 'admission' }) {
                   </div>
                 </div>
               </div>
+              )}
             </div>
           )}
 
@@ -435,7 +713,7 @@ export function AdmissionPage({ section = 'admission' }) {
                       Official Fee Structure (Academic Year 2026 - 2027)
                     </h2>
                     <p className="mt-1 text-xs text-slate-700 leading-relaxed">
-                      Tuition and academic fees at Velalar College of Engineering and Technology (Autonomous) are strictly governed by the orders of the <strong>Committee on Fixation of Fee for Self-Financing Professional Colleges</strong>, Government of Tamil Nadu. <strong>No capitation fee or donation is collected.</strong>
+                      Fees at Hogwarts Institute of Technology are approved by the HIT Finance Committee and published transparently. <strong>No donation or additional admission fee is collected.</strong> Scholarships and payment plans are available for eligible students.
                     </p>
                   </div>
                 </div>
@@ -445,74 +723,62 @@ export function AdmissionPage({ section = 'admission' }) {
               <div className="card p-6 space-y-4">
                 <div className="border-b border-slate-200 pb-3">
                   <h3 className="text-lg font-bold text-slate-900">1. Annual Academic & Tuition Fees</h3>
-                  <p className="text-xs text-slate-500">Government Quota (TNEA) and Consortium Management Quota (Per Annum)</p>
+                  <p className="text-xs text-slate-500">Merit-Based Admissions (Per Annum)</p>
                 </div>
 
                 <div className="overflow-x-auto rounded-lg border border-slate-200">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-100 font-bold uppercase text-slate-700">
                       <tr>
-                        <th className="p-3">Programme / Branch</th>
-                        <th className="p-3">Admission Quota</th>
+                        <th className="p-3">Programme / Level</th>
                         <th className="p-3">Annual Tuition Fee</th>
-                        <th className="p-3">Special / Lab Amenities</th>
+                        <th className="p-3">Lab & Amenities</th>
                         <th className="p-3 text-right">Total Per Year</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       <tr className="hover:bg-slate-50 transition">
                         <td className="p-3">
-                          <span className="font-bold text-slate-900">B.E. / B.Tech (Accredited)</span>
-                          <p className="text-[11px] text-emerald-700 font-medium">CSE, ECE, MECH, BME (NBA Accredited)</p>
-                        </td>
-                        <td className="p-3 font-semibold text-blue-700">Govt. Quota (TNEA)</td>
-                        <td className="p-3 font-semibold text-slate-800">₹55,000</td>
-                        <td className="p-3 text-slate-600">₹10,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹65,000</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3">
-                          <span className="font-bold text-slate-900">B.E. / B.Tech (Non-Accredited)</span>
-                          <p className="text-[11px] text-slate-500">IT, AI&DS, AI&ML, EEE, CIVIL, MDE</p>
-                        </td>
-                        <td className="p-3 font-semibold text-blue-700">Govt. Quota (TNEA)</td>
-                        <td className="p-3 font-semibold text-slate-800">₹50,000</td>
-                        <td className="p-3 text-slate-600">₹10,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹60,000</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3">
                           <span className="font-bold text-slate-900">B.E. / B.Tech (All Branches)</span>
-                          <p className="text-[11px] text-slate-500">Merit-based direct admission</p>
+                          <p className="text-[11px] text-slate-500">CSE, IT, AI & DS, AI & ML, ECE, EEE, MECH, CIVIL, BME, MDE</p>
                         </td>
-                        <td className="p-3 font-semibold text-purple-700">Management Quota</td>
-                        <td className="p-3 font-semibold text-slate-800">₹85,000 - ₹1,20,000</td>
-                        <td className="p-3 text-slate-600">Included</td>
-                        <td className="p-3 text-right font-bold text-purple-900 text-sm">As per Consortium</td>
+                        <td className="p-3 font-semibold text-slate-800">₹1,50,000</td>
+                        <td className="p-3 text-slate-600">₹25,000</td>
+                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹1,75,000</td>
                       </tr>
                       <tr className="hover:bg-slate-50 transition">
                         <td className="p-3">
                           <span className="font-bold text-slate-900">M.E. Programmes</span>
                           <p className="text-[11px] text-slate-500">CSE, Applied Electronics, VLSI Design</p>
                         </td>
-                        <td className="p-3 font-semibold text-slate-700">Govt. / Mgmt Quota</td>
-                        <td className="p-3 font-semibold text-slate-800">₹50,000</td>
-                        <td className="p-3 text-slate-600">₹10,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹60,000</td>
+                        <td className="p-3 font-semibold text-slate-800">₹1,20,000</td>
+                        <td className="p-3 text-slate-600">₹20,000</td>
+                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹1,40,000</td>
                       </tr>
                       <tr className="hover:bg-slate-50 transition">
                         <td className="p-3">
-                          <span className="font-bold text-slate-900">MBA (Master of Business Admin)</span>
-                          <p className="text-[11px] text-slate-500">2-Year Full-time Autonomous Programme</p>
+                          <span className="font-bold text-slate-900">MBA (Master of Business Administration)</span>
+                          <p className="text-[11px] text-slate-500">2-Year Full-Time Programme</p>
                         </td>
-                        <td className="p-3 font-semibold text-slate-700">Govt. / Mgmt Quota</td>
-                        <td className="p-3 font-semibold text-slate-800">₹70,000 (₹35k/sem)</td>
-                        <td className="p-3 text-slate-600">₹10,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹80,000</td>
+                        <td className="p-3 font-semibold text-slate-800">₹1,80,000 (₹90,000/sem)</td>
+                        <td className="p-3 text-slate-600">₹20,000</td>
+                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹2,00,000</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50 transition">
+                        <td className="p-3">
+                          <span className="font-bold text-slate-900">Ph.D. / Research Programmes</span>
+                          <p className="text-[11px] text-slate-500">Full-time and part-time doctoral study</p>
+                        </td>
+                        <td className="p-3 font-semibold text-slate-800">₹90,000</td>
+                        <td className="p-3 text-slate-600">₹15,000</td>
+                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹1,05,000</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
+                <p className="text-[11px] text-slate-500">
+                  International applicants should contact the Admissions Office for fee equivalence and scholarship options.
+                </p>
               </div>
 
               {/* Hostel & Transport Section */}
@@ -520,142 +786,132 @@ export function AdmissionPage({ section = 'admission' }) {
                 {/* Hostel Fee */}
                 <div className="card p-5 space-y-3">
                   <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h3 className="font-bold text-slate-900 text-sm">2. Hostel & Mess Charges (Optional)</h3>
+                    <h3 className="font-bold text-slate-900 text-sm">2. Residence & Dining (Optional)</h3>
                     <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Resident</span>
                   </div>
-                  <p className="text-xs text-slate-600">Separate hostels for boys and girls with high-speed Wi-Fi, solar heating, and 24/7 security.</p>
+                  <p className="text-xs text-slate-600">Separate residences for men and women with high-speed Wi-Fi, solar heating, and 24/7 security.</p>
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Room Rent, Amenities & Electricity:</span>
-                      <span className="font-bold text-slate-800">₹35,000 / year</span>
+                      <span className="text-slate-600">Room Rent, Amenities & Utilities:</span>
+                      <span className="font-bold text-slate-800">₹90,000 / year</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Mess Charges (Hygienic Veg & Non-Veg):</span>
-                      <span className="font-bold text-slate-800">₹45,000 / year</span>
+                      <span className="text-slate-600">Dining Charges (Vegetarian & Non-Vegetarian):</span>
+                      <span className="font-bold text-slate-800">₹60,000 / year</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-100">
                       <span className="text-slate-600">Caution Deposit (Refundable, one-time):</span>
-                      <span className="font-bold text-slate-800">₹5,000</span>
+                      <span className="font-bold text-slate-800">₹10,000</span>
                     </div>
                     <div className="flex justify-between pt-2 text-[#0b3d91] font-extrabold text-sm">
                       <span>Total Residential Fee:</span>
-                      <span>₹80,000 / year</span>
+                      <span>₹1,60,000 / year</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Bus / Transport Fee */}
+                {/* Shuttle / Transport Fee */}
                 <div className="card p-5 space-y-3">
                   <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h3 className="font-bold text-slate-900 text-sm">3. Transport / Bus Charges (Optional)</h3>
+                    <h3 className="font-bold text-slate-900 text-sm">3. Campus Shuttle Charges (Optional)</h3>
                     <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Day Scholar</span>
                   </div>
-                  <p className="text-xs text-slate-600">Fleet of 40+ GPS-enabled college buses covering 4 neighboring districts.</p>
+                  <p className="text-xs text-slate-600">Fleet of 40+ GPS-enabled shuttles covering Greater Bengaluru.</p>
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Zone A (Erode City, Thindal, Perundurai):</span>
+                      <span className="text-slate-600">Zone A (Koramangala, Indiranagar, Domlur):</span>
                       <span className="font-bold text-slate-800">₹18,000 / year</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Zone B (Bhavani, Komarapalayam, Chennimalai):</span>
-                      <span className="font-bold text-slate-800">₹22,000 / year</span>
+                      <span className="text-slate-600">Zone B (Whitefield, Marathahalli, HSR Layout):</span>
+                      <span className="font-bold text-slate-800">₹24,000 / year</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Zone C (Tirupur, Salem, Namakkal, Anthiyur):</span>
-                      <span className="font-bold text-slate-800">₹26,000 - ₹28,000</span>
+                      <span className="text-slate-600">Zone C (Electronic City, Jayanagar, Hebbal):</span>
+                      <span className="font-bold text-slate-800">₹30,000 / year</span>
                     </div>
                     <div className="p-2 bg-slate-50 rounded text-[11px] text-slate-600">
-                      GPS tracking & CCTV surveillance on all college bus routes.
+                      GPS tracking and CCTV surveillance on all shuttle routes.
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Government Scholarships & Concessions */}
+              {/* Scholarships & Financial Aid */}
               <div className="card p-6 space-y-4">
                 <div className="border-b border-slate-200 pb-3">
-                  <h3 className="text-lg font-bold text-[#0b3d91]">4. Government Scholarships & Fee Waivers</h3>
-                  <p className="text-xs text-slate-500">Eligible students can claim significant fee exemptions and financial assistance.</p>
+                  <h3 className="text-lg font-bold text-[#0b3d91]">4. Scholarships & Financial Aid</h3>
+                  <p className="text-xs text-slate-500">Merit, access, and talent-based awards that make a HIT education more affordable.</p>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">🎓</span>
-                      <h4 className="font-bold text-slate-900 text-sm">First Graduate (FG) Concession</h4>
+                      <h4 className="font-bold text-slate-900 text-sm">HIT Merit Scholarship</h4>
                     </div>
                     <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      Eligible candidates whose family has no prior graduate receive a <strong>₹25,000 per year</strong> direct tuition fee reduction by the Government of Tamil Nadu under TNEA counselling.
+                      Up to <strong>50% tuition waiver</strong> for students with outstanding academic records in their qualifying examination.
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">🏫</span>
-                      <h4 className="font-bold text-slate-900 text-sm">7.5% Govt. School Quota</h4>
+                      <h4 className="font-bold text-slate-900 text-sm">HIT Access Scholarship</h4>
                     </div>
                     <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      Students who studied from 6th to 12th standard in Tamil Nadu Government schools receive <strong>100% Free Education</strong> covering complete tuition, hostel, mess, and books sponsored by the State Government.
+                      Need-based support covering up to <strong>100% of tuition</strong> for first-generation learners and students from low-income households.
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">📑</span>
-                      <h4 className="font-bold text-slate-900 text-sm">Post-Matric Scholarship (SC / ST / SCC)</h4>
+                      <h4 className="font-bold text-slate-900 text-sm">Women in STEM Award</h4>
                     </div>
                     <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      Full tuition fee waiver for SC, ST, and converted Christian SC students with family annual income less than ₹2.5 Lakhs as per TN Welfare department guidelines.
+                      A <strong>30% tuition award</strong> for exceptional women applicants entering engineering, computing, and applied science programmes.
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-4">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">🏆</span>
-                      <h4 className="font-bold text-slate-900 text-sm">Vellalar Trust Merit Scholarship</h4>
+                      <h4 className="font-bold text-slate-900 text-sm">Sports & Global Exchange Awards</h4>
                     </div>
                     <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      Up to <strong>50% tuition waiver</strong> offered by Vellalar Educational Trust for high-performing students with TNEA cut-off &gt; 185/200 and state/national level sports champions.
+                      Up to <strong>50% tuition support</strong> for national-level athletes, plus travel bursaries for semester exchange at partner universities.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Online Fee Portal Link */}
-              <div className="card p-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-slate-900 to-[#0b3d91] text-white">
-                <div>
-                  <h4 className="text-base font-bold">Online Fee Payment Portal</h4>
-                  <p className="text-xs text-blue-200 mt-1">Pay semester tuition, examination, and hostel fees securely via Net Banking, UPI, or Cards.</p>
-                </div>
-                <Link to="/online-fee" className="btn bg-white text-[#0b3d91] hover:bg-blue-50 font-bold whitespace-nowrap shadow-md">
-                  Go to Fee Portal &rarr;
-                </Link>
-              </div>
             </div>
           )}
 
           {/* 3. ADMISSION PROCEDURE */}
           {isProcedure && (
             <div className="space-y-6">
-              {/* TNEA Single-Window Procedure Card */}
+              {/* Application & Selection Procedure Card */}
               <div className="card p-6 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
                   <div>
                     <span className="rounded bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
-                      Government Quota (TNEA)
+                      Merit-Based Admission
                     </span>
                     <h2 className="mt-1 text-xl font-bold text-[#0b3d91]">
-                      TNEA Single-Window Counselling Procedure
+                      Application & Selection Procedure
                     </h2>
                   </div>
                   <div className="rounded-md bg-blue-50 px-3 py-1.5 border border-blue-200 text-center">
-                    <span className="text-[10px] uppercase font-bold text-slate-500 block">Counselling Code</span>
-                    <span className="text-base font-black text-[#0b3d91]">TNEA 2723</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-500 block">Admissions Cycle</span>
+                    <span className="text-base font-black text-[#0b3d91]">2026 - 2027</span>
                   </div>
                 </div>
 
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Admission to 65% of sanctioned B.E. / B.Tech seats is carried out through the Government of Tamil Nadu Single Window Counselling conducted by Anna University / Directorate of Technical Education (DOTE). Follow the sequential stages below:
+                  Admission to all programmes is merit-based and holistic. Submit an online application, upload your documents, and complete an interview with the admissions committee. Follow the sequential stages below:
                 </p>
 
                 {/* Steps List */}
@@ -663,33 +919,33 @@ export function AdmissionPage({ section = 'admission' }) {
                   {[
                     {
                       step: '01',
-                      title: 'TNEA Online Registration',
-                      desc: 'Register online at the official TNEA portal (tneaonline.org) upon release of Tamil Nadu Class 12 (+2) results. Fill personal details and select preferred facilitation center (TFC).',
+                      title: 'Start Your Online Application',
+                      desc: 'Create a profile on the HIT admissions portal (apply.hit.edu.in), select your programme, and complete the application form.',
                     },
                     {
                       step: '02',
-                      title: 'Certificate Upload & Digital Verification',
-                      desc: 'Upload scanned copies of 10th mark sheet, 12th mark sheet, community certificate, transfer certificate, and first-graduate certificate for official online verification.',
+                      title: 'Upload Documents',
+                      desc: 'Upload Class 10 and 12 transcripts, a government-issued photo ID, entrance examination scores, and a personal statement.',
                     },
                     {
                       step: '03',
-                      title: 'Rank Publication & Cutoff Calculation',
-                      desc: 'DOTE computes engineering cut-off marks out of 200: Maths (100) + Physics (50) + Chemistry (50), and publishes the general and community-wise state rank list.',
+                      title: 'Entrance Score & Interview',
+                      desc: 'Submit a valid SAT, GATE, GRE, CAT, or MAT score — or take the HIT Entrance Assessment — and attend an interview with the admissions committee.',
                     },
                     {
                       step: '04',
-                      title: 'Online Choice Filling (Select Code: 2723)',
-                      desc: 'During your allotted counselling round, enter Velalar College of Engineering and Technology (College Code: 2723) as your top preference and choose your preferred branch (CSE, IT, AI&DS, ECE, MECH, etc.).',
+                      title: 'Receive Your Offer',
+                      desc: 'The committee reviews your academic record, entrance score, statement, and interview to release a provisional offer of admission.',
                     },
                     {
                       step: '05',
-                      title: 'Provisional Seat Allotment',
-                      desc: 'DOTE issues the provisional seat allotment order based on your cutoff rank, choice priority, and reservation quota. Accept the allotment and download the official allotment letter.',
+                      title: 'Accept & Confirm',
+                      desc: 'Accept the offer, pay the confirmation deposit, and apply for on-campus residence and scholarships through the student portal.',
                     },
                     {
                       step: '06',
-                      title: 'Reporting to VCET Campus',
-                      desc: 'Report in person to the VCET Admission Office, Thindal, Erode with original certificates and the allotment letter within the designated reporting window to confirm admission.',
+                      title: 'Enrol & Orientation',
+                      desc: 'Complete enrolment at the HIT campus in Koramangala, Bengaluru, and join the orientation programme before classes begin.',
                     },
                   ].map((item) => (
                     <div key={item.step} className="flex gap-4 items-start p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-blue-50/40 transition">
@@ -705,22 +961,22 @@ export function AdmissionPage({ section = 'admission' }) {
                 </div>
               </div>
 
-              {/* Management Quota & Lateral Entry Cards */}
+              {/* Merit Admission & Lateral Entry Cards */}
               <div className="grid gap-6 sm:grid-cols-2">
-                {/* Management Quota */}
+                {/* Merit Admission */}
                 <div className="card p-5 space-y-3">
                   <span className="rounded bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-900 uppercase">
                     Direct Admission
                   </span>
-                  <h3 className="text-base font-bold text-[#0b3d91]">Management Quota Admission</h3>
+                  <h3 className="text-base font-bold text-[#0b3d91]">Merit-Based Direct Admission</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    35% of sanctioned seats are filled under Management Quota on pure merit based on +2 / 12th marks through the Consortium of Self-Financing Colleges.
+                    Applications are reviewed holistically on academic performance, entrance scores, statement of purpose, and interview. No donation or additional admission fee is involved.
                   </p>
                   <ol className="list-decimal pl-4 space-y-1.5 text-xs text-slate-700">
-                    <li>Submit the <Link to="/admission/enquiry" className="text-[#0b3d91] font-bold underline">Online Admission Enquiry</Link> or visit the campus admission cell.</li>
-                    <li>Meet our academic counselors for career guidance and branch availability.</li>
-                    <li>Submit copies of mark sheets and secure provisional admission confirmation.</li>
-                    <li>Pay the initial admission fee and finalize seat allocation.</li>
+                    <li><Link to="/admission/ug" className="text-[#0b3d91] font-bold underline">Choose your programme</Link> and complete the online application from the course page.</li>
+                    <li>Meet our admissions team for programme guidance and scholarship advice.</li>
+                    <li>Upload transcripts and complete the interview or assessment.</li>
+                    <li>Accept your offer and confirm your seat.</li>
                   </ol>
                 </div>
 
@@ -731,48 +987,49 @@ export function AdmissionPage({ section = 'admission' }) {
                   </span>
                   <h3 className="text-base font-bold text-[#0b3d91]">Lateral Entry (B.E. / B.Tech)</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Diploma holders in Engineering / Technology and B.Sc. graduates with Mathematics are eligible for direct admission to the 2nd Year (3rd Semester).
+                    Diploma holders in Engineering / Technology and B.Sc. graduates with Mathematics may apply for direct entry to the second year (third semester).
                   </p>
                   <ul className="list-disc pl-4 space-y-1.5 text-xs text-slate-700">
-                    <li>Single-window counselling through Alagappa Chettiar Govt. College of Engg (Karaikudi).</li>
-                    <li>Direct Management Quota lateral admission is also available at VCET campus.</li>
-                    <li>Minimum 45% aggregate in Diploma / B.Sc. (40% for reserved categories).</li>
+                    <li>Apply online with diploma or B.Sc. transcripts and a statement of purpose.</li>
+                    <li>Minimum 60% aggregate or equivalent in the qualifying programme.</li>
+                    <li>A bridging assessment may be required before enrolment.</li>
+                    <li>Merit scholarships are available for eligible lateral-entry students.</li>
                   </ul>
                 </div>
               </div>
 
               {/* Minimum Eligibility Criteria Card */}
               <div className="card p-6 space-y-4">
-                <h3 className="text-lg font-bold text-[#0b3d91]">Minimum Eligibility Requirements (HSC / +2 Academic)</h3>
+                <h3 className="text-lg font-bold text-[#0b3d91]">Minimum Eligibility Requirements</h3>
                 <div className="overflow-x-auto rounded-lg border border-slate-200">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-100 font-bold uppercase text-slate-700">
                       <tr>
-                        <th className="p-3">Community / Category</th>
-                        <th className="p-3">Minimum Qualifying Aggregate (PCM)</th>
-                        <th className="p-3">Qualifying Subjects</th>
+                        <th className="p-3">Entry Pathway</th>
+                        <th className="p-3">Minimum Qualifying Aggregate</th>
+                        <th className="p-3">Qualifying Subjects / Requirements</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">General Category (OC)</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">45.0% Aggregate</td>
+                        <td className="p-3 font-bold text-slate-900">Undergraduate (Standard Entry)</td>
+                        <td className="p-3 font-semibold text-[#0b3d91]">60% Aggregate</td>
                         <td className="p-3 text-slate-600">Mathematics, Physics & Chemistry</td>
                       </tr>
                       <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">Backward Class including BC Muslims (BC / BCM)</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">40.0% Aggregate</td>
-                        <td className="p-3 text-slate-600">Mathematics, Physics & Chemistry</td>
+                        <td className="p-3 font-bold text-slate-900">Undergraduate (Honours Pathway)</td>
+                        <td className="p-3 font-semibold text-[#0b3d91]">75% Aggregate</td>
+                        <td className="p-3 text-slate-600">Mathematics, Physics & Chemistry + Interview</td>
                       </tr>
                       <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">Most Backward Class & DNC (MBC / DNC)</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">40.0% Aggregate</td>
-                        <td className="p-3 text-slate-600">Mathematics, Physics & Chemistry</td>
+                        <td className="p-3 font-bold text-slate-900">International Applicants</td>
+                        <td className="p-3 font-semibold text-[#0b3d91]">IB / A-Levels Equivalent</td>
+                        <td className="p-3 text-slate-600">Mathematics and two science subjects</td>
                       </tr>
                       <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">SC / SCA / ST Categories</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">40.0% Aggregate</td>
-                        <td className="p-3 text-slate-600">Mathematics, Physics & Chemistry</td>
+                        <td className="p-3 font-bold text-slate-900">Lateral Entry</td>
+                        <td className="p-3 font-semibold text-[#0b3d91]">60% Aggregate</td>
+                        <td className="p-3 text-slate-600">Diploma in Engineering / B.Sc. with Mathematics</td>
                       </tr>
                     </tbody>
                   </table>
@@ -782,22 +1039,22 @@ export function AdmissionPage({ section = 'admission' }) {
               {/* Mandatory Documents Checklist */}
               <div className="card p-6 space-y-4">
                 <div className="border-b border-slate-200 pb-3">
-                  <h3 className="text-lg font-bold text-slate-900">Original Documents Required at Admission</h3>
-                  <p className="text-xs text-slate-500">Please bring the originals along with 3 sets of self-attested photocopies.</p>
+                  <h3 className="text-lg font-bold text-slate-900">Documents Required at Admission</h3>
+                  <p className="text-xs text-slate-500">Please bring originals along with two sets of self-attested photocopies.</p>
                 </div>
 
                 <div className="grid gap-2.5 sm:grid-cols-2 text-xs text-slate-700">
                   {[
-                    '10th / SSLC Mark Sheet (Original + 3 copies)',
-                    '11th & 12th / HSC Mark Sheets (Original + 3 copies)',
-                    'Transfer Certificate (TC) & Conduct Certificate',
-                    'Permanent Community Certificate (Card / e-Certificate)',
-                    'TNEA Allotment Order & Fee Receipt (for Govt. quota)',
-                    'First Graduate Certificate & Joint Declaration (if applicable)',
-                    'Income Certificate (for SC/ST post-matric scholarship)',
-                    'Migration / Equivalence Certificate (for CBSE/ICSE/Other boards)',
-                    'Aadhar Card photocopy of student & parent',
-                    '6 recent passport size colour photographs',
+                    'Class 10 Marksheet / Transcript',
+                    'Class 12 Marksheet / Transcript (or predicted grades)',
+                    'Transfer / Leaving Certificate',
+                    'Government-issued photo ID (Aadhaar / Passport)',
+                    'Entrance Examination Scorecard (SAT / GATE / GRE / CAT / MAT)',
+                    'Statement of Purpose and CV',
+                    'Scholarship or Category Supporting Documents (if applicable)',
+                    'Migration / Equivalence Certificate (for other curricula)',
+                    'Medical Fitness Certificate',
+                    '6 recent passport-size colour photographs',
                   ].map((doc, idx) => (
                     <div key={idx} className="flex items-center gap-2 p-2.5 rounded-md bg-slate-50 border border-slate-200">
                       <span className="text-emerald-600 font-bold">✓</span>
@@ -809,18 +1066,22 @@ export function AdmissionPage({ section = 'admission' }) {
             </div>
           )}
 
-          {/* 4. ONLINE ENQUIRY FORM */}
-          {isEnquiry && (
-            <div className="card p-6">
+          {/* 4. APPLICATION / REGISTRATION FORM */}
+          {(isEnquiry || selectedCourse) && (
+            <div id={selectedCourse ? 'course-application' : undefined} className="card p-6">
               <div className="border-b border-slate-200 pb-4">
                 <span className="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-[#0b3d91]">
-                  Fast-Track Admissions
+                  Application Form
                 </span>
                 <h2 className="mt-1 text-xl font-bold text-[#0b3d91]">
-                  Online Admission Enquiry Form (2026 - 2027)
+                  {selectedCourse
+                    ? `Application for ${selectedCourse.degree} ${selectedCourse.name}`
+                    : 'Online Application / Registration Form (2026 - 2027)'}
                 </h2>
                 <p className="mt-1 text-xs text-slate-500">
-                  Submit your academic details below. Our official admission counselor will contact you within 24 hours to guide you through seat reservation, scholarships, and counselling.
+                  {selectedCourse
+                    ? 'Complete the form below to register your application for this programme. Our admissions team will contact you with the next steps.'
+                    : 'Complete the application form below. Our admissions team will review your details and contact you with the next steps.'}
                 </p>
               </div>
 
@@ -829,9 +1090,9 @@ export function AdmissionPage({ section = 'admission' }) {
                   <div className="mx-auto h-12 w-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-black">
                     ✓
                   </div>
-                  <h3 className="text-lg font-bold text-emerald-900">Enquiry Submitted Successfully!</h3>
+                  <h3 className="text-lg font-bold text-emerald-900">Application Submitted Successfully!</h3>
                   <p className="text-xs text-emerald-700 max-w-md mx-auto leading-relaxed">
-                    Thank you for choosing Velalar College of Engineering and Technology (Autonomous). Our admission desk will get in touch with you shortly.
+                    Thank you for applying to Hogwarts Institute of Technology. Our admissions team will review your application and contact you shortly.
                   </p>
                   <div className="pt-2">
                     <button
@@ -840,17 +1101,19 @@ export function AdmissionPage({ section = 'admission' }) {
                         setFormSubmitted(false);
                         setFormData({
                           name: '',
+                          dateOfBirth: '',
                           mobile: '',
                           email: '',
+                          examName: '',
                           degree: 'B.E. Computer Science and Engineering',
-                          category: 'Government Quota (TNEA Single Window)',
+                          category: 'Merit-Based Admission',
                           marks: '',
                           message: '',
                         });
                       }}
                       className="btn btn-secondary btn-sm font-bold"
                     >
-                      Submit Another Enquiry
+                      Submit Another Application
                     </button>
                   </div>
                 </div>
@@ -864,7 +1127,7 @@ export function AdmissionPage({ section = 'admission' }) {
                 >
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="label">Student Full Name *</label>
+                      <label className="label">Applicant Full Name *</label>
                       <input
                         className="input"
                         required
@@ -874,19 +1137,29 @@ export function AdmissionPage({ section = 'admission' }) {
                       />
                     </div>
                     <div>
-                      <label className="label">Contact Mobile Number *</label>
+                      <label className="label">Date of Birth *</label>
                       <input
                         className="input"
-                        type="tel"
+                        type="date"
                         required
-                        placeholder="+91 98765 43210"
-                        value={formData.mobile}
-                        onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                        value={formData.dateOfBirth}
+                        onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
                       />
                     </div>
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="label">Mobile Number *</label>
+                      <input
+                        className="input"
+                        type="tel"
+                        required
+                        placeholder="+91 98450 12345"
+                        value={formData.mobile}
+                        onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                      />
+                    </div>
                     <div>
                       <label className="label">Email Address *</label>
                       <input
@@ -898,12 +1171,27 @@ export function AdmissionPage({ section = 'admission' }) {
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
                     </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="label">Expected / Actual Cut-Off (out of 200)</label>
+                      <label className="label">Qualifying Examination *</label>
                       <input
                         className="input"
                         type="text"
-                        placeholder="e.g. 182.5"
+                        required
+                        placeholder="e.g. CBSE Class 12 / Diploma / B.E."
+                        value={formData.examName}
+                        onChange={(e) => setFormData({ ...formData, examName: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="label">Qualifying Score / Percentage *</label>
+                      <input
+                        className="input"
+                        type="text"
+                        required
+                        placeholder="e.g. 92%"
                         value={formData.marks}
                         onChange={(e) => setFormData({ ...formData, marks: e.target.value })}
                       />
@@ -913,26 +1201,34 @@ export function AdmissionPage({ section = 'admission' }) {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
                       <label className="label">Preferred Programme *</label>
-                      <select
-                        className="input"
-                        value={formData.degree}
-                        onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
-                      >
-                        <option>B.E. Computer Science and Engineering</option>
-                        <option>B.Tech Information Technology</option>
-                        <option>B.Tech Artificial Intelligence and Data Science</option>
-                        <option>B.Tech Artificial Intelligence and Machine Learning</option>
-                        <option>B.E. Electronics and Communication Engineering</option>
-                        <option>B.E. Electrical and Electronics Engineering</option>
-                        <option>B.E. Mechanical Engineering</option>
-                        <option>B.E. Civil Engineering</option>
-                        <option>B.E. Bio-Medical Engineering</option>
-                        <option>B.E. Medical Electronics</option>
-                        <option>M.E. Computer Science and Engineering</option>
-                        <option>M.E. Applied Electronics</option>
-                        <option>M.E. VLSI Design</option>
-                        <option>MBA (Master of Business Administration)</option>
-                      </select>
+                      {selectedCourse ? (
+                        <input
+                          className="input bg-slate-50 font-semibold text-slate-700"
+                          value={`${selectedCourse.degree} ${selectedCourse.name}`}
+                          readOnly
+                        />
+                      ) : (
+                        <select
+                          className="input"
+                          value={formData.degree}
+                          onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
+                        >
+                          <option>B.E. Computer Science and Engineering</option>
+                          <option>B.Tech Information Technology</option>
+                          <option>B.Tech Artificial Intelligence and Data Science</option>
+                          <option>B.Tech Artificial Intelligence and Machine Learning</option>
+                          <option>B.E. Electronics and Communication Engineering</option>
+                          <option>B.E. Electrical and Electronics Engineering</option>
+                          <option>B.E. Mechanical Engineering</option>
+                          <option>B.E. Civil Engineering</option>
+                          <option>B.E. Bio-Medical Engineering</option>
+                          <option>B.E. Medical Electronics</option>
+                          <option>M.E. Computer Science and Engineering</option>
+                          <option>M.E. Applied Electronics</option>
+                          <option>M.E. VLSI Design</option>
+                          <option>MBA (Master of Business Administration)</option>
+                        </select>
+                      )}
                     </div>
                     <div>
                       <label className="label">Admission Category *</label>
@@ -941,28 +1237,39 @@ export function AdmissionPage({ section = 'admission' }) {
                         value={formData.category}
                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       >
-                        <option>Government Quota (TNEA Single Window)</option>
-                        <option>Management Quota (Direct Admission)</option>
+                        <option>Merit-Based Admission</option>
                         <option>Lateral Entry (Direct 2nd Year)</option>
-                        <option>Sports Quota / Special Category</option>
+                        <option>Sports / Special Talent</option>
+                        <option>International Applicant</option>
                         <option>Postgraduate (M.E. / MBA)</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
-                    <label className="label">Query / Remarks (Optional)</label>
+                    <label className="label">Statement of Purpose (Optional)</label>
                     <textarea
                       className="input"
                       rows={3}
-                      placeholder="Ask about hostel accommodation, bus routes, scholarships, or fee concessions..."
+                      placeholder="Briefly describe your academic interests and why you want to join this programme..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     />
                   </div>
 
+                  <label className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed text-slate-600">
+                    <input
+                      type="checkbox"
+                      required
+                      className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 accent-blue-900"
+                    />
+                    <span>
+                      I confirm that the information provided is accurate and I agree to the admission terms and conditions.
+                    </span>
+                  </label>
+
                   <button type="submit" className="btn btn-primary bg-[#0b3d91] hover:bg-blue-800 text-white font-bold py-2.5 px-6 shadow-md">
-                    Submit Admission Enquiry &rarr;
+                    Submit Application &rarr;
                   </button>
                 </form>
               )}
@@ -972,20 +1279,20 @@ export function AdmissionPage({ section = 'admission' }) {
 
         {/* Right Sidebar */}
         <div className="space-y-4">
-          {/* TNEA Counselling Badge */}
+          {/* Admissions Badge */}
           <div className="card p-5 bg-gradient-to-br from-blue-900 to-[#0b3d91] text-white">
             <span className="rounded bg-amber-400 text-slate-900 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider">
-              Govt. Single Window
+              Admissions Open
             </span>
-            <p className="mt-3 text-2xl font-black text-amber-300">TNEA CODE: 2723</p>
+            <p className="mt-3 text-2xl font-black text-amber-300">2026 - 2027</p>
             <p className="mt-1 text-xs text-blue-100 leading-relaxed">
-              Choose <strong>VCET (Code 2723)</strong> as your first preference during TNEA online choice filling.
+              Applications are reviewed on a rolling basis. Apply early to secure your preferred programme and scholarship consideration.
             </p>
           </div>
 
           {/* Quick Navigation Card */}
           <div className="card p-5">
-            <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">Admissions Menu</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">Admission Resources</h3>
             <ul className="mt-3 space-y-1.5 text-xs font-medium">
               {subNav.map((item) => (
                 <li key={item.to}>
@@ -998,15 +1305,6 @@ export function AdmissionPage({ section = 'admission' }) {
                   </Link>
                 </li>
               ))}
-              <li className="pt-2 border-t border-slate-100">
-                <Link
-                  to="/online-fee"
-                  className="flex items-center justify-between rounded-md p-2 text-emerald-700 font-bold hover:bg-emerald-50 transition"
-                >
-                  <span>Online Fee Payment</span>
-                  <span>💳</span>
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -1020,7 +1318,7 @@ export function AdmissionPage({ section = 'admission' }) {
               </p>
               <p>
                 <strong className="text-slate-900 block">Helpline / WhatsApp:</strong>
-                +91 97509 24444 / 98427 44201
+                +91 80 4718 2300 / +91 98450 12345
               </p>
               <p>
                 <strong className="text-slate-900 block">Email:</strong>
@@ -1031,11 +1329,6 @@ export function AdmissionPage({ section = 'admission' }) {
                 {siteConfig.contact.officeHours}
               </p>
             </div>
-            {!isEnquiry && (
-              <Link to="/admission/enquiry" className="mt-2 block text-center btn btn-primary bg-[#0b3d91] btn-sm text-white font-bold">
-                Online Enquiry Form &rarr;
-              </Link>
-            )}
           </div>
 
           {/* Key Accreditations Mini-Card */}
@@ -1043,19 +1336,19 @@ export function AdmissionPage({ section = 'admission' }) {
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Institution Highlights</p>
             <div className="mt-2 grid grid-cols-2 gap-2 text-center text-xs">
               <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">NAAC A+</p>
-                <p className="text-[10px] text-slate-500">Accredited</p>
+                <p className="font-extrabold text-[#0b3d91]">QS 5★</p>
+                <p className="text-[10px] text-slate-500">Rated</p>
               </div>
               <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">7 Depts</p>
-                <p className="text-[10px] text-slate-500">NBA Accredited</p>
+                <p className="font-extrabold text-[#0b3d91]">40+</p>
+                <p className="text-[10px] text-slate-500">Global Partners</p>
               </div>
               <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">Autonomous</p>
-                <p className="text-[10px] text-slate-500">Anna University</p>
+                <p className="font-extrabold text-[#0b3d91]">1951</p>
+                <p className="text-[10px] text-slate-500">Established</p>
               </div>
               <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">92%+</p>
+                <p className="font-extrabold text-[#0b3d91]">96%</p>
                 <p className="text-[10px] text-slate-500">Placements</p>
               </div>
             </div>
@@ -1071,7 +1364,7 @@ export function DepartmentsPage() {
   return (
     <PublicPageLayout
       title="Academic Departments"
-      subtitle="Explore our 12 Autonomous Engineering, Management, and Science Departments"
+      subtitle="Explore our 12 Engineering, Management, and Science Departments"
       breadcrumbs={[{ label: 'Departments' }]}
     >
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -1085,9 +1378,9 @@ export function DepartmentsPage() {
               <span className="rounded bg-blue-100 px-2.5 py-1 text-xs font-extrabold text-[#0b3d91]">
                 {dept.code}
               </span>
-              {dept.nba && (
+              {dept.accredited && (
                 <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-700 border border-emerald-200">
-                  NBA Accredited
+                  Accredited
                 </span>
               )}
             </div>
@@ -1095,7 +1388,7 @@ export function DepartmentsPage() {
               {dept.name}
             </h2>
             <p className="mt-1 text-xs text-slate-500">
-              {dept.category} • B.E. / B.Tech Autonomous
+              {dept.category} • B.E. / B.Tech • 4 Years
             </p>
             <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-bold text-[#0b3d91]">
               <span>Explore Department</span>
@@ -1119,7 +1412,7 @@ export function FacultyPage() {
       <div className="card p-6">
         <h2 className="text-xl font-bold text-[#0b3d91]">Faculty Directory</h2>
         <p className="mt-1 text-xs text-slate-500">
-          VCET has over 150+ full-time experienced faculty members across engineering disciplines.
+          HIT has over 350 full-time faculty members and researchers across engineering, management, and the sciences.
         </p>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -1150,20 +1443,20 @@ export function FacultyPage() {
 export function AcademicsPage({ section = 'academics' }) {
   const subNav = [
     { label: 'Academic Regulations', to: '/academics/regulations' },
-    { label: 'Curriculum (Autonomous)', to: '/academics/curriculum' },
+    { label: 'Curriculum & Credit Framework', to: '/academics/curriculum' },
     { label: 'Syllabus Scheme', to: '/academics/syllabus' },
-    { label: 'CBCS System', to: '/academics/cbcs' },
-    { label: 'COE Office', to: '/academics/coe' },
+    { label: 'Flexible Credit Framework', to: '/academics/cbcs' },
+    { label: 'Examinations Office', to: '/academics/coe' },
     { label: 'Exam Timetable', to: '/academics/timetable' },
   ];
 
   const academicTitles = {
     academics: 'Academic Regulations',
     regulations: 'Academic Regulations',
-    curriculum: 'Curriculum (Autonomous)',
+    curriculum: 'Curriculum & Credit Framework',
     syllabus: 'Syllabus Scheme',
-    cbcs: 'CBCS System',
-    coe: 'COE Office',
+    cbcs: 'Flexible Credit Framework',
+    coe: 'Examinations Office',
     timetable: 'Exam Timetable',
   };
 
@@ -1172,7 +1465,7 @@ export function AcademicsPage({ section = 'academics' }) {
   return (
     <PublicPageLayout
       title="Academics"
-      subtitle="Autonomous Curriculum, Choice Based Credit System (CBCS), and Academic Regulations"
+      subtitle="Future-Focused Curriculum, Flexible Credit Framework, and Academic Regulations"
       breadcrumbs={[{ label: 'Academics', to: '/academics' }, { label: academicTitles[norm] || 'Regulations' }]}
       subNav={subNav}
     >
@@ -1180,12 +1473,12 @@ export function AcademicsPage({ section = 'academics' }) {
         {(norm === 'academics' || norm === 'regulations') && (
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
-              <span className="rounded bg-blue-100 text-[#0b3d91] font-bold px-2.5 py-0.5 text-xs">Regulations R-2022</span>
-              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Autonomous Academic Regulations</h2>
-              <p className="text-xs text-slate-500">Autonomous status conferred by UGC and Anna University, Chennai</p>
+              <span className="rounded bg-blue-100 text-[#0b3d91] font-bold px-2.5 py-0.5 text-xs">Academic Framework 2026</span>
+              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Academic Regulations</h2>
+              <p className="text-xs text-slate-500">Approved by the HIT Academic Council</p>
             </div>
             <p className="text-sm leading-relaxed text-slate-700">
-              Velalar College of Engineering and Technology implements Autonomous Regulations (R-2022) with a credit-based framework aligned with the AICTE model curriculum.
+              Hogwarts Institute of Technology implements a credit-based academic framework aligned with international engineering education benchmarks, with continuous assessment and flexible elective pathways.
             </p>
             <div className="grid gap-4 sm:grid-cols-3 pt-2">
               <div className="rounded-lg bg-blue-50 p-4 border border-blue-100">
@@ -1208,8 +1501,8 @@ export function AcademicsPage({ section = 'academics' }) {
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
               <span className="rounded bg-blue-100 text-[#0b3d91] font-bold px-2.5 py-0.5 text-xs">Curriculum Design</span>
-              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Autonomous Curriculum Structure</h2>
-              <p className="text-xs text-slate-500">Industry-aligned outcome based education (OBE) framework</p>
+              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Curriculum & Credit Framework</h2>
+              <p className="text-xs text-slate-500">Industry-aligned, outcome-based education framework</p>
             </div>
             <p className="text-sm text-slate-700 leading-relaxed">
               The curriculum incorporates industry requirements through active collaboration with technical experts, alumni, and industry advisory boards.
@@ -1238,8 +1531,8 @@ export function AcademicsPage({ section = 'academics' }) {
         {norm === 'syllabus' && (
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
-              <h2 className="text-xl font-bold text-[#0b3d91]">Syllabus Scheme (R-2022)</h2>
-              <p className="text-xs text-slate-500">Board of Studies (BoS) approved syllabus for all semesters</p>
+              <h2 className="text-xl font-bold text-[#0b3d91]">Syllabus Scheme (2026 Framework)</h2>
+              <p className="text-xs text-slate-500">Board of Studies approved syllabus for all semesters</p>
             </div>
             <p className="text-sm text-slate-700">
               Each academic department maintains a dedicated Board of Studies consisting of university nominees, corporate leaders, and faculty members who continuously revamp syllabus contents.
@@ -1258,12 +1551,12 @@ export function AcademicsPage({ section = 'academics' }) {
         {norm === 'cbcs' && (
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
-              <span className="rounded bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 text-xs">CBCS System</span>
-              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Choice Based Credit System (CBCS)</h2>
+              <span className="rounded bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 text-xs">Flexible Credit Framework</span>
+              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Flexible Credit Framework</h2>
               <p className="text-xs text-slate-500">Academic flexibility for multi-disciplinary learning</p>
             </div>
             <p className="text-sm text-slate-700 leading-relaxed">
-              CBCS allows students to tailor their learning paths by selecting open electives from other engineering branches, earning Honors degrees or Minors in emerging disciplines like AI, IoT, and Cyber Security.
+              The flexible credit framework allows students to tailor their learning paths by selecting open electives from other engineering branches and earning Honours degrees or Minors in emerging disciplines such as AI, IoT, and Cyber Security.
             </p>
             <div className="grid gap-3 sm:grid-cols-3 pt-2">
               <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-xs">
@@ -1275,8 +1568,8 @@ export function AcademicsPage({ section = 'academics' }) {
                 <p className="text-blue-700 mt-1">Earn additional 18-20 credits to receive an Honours degree or Minor specialization degree.</p>
               </div>
               <div className="p-4 rounded-lg bg-purple-50 border border-purple-200 text-xs">
-                <p className="font-bold text-purple-900 text-sm">NPTEL / SWAYAM</p>
-                <p className="text-purple-700 mt-1">Credit transfer facility for recognized MOOC certification courses completed on SWAYAM/NPTEL.</p>
+                <p className="font-bold text-purple-900 text-sm">Global MOOC Platforms</p>
+                <p className="text-purple-700 mt-1">Credit transfer for approved certifications completed on Coursera, edX, and other recognised platforms.</p>
               </div>
             </div>
           </div>
@@ -1285,12 +1578,12 @@ export function AcademicsPage({ section = 'academics' }) {
         {norm === 'coe' && (
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
-              <span className="rounded bg-blue-100 text-[#0b3d91] font-bold px-2.5 py-0.5 text-xs">Autonomous Examination</span>
-              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Office of the Controller of Examinations (COE)</h2>
-              <p className="text-xs text-slate-500">Autonomous evaluation, central assessment, and results publication</p>
+              <span className="rounded bg-blue-100 text-[#0b3d91] font-bold px-2.5 py-0.5 text-xs">Assessment & Results</span>
+              <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">Examinations Office</h2>
+              <p className="text-xs text-slate-500">Continuous assessment, central evaluation, and results publication</p>
             </div>
             <p className="text-sm text-slate-700 leading-relaxed">
-              The Office of the COE conducts continuous internal assessments (CIA) and End Semester Examinations (ESE) in a strictly confidential, fair, and transparent autonomous environment.
+              The Examinations Office conducts continuous internal assessments (CIA) and End Semester Examinations (ESE) in a confidential, fair, and transparent academic environment.
             </p>
             <div className="grid gap-3 sm:grid-cols-2 pt-2 text-xs">
               <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50">
@@ -1308,7 +1601,7 @@ export function AcademicsPage({ section = 'academics' }) {
         {norm === 'timetable' && (
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
-              <h2 className="text-xl font-bold text-[#0b3d91]">Autonomous Examination Timetable</h2>
+              <h2 className="text-xl font-bold text-[#0b3d91]">Examination Timetable</h2>
               <p className="text-xs text-slate-500">End Semester Theory & Practical Examination Schedules</p>
             </div>
             <div className="rounded-lg bg-blue-50 p-4 border border-blue-200 text-xs text-slate-700">
@@ -1333,56 +1626,55 @@ export function AcademicsPage({ section = 'academics' }) {
 // ---------------- ACCREDITATION PAGE ---------------- //
 export function AccreditationPage({ section = 'accreditation' }) {
   const subNav = [
-    { label: 'NBA Accreditation', to: '/accreditation/nba' },
-    { label: 'NAAC Accreditation (A+)', to: '/accreditation/naac' },
-    { label: 'IQAC Members', to: '/accreditation/iqac' },
-    { label: 'AICTE Approvals', to: '/accreditation/aicte' },
+    { label: 'QS 5-Star Rating', to: '/accreditation/quality' },
+    { label: 'Programme Recognition', to: '/accreditation/programmes' },
+    { label: 'Quality Assurance', to: '/accreditation/iqac' },
+    { label: 'Global Partnerships', to: '/accreditation/partnerships' },
   ];
 
   const accredTitles = {
-    accreditation: 'NBA Accreditation',
-    nba: 'NBA Accreditation',
-    naac: 'NAAC Accreditation (A+)',
-    iqac: 'IQAC Members',
-    aicte: 'AICTE Approvals',
+    accreditation: 'QS 5-Star Rating',
+    quality: 'QS 5-Star Rating',
+    programmes: 'Programme Recognition',
+    iqac: 'Quality Assurance',
+    partnerships: 'Global Partnerships',
   };
 
   const norm = (section || 'accreditation').toLowerCase();
 
   return (
     <PublicPageLayout
-      title="Accreditation & Approvals"
-      subtitle="Recognized for Academic Rigor and Infrastructure by National Statutory Bodies"
+      title="Accreditation & Recognition"
+      subtitle="Independent quality assurance, professional recognition, and global academic partnerships"
       breadcrumbs={[{ label: 'Accreditation', to: '/accreditation' }, { label: accredTitles[norm] || 'Accreditations' }]}
       subNav={subNav}
     >
       <div className="space-y-6">
-        {(norm === 'accreditation' || norm === 'nba') && (
+        {(norm === 'accreditation' || norm === 'quality') && (
           <div className="card p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div>
-                <span className="rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-bold text-cyan-800">NBA Accredited</span>
-                <h2 className="mt-2 text-xl font-bold text-slate-900">National Board of Accreditation (NBA)</h2>
+                <span className="rounded bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800">QS 5-Star Rated</span>
+                <h2 className="mt-2 text-xl font-bold text-slate-900">QS Stars Rating</h2>
               </div>
-              <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full">Washington Accord</span>
+              <span className="text-xl font-black text-amber-600">Overall 5 Stars</span>
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Seven eligible undergraduate engineering programmes at VCET are accredited by the National Board of Accreditation (NBA), New Delhi under the Washington Accord framework:
+              HIT holds an overall QS 5-Star rating for teaching, employability, academic development, facilities, and social responsibility. The rating reflects our commitment to an outstanding student experience and strong graduate outcomes.
             </p>
             <div className="grid gap-2.5 sm:grid-cols-2 pt-2 text-xs">
               {[
-                { name: 'Computer Science and Engineering', code: 'CSE', valid: 'Accredited (Tier II)' },
-                { name: 'Electronics and Communication Engineering', code: 'ECE', valid: 'Accredited (Tier II)' },
-                { name: 'Mechanical Engineering', code: 'MECH', valid: 'Accredited (Tier II)' },
-                { name: 'Bio-Medical Engineering', code: 'BME', valid: 'Accredited (Tier II)' },
-              ].map((p, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50">
-                  <div>
-                    <p className="font-bold text-slate-900">{p.name}</p>
-                    <p className="text-slate-500 font-mono text-[11px]">{p.code}</p>
-                  </div>
-                  <span className="rounded bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-800">
-                    {p.valid}
+                { name: 'Teaching', rating: '5 Stars' },
+                { name: 'Employability', rating: '5 Stars' },
+                { name: 'Academic Development', rating: '5 Stars' },
+                { name: 'Facilities', rating: '5 Stars' },
+                { name: 'Social Responsibility', rating: '5 Stars' },
+                { name: 'Inclusiveness', rating: '5 Stars' },
+              ].map((item) => (
+                <div key={item.name} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50">
+                  <p className="font-bold text-slate-900">{item.name}</p>
+                  <span className="rounded bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-800">
+                    {item.rating}
                   </span>
                 </div>
               ))}
@@ -1390,18 +1682,36 @@ export function AccreditationPage({ section = 'accreditation' }) {
           </div>
         )}
 
-        {norm === 'naac' && (
+        {norm === 'programmes' && (
           <div className="card p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div>
-                <span className="rounded bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800">NAAC A+ Grade</span>
-                <h2 className="mt-2 text-xl font-bold text-slate-900">National Assessment and Accreditation Council</h2>
+                <span className="rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-bold text-cyan-800">Professional Recognition</span>
+                <h2 className="mt-2 text-xl font-bold text-slate-900">Programme Recognition</h2>
               </div>
-              <span className="text-xl font-black text-amber-600">Grade A+</span>
+              <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full">International Benchmarks</span>
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              VCET has been accredited with a prestigious <strong>'A+' Grade</strong> by the National Assessment and Accreditation Council (NAAC), Bengaluru. The peer team commended the college's state-of-the-art laboratory infrastructure, industry placements, and community outreach.
+              Engineering and computing programmes are mapped to ABET outcomes and recognised by leading professional bodies. The curriculum is reviewed annually with industry advisors and global academic partners.
             </p>
+            <div className="grid gap-2.5 sm:grid-cols-2 pt-2 text-xs">
+              {[
+                { name: 'Computer Science and Engineering', code: 'CSE', body: 'IET / BCS Aligned' },
+                { name: 'Electronics and Communication Engineering', code: 'ECE', body: 'IET Aligned' },
+                { name: 'Mechanical Engineering', code: 'MECH', body: 'IET Aligned' },
+                { name: 'Bio-Medical Engineering', code: 'BME', body: 'ABET Aligned' },
+              ].map((p) => (
+                <div key={p.code} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50">
+                  <div>
+                    <p className="font-bold text-slate-900">{p.name}</p>
+                    <p className="text-slate-500 font-mono text-[11px]">{p.code}</p>
+                  </div>
+                  <span className="rounded bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-800">
+                    {p.body}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -1409,23 +1719,30 @@ export function AccreditationPage({ section = 'accreditation' }) {
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
               <span className="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-[#0b3d91]">Quality Assurance</span>
-              <h2 className="mt-2 text-xl font-bold text-slate-900">Internal Quality Assurance Cell (IQAC)</h2>
+              <h2 className="mt-2 text-xl font-bold text-slate-900">Institutional Quality Assurance Office</h2>
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              The IQAC at VCET monitors and enhances institutional benchmarks in teaching-learning, curriculum development, research publications, and administrative governance.
+              The Institutional Quality Assurance Office monitors and enhances benchmarks in teaching, curriculum development, research, student support, and governance. It coordinates external reviews and publishes annual quality reports.
             </p>
           </div>
         )}
 
-        {norm === 'aicte' && (
+        {norm === 'partnerships' && (
           <div className="card p-6 space-y-4">
             <div className="border-b border-slate-200 pb-3">
-              <span className="rounded bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">Statutory Approvals</span>
-              <h2 className="mt-2 text-xl font-bold text-slate-900">AICTE Extension of Approvals (EoA)</h2>
+              <span className="rounded bg-purple-100 px-2.5 py-0.5 text-xs font-bold text-purple-800">Global Network</span>
+              <h2 className="mt-2 text-xl font-bold text-slate-900">Global Academic Partnerships</h2>
             </div>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Velalar College of Engineering and Technology is approved by the All India Council for Technical Education (AICTE), New Delhi for running Undergraduate and Postgraduate programmes in Engineering and Management.
+              HIT partners with more than 40 universities and research institutions across Europe, North America, and Asia. Students can access semester exchange, summer research, dual-degree pathways, and international internships.
             </p>
+            <div className="grid gap-2.5 sm:grid-cols-3 pt-2 text-xs">
+              {['Semester Exchange', 'Dual-Degree Pathways', 'Global Internships'].map((item) => (
+                <div key={item} className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-center font-bold text-[#0b3d91]">
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -1433,27 +1750,34 @@ export function AccreditationPage({ section = 'accreditation' }) {
   );
 }
 
-// ---------------- NIRF PAGE ---------------- //
-export function NirfPage() {
+// ---------------- RANKINGS PAGE ---------------- //
+export function RankingsPage() {
   return (
     <PublicPageLayout
-      title="NIRF Rankings"
-      subtitle="National Institutional Ranking Framework (Ministry of Education, Govt. of India)"
-      breadcrumbs={[{ label: 'NIRF' }]}
+      title="Rankings & Recognition"
+      subtitle="Independent benchmarks for teaching, research, employability, and global impact"
+      breadcrumbs={[{ label: 'Rankings' }]}
     >
       <div className="card p-6 space-y-4">
-        <h2 className="text-xl font-bold text-[#0b3d91]">National Institutional Ranking Framework</h2>
+        <h2 className="text-xl font-bold text-[#0b3d91]">Global & National Rankings</h2>
         <p className="text-sm text-slate-700">
-          VCET participates annually in the NIRF ranking across Engineering and Overall categories. All official ranking reports, data submissions, and sanctioned intake details are made publicly accessible here.
+          HIT participates in leading international ranking and rating exercises across engineering, management, and overall institutional categories. Official summaries and performance highlights are published here.
         </p>
-        <div className="grid gap-3 sm:grid-cols-2 pt-2">
+        <div className="grid gap-3 sm:grid-cols-3 pt-2">
           <div className="p-4 bg-slate-50 rounded border border-slate-200">
-            <p className="font-bold text-slate-800">NIRF 2024 Data</p>
-            <p className="text-xs text-slate-600">Full institutional report submitted to Ministry of Education.</p>
+            <p className="text-2xl font-black text-amber-600">5★</p>
+            <p className="font-bold text-slate-800">QS Stars</p>
+            <p className="text-xs text-slate-600">Overall institutional rating for teaching, employability, and facilities.</p>
           </div>
           <div className="p-4 bg-slate-50 rounded border border-slate-200">
-            <p className="font-bold text-slate-800">NIRF 2023 Data</p>
-            <p className="text-xs text-slate-600">Verified student placement, intake, and financial metrics.</p>
+            <p className="text-2xl font-black text-[#0b3d91]">Top 100</p>
+            <p className="font-bold text-slate-800">THE Impact</p>
+            <p className="text-xs text-slate-600">Recognised for quality education, research, and sustainable development.</p>
+          </div>
+          <div className="p-4 bg-slate-50 rounded border border-slate-200">
+            <p className="text-2xl font-black text-emerald-600">40+</p>
+            <p className="font-bold text-slate-800">Global Partners</p>
+            <p className="text-xs text-slate-600">Exchange, research, and dual-degree collaborations worldwide.</p>
           </div>
         </div>
       </div>
@@ -1473,16 +1797,16 @@ export function CareerDevelopmentPage() {
         <div className="card p-6">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
-              <p className="text-3xl font-black text-emerald-700">92%+</p>
-              <p className="text-xs font-semibold text-slate-600">Placement Percentage</p>
+              <p className="text-3xl font-black text-emerald-700">96%</p>
+              <p className="text-xs font-semibold text-slate-600">Placement Rate</p>
             </div>
             <div className="p-4 rounded-xl bg-blue-50 border border-blue-200">
-              <p className="text-3xl font-black text-[#0b3d91]">₹14.5 LPA</p>
+              <p className="text-3xl font-black text-[#0b3d91]">₹24.0 LPA</p>
               <p className="text-xs font-semibold text-slate-600">Highest Package</p>
             </div>
             <div className="p-4 rounded-xl bg-purple-50 border border-purple-200">
-              <p className="text-3xl font-black text-purple-700">120+</p>
-              <p className="text-xs font-semibold text-slate-600">Recruiting Companies</p>
+              <p className="text-3xl font-black text-purple-700">180+</p>
+              <p className="text-xs font-semibold text-slate-600">Recruiting Partners</p>
             </div>
           </div>
         </div>
@@ -1490,7 +1814,7 @@ export function CareerDevelopmentPage() {
         <div className="card p-6">
           <h2 className="text-lg font-bold text-[#0b3d91]">Top Recruiting Companies</h2>
           <div className="mt-4 flex flex-wrap gap-2">
-            {['Zoho', 'TCS', 'Cognizant', 'Wipro', 'Infosys', 'Capgemini', 'Hexaware', 'Mindtree', 'Virtusa', 'Bosch', 'Soliton Technologies', 'Kaar Technologies', 'HCL Technologies'].map((c, i) => (
+            {['Google', 'Microsoft', 'Amazon', 'Adobe', 'Deloitte', 'Siemens', 'Bosch', 'Qualcomm', 'Accenture', 'IBM', 'Infosys', 'TCS'].map((c, i) => (
               <span key={i} className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-800 shadow-xs">
                 🏢 {c}
               </span>
@@ -1507,16 +1831,16 @@ export function CampusPage() {
   return (
     <PublicPageLayout
       title="Campus & Infrastructure"
-      subtitle="A vibrant, green, safe, and technologically advanced 25-acre campus in Erode"
+      subtitle="A vibrant, green, safe, and technologically advanced 75-acre campus in Bengaluru"
       breadcrumbs={[{ label: 'Campus' }]}
     >
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {[
           { title: 'Smart Classrooms', desc: 'Audio-visual equipped digital lecture halls with interactive multimedia displays.' },
           { title: 'Central Library', desc: 'Over 80,000+ volumes, IEEE digital access, and spacious reading halls.' },
-          { title: 'Hostel Facilities', desc: 'Separate, secure boys and girls hostels with hygienic food and high-speed Wi-Fi.' },
-          { title: 'Sports & Gymnasium', desc: 'Standard athletic tracks, cricket grounds, basketball courts, and modern gym.' },
-          { title: 'Fleet of Buses', desc: 'Comprehensive transport covering Erode, Tirupur, Salem, and Namakkal districts.' },
+          { title: 'Residences', desc: 'Separate, secure residences for men and women with dining halls and high-speed Wi-Fi.' },
+          { title: 'Sports & Gymnasium', desc: 'Athletic tracks, football pitches, basketball courts, and a modern fitness centre.' },
+          { title: 'Campus Shuttles', desc: 'Comprehensive shuttle coverage across Greater Bengaluru, Whitefield, and Electronic City.' },
           { title: 'Green & Solar Campus', desc: 'Rooftop solar power generation, rainwater harvesting, and lush landscape.' },
         ].map((item, idx) => (
           <div key={idx} className="card p-5">
@@ -1549,7 +1873,7 @@ export function LibraryPage() {
             <p className="text-xs text-slate-600">E-Journals</p>
           </div>
           <div className="p-3 bg-blue-50 rounded-lg">
-            <p className="text-2xl font-black text-[#0b3d91]">IEEE / DELNET</p>
+            <p className="text-2xl font-black text-[#0b3d91]">IEEE / JSTOR</p>
             <p className="text-xs text-slate-600">Digital Subscriptions</p>
           </div>
           <div className="p-3 bg-blue-50 rounded-lg">
@@ -1572,13 +1896,13 @@ export function InnovationPage() {
     >
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="card p-6">
-          <h2 className="text-base font-bold text-[#0b3d91]">Institution's Innovation Council (IIC)</h2>
+          <h2 className="text-base font-bold text-[#0b3d91]">Innovation Council</h2>
           <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-            Rated 4-Stars by the Ministry of Education's Innovation Cell (MIC), Govt. of India, for promoting student-driven patent development.
+            Recognised nationally for promoting student-led innovation, incubation, and patent development across engineering and management disciplines.
           </p>
         </div>
         <div className="card p-6">
-          <h2 className="text-base font-bold text-[#0b3d91]">AICTE IDEA Lab</h2>
+          <h2 className="text-base font-bold text-[#0b3d91]">IDEA Lab</h2>
           <p className="mt-2 text-xs text-slate-600 leading-relaxed">
             Modern prototyping facility equipped with 3D printers, laser cutters, CNC machines, and embedded development boards.
           </p>
@@ -1596,9 +1920,9 @@ export function ResearchPage() {
       breadcrumbs={[{ label: 'R&D' }]}
     >
       <div className="card p-6 space-y-4">
-        <h2 className="text-xl font-bold text-[#0b3d91]">Recognized Anna University Research Centres</h2>
+        <h2 className="text-xl font-bold text-[#0b3d91]">Doctoral Research Centres</h2>
         <p className="text-sm text-slate-700">
-          The departments of CSE, ECE, EEE, and Mechanical Engineering are recognized research centers under Anna University for conducting Ph.D. and M.S. (By Research) programmes.
+          The departments of CSE, ECE, EEE, and Mechanical Engineering are designated doctoral research centres at HIT for Ph.D. and M.S. (By Research) programmes.
         </p>
       </div>
     </PublicPageLayout>
@@ -1610,13 +1934,13 @@ export function AlumniPage() {
   return (
     <PublicPageLayout
       title="Alumni Association"
-      subtitle="A global family of 15,000+ VCETians driving tech innovation worldwide"
+      subtitle="A global family of 26,000+ HIT alumni driving innovation worldwide"
       breadcrumbs={[{ label: 'Alumni' }]}
     >
       <div className="card p-6 space-y-4">
-        <h2 className="text-xl font-bold text-[#0b3d91]">VCET Alumni Network</h2>
+        <h2 className="text-xl font-bold text-[#0b3d91]">HIT Alumni Network</h2>
         <p className="text-sm text-slate-700">
-          The VCET Alumni Association connects graduates across the globe, providing student mentorship, career guidance, and scholarship support for aspiring engineers.
+          The HIT Alumni Association connects graduates across the globe, providing student mentorship, career guidance, and scholarship support for aspiring engineers.
         </p>
       </div>
     </PublicPageLayout>
@@ -1629,29 +1953,7 @@ export function CareerPage() {
     <PublicPageLayout title="Career Opportunities" breadcrumbs={[{ label: 'Career' }]}>
       <div className="card p-6">
         <h2 className="text-base font-bold text-slate-900">Faculty & Staff Recruitment</h2>
-        <p className="mt-2 text-xs text-slate-600">Interested candidates can send applications to recruitment@velalarengg.ac.in.</p>
-      </div>
-    </PublicPageLayout>
-  );
-}
-
-export function OnlineFeePage() {
-  return (
-    <PublicPageLayout title="Online Fee Payment" breadcrumbs={[{ label: 'Online Fee' }]}>
-      <div className="card p-6">
-        <h2 className="text-base font-bold text-slate-900">Online Fee Payment Portal</h2>
-        <p className="mt-2 text-xs text-slate-600">Pay tuition, examination, and hostel fees securely via Net Banking, UPI, or Cards.</p>
-      </div>
-    </PublicPageLayout>
-  );
-}
-
-export function HallReservationPage() {
-  return (
-    <PublicPageLayout title="Hall Reservation System" breadcrumbs={[{ label: 'Hall Reservation' }]}>
-      <div className="card p-6">
-        <h2 className="text-base font-bold text-slate-900">Auditorium & Seminar Hall Booking</h2>
-        <p className="mt-2 text-xs text-slate-600">Internal department requests for booking Kasthurba Auditorium and Main Seminar Hall.</p>
+        <p className="mt-2 text-xs text-slate-600">Interested candidates can send applications to careers@hit.edu.in.</p>
       </div>
     </PublicPageLayout>
   );
@@ -1666,7 +1968,7 @@ export function ContactPage() {
         <div className="card p-6 space-y-4">
           <h2 className="text-lg font-bold text-[#0b3d91]">Campus Address</h2>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Velalar College of Engineering and Technology (Autonomous)<br />
+            Hogwarts Institute of Technology<br />
             {siteConfig.contact.address}
           </p>
           <div className="text-xs space-y-1 text-slate-600">

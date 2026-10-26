@@ -114,7 +114,7 @@ export default function LoginPage({ defaultRole = 'student' }) {
           {/* Header */}
           <div className="text-center">
             <h1 className="font-serif text-3xl font-bold tracking-wider text-slate-800 sm:text-4xl">
-              VCET
+              HIT
             </h1>
             <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500">
               Sign in to continue

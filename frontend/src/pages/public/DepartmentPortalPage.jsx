@@ -7,7 +7,7 @@ const departmentDetails = {
     name: 'Computer Science and Engineering',
     code: 'CSE',
     established: 2001,
-    nbaAccredited: true,
+    accredited: true,
     intakeUG: 180,
     intakePG: 18,
     hod: {
@@ -15,13 +15,13 @@ const departmentDetails = {
       designation: 'Professor & Head of Department',
       qualification: 'M.E., Ph.D.',
       experience: '24+ Years',
-      email: 'hodcse@velalarengg.ac.in',
-      phone: '+91 424 2244201 Ext: 220',
+      email: 'hodcse@hit.edu.in',
+      phone: '+91 80 4718 2300 Ext: 220',
       message:
         'The Department of Computer Science and Engineering aims to impart high-quality education and cutting-edge research opportunities to develop intellectually agile, technically competent, and globally employable IT professionals.',
     },
     overview:
-      'The Department of Computer Science and Engineering was established in the year 2001 and was accredited by NBA in 2015. The department offers B.E. (CSE), M.E. (CSE), and Ph.D. research programmes. The department has experienced faculty members in academics, research, and industry. Our alumni work in premier MNCs worldwide, including Google, Microsoft, Amazon, TCS, Infosys, and Cognizant.',
+      'The Department of Computer Science and Engineering was established in 2001 and received professional accreditation in 2015. The department offers B.E. (CSE), M.E. (CSE), and Ph.D. research programmes, supported by experienced faculty across academics, research, and industry. Our alumni work at leading global technology firms including Google, Microsoft, Amazon, Meta, and Adobe.',
     vision:
       'To produce competent professionals for a globalized technological society by preparing them to become part of the industry and research organizations in the field of Computer Science and Technology and orient them towards serving the society.',
     mission: [
@@ -71,17 +71,17 @@ const departmentDetails = {
       events: ['National Level Technical Symposium', '24-Hour CodeSprint Hackathon', 'Alumni Mentorship Workshops', 'Industry Expert Lecture Series'],
     },
     placements: {
-      placedPercentage: '94%',
-      highestPackage: '₹14.5 LPA',
-      averagePackage: '₹5.2 LPA',
-      topRecruiters: ['Zoho', 'Cognizant', 'TCS', 'Wipro', 'Infosys', 'Virtusa', 'Accenture', 'Hexaware', 'Kaar Technologies'],
+      placedPercentage: '96%',
+      highestPackage: '₹24.0 LPA',
+      averagePackage: '₹7.2 LPA',
+      topRecruiters: ['Google', 'Microsoft', 'Amazon', 'Adobe', 'Deloitte', 'Accenture', 'Qualcomm', 'IBM'],
     },
   },
   it: {
     name: 'Information Technology',
     code: 'IT',
     established: 2002,
-    nbaAccredited: false,
+    accredited: false,
     intakeUG: 120,
     intakePG: 0,
     hod: {
@@ -89,8 +89,8 @@ const departmentDetails = {
       designation: 'Professor & Head of Department',
       qualification: 'M.Tech., Ph.D.',
       experience: '21+ Years',
-      email: 'hodit@velalarengg.ac.in',
-      phone: '+91 424 2244201 Ext: 230',
+      email: 'hodit@hit.edu.in',
+      phone: '+91 80 4718 2300 Ext: 230',
       message: 'Information Technology department prepares engineers to solve challenging problems through modern computing architectures, cloud infrastructure, and cybersecurity solutions.',
     },
     overview: 'The Department of Information Technology was started in the year 2002. With dedicated faculty, state-of-the-art computational facilities, and a curriculum synchronized with industry demands, IT students regularly achieve top placements and academic honors.',
@@ -128,17 +128,17 @@ const departmentDetails = {
       events: ['InfoQuest Tech Fest', 'Web Design Challenge', 'Bug Bounty Workshop'],
     },
     placements: {
-      placedPercentage: '92%',
-      highestPackage: '₹12.0 LPA',
-      averagePackage: '₹4.8 LPA',
-      topRecruiters: ['Cognizant', 'TCS', 'Wipro', 'Mindtree', 'HCL', 'Capgemini'],
+      placedPercentage: '94%',
+      highestPackage: '₹18.0 LPA',
+      averagePackage: '₹6.4 LPA',
+      topRecruiters: ['Microsoft', 'Amazon', 'Adobe', 'Deloitte', 'IBM', 'Accenture'],
     },
   },
   ece: {
     name: 'Electronics and Communication Engineering',
     code: 'ECE',
     established: 2001,
-    nbaAccredited: true,
+    accredited: true,
     intakeUG: 180,
     intakePG: 18,
     hod: {
@@ -146,11 +146,11 @@ const departmentDetails = {
       designation: 'Professor & Head of Department',
       qualification: 'M.E., Ph.D.',
       experience: '22+ Years',
-      email: 'hodece@velalarengg.ac.in',
-      phone: '+91 424 2244201 Ext: 240',
+      email: 'hodece@hit.edu.in',
+      phone: '+91 80 4718 2300 Ext: 240',
       message: 'The ECE department is committed to imparting knowledge in semiconductor technologies, embedded systems, VLSI, and signal processing to prepare students for core electronics industries.',
     },
-    overview: 'The Department of Electronics and Communication Engineering was established in 2001 and accredited by NBA. The department houses cutting-edge VLSI design tools, DSP processors, RF & Microwave lab equipment, and embedded system workstations.',
+    overview: 'The Department of Electronics and Communication Engineering was established in 2001 and is professionally accredited. The department houses cutting-edge VLSI design tools, DSP processors, RF and microwave lab equipment, and embedded system workstations.',
     vision: 'To emerge as a center of excellence in electronics and communication engineering by nurturing technically competent, ethically strong, and innovative graduates.',
     mission: [
       'Providing state-of-the-art laboratory facilities and learning environments.',
@@ -184,10 +184,10 @@ const departmentDetails = {
       events: ['Electrowiz Symposium', 'Line Follower Robotics Contest', 'PCB Design Bootcamp'],
     },
     placements: {
-      placedPercentage: '91%',
-      highestPackage: '₹11.5 LPA',
-      averagePackage: '₹4.9 LPA',
-      topRecruiters: ['Qualcomm', 'Bosch', 'Texas Instruments', 'TCS', 'Wipro', 'Soliton Technologies'],
+      placedPercentage: '95%',
+      highestPackage: '₹20.0 LPA',
+      averagePackage: '₹6.8 LPA',
+      topRecruiters: ['Qualcomm', 'Bosch', 'Texas Instruments', 'Siemens', 'NVIDIA', 'Analog Devices'],
     },
   },
 };
@@ -204,7 +204,7 @@ function getDepartmentData(slug) {
     name: configDept.name,
     code: configDept.code,
     established: 2005,
-    nbaAccredited: configDept.nba,
+    accredited: configDept.accredited,
     intakeUG: 60,
     intakePG: 18,
     hod: {
@@ -212,8 +212,8 @@ function getDepartmentData(slug) {
       designation: 'Professor & Head of Department',
       qualification: 'M.Tech., Ph.D.',
       experience: '18+ Years',
-      email: `hod${configDept.slug}@velalarengg.ac.in`,
-      phone: '+91 424 2244201',
+      email: `hod${configDept.slug}@hit.edu.in`,
+      phone: '+91 80 4718 2300',
       message: `Welcome to the Department of ${configDept.name}. We are committed to fostering academic rigor, practical knowledge, and holistic professional growth.`,
     },
     overview: `The Department of ${configDept.name} offers specialized curriculum designed in consultation with industry leaders. We emphasize experimental learning, hands-on laboratory workshops, industry internships, and ethical engineering principles.`,
@@ -251,10 +251,10 @@ function getDepartmentData(slug) {
       events: ['Annual Department Symposium', 'Industry Workshops', 'Technical Quizzes'],
     },
     placements: {
-      placedPercentage: '89%',
-      highestPackage: '₹10.0 LPA',
-      averagePackage: '₹4.5 LPA',
-      topRecruiters: ['TCS', 'Wipro', 'Cognizant', 'Infosys', 'HCL'],
+      placedPercentage: '92%',
+      highestPackage: '₹12.0 LPA',
+      averagePackage: '₹5.6 LPA',
+      topRecruiters: ['Deloitte', 'Siemens', 'Bosch', 'IBM', 'Accenture'],
     },
   };
 }
@@ -311,20 +311,20 @@ export default function DepartmentPortalPage() {
                 <span className="rounded bg-white/20 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-amber-300">
                   {dept.code}
                 </span>
-                {dept.nbaAccredited && (
+                {dept.accredited && (
                   <span className="rounded bg-emerald-500/90 px-2 py-0.5 text-xs font-bold uppercase text-white shadow-xs">
-                    NBA Accredited
+                    Professionally Accredited
                   </span>
                 )}
                 <span className="text-xs text-blue-200">
-                  Est. {dept.established} • Autonomous
+                  Est. {dept.established} • Bengaluru, India
                 </span>
               </div>
               <h1 className="mt-2 text-2xl font-extrabold sm:text-3xl lg:text-4xl text-white">
                 Department of {dept.name}
               </h1>
               <p className="mt-1 text-sm text-blue-100 max-w-3xl">
-                B.E. • M.E. • Ph.D. Programmes • Affiliated to Anna University, Chennai
+                B.E. • M.E. • Ph.D. Programmes • Bengaluru, India
               </p>
             </div>
 
@@ -401,8 +401,8 @@ export default function DepartmentPortalPage() {
                       <p className="text-xs text-slate-600">Advanced Labs</p>
                     </div>
                     <div className="rounded-lg bg-emerald-50 p-3 text-center border border-emerald-200">
-                      <p className="text-lg font-bold text-emerald-700">NBA Accredited</p>
-                      <p className="text-xs text-slate-600">Quality Certified</p>
+                      <p className="text-lg font-bold text-emerald-700">{dept.accredited ? 'Accredited' : 'Industry-Aligned'}</p>
+                      <p className="text-xs text-slate-600">{dept.accredited ? 'Professionally Recognised' : 'Curriculum'}</p>
                     </div>
                   </div>
                 </div>
@@ -545,8 +545,8 @@ export default function DepartmentPortalPage() {
                 <div className="border-b border-slate-200 pb-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
-                      <h2 className="text-xl font-bold text-[#0b3d91]">Curriculum & Autonomous Syllabus</h2>
-                      <p className="text-xs text-slate-500">Regulations R-2022 (CBCS Framework)</p>
+                      <h2 className="text-xl font-bold text-[#0b3d91]">Curriculum & Syllabus</h2>
+                      <p className="text-xs text-slate-500">2026 Credit Framework</p>
                     </div>
                     <button type="button" className="btn btn-secondary btn-sm" onClick={() => alert('Downloading official curriculum PDF.')}>
                       📥 Download Syllabus PDF
@@ -665,11 +665,11 @@ export default function DepartmentPortalPage() {
                     }`}
                   >
                     <span>{d.name}</span>
-                    {d.nba && (
+                    {d.accredited && (
                       <span className={`text-[9px] font-bold uppercase px-1 rounded ${
                         d.slug === slug ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800'
                       }`}>
-                        NBA
+                        Accredited
                       </span>
                     )}
                   </Link>
@@ -681,13 +681,13 @@ export default function DepartmentPortalPage() {
             <div className="rounded-xl bg-gradient-to-br from-[#0b3d91] to-[#041e42] p-5 text-white shadow-md">
               <h3 className="text-base font-bold">Apply for Admission</h3>
               <p className="mt-1 text-xs text-blue-100 leading-relaxed">
-                Admissions are open for B.E., B.Tech, M.E., and MBA programmes under Government & Management quota.
+                Admissions are open for B.E., B.Tech, M.E., and MBA programmes on a merit basis.
               </p>
               <Link
                 to="/admission"
                 className="mt-4 block w-full rounded-lg bg-amber-400 py-2 text-center text-xs font-bold text-slate-900 hover:bg-amber-300 transition"
               >
-                Online Admission Enquiry &rarr;
+                Start Application &rarr;
               </Link>
             </div>
           </div>

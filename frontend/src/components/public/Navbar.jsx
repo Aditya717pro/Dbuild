@@ -51,7 +51,7 @@ export default function Navbar() {
       {/* Sticky Main Navigation Bar */}
       <header className="sticky top-0 z-40 bg-[#0b3d91] shadow-md border-t border-blue-900/40" ref={navRef}>
         <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-6">
-          <div className="flex h-11 items-center justify-between">
+          <div className="flex h-11 items-center justify-center">
             {/* Desktop Navigation Links */}
             <nav className="hidden min-w-0 lg:flex lg:flex-nowrap lg:items-center lg:gap-0 xl:gap-0.5 2xl:gap-1 text-[10px] xl:text-[11px] 2xl:text-[12px] font-bold text-white tracking-wide">
               {siteConfig.navItems.map((item) => {
@@ -135,7 +135,7 @@ export default function Navbar() {
                                 Academic Departments
                               </h3>
                               <p className="text-xs text-slate-500">
-                                Autonomous UG, PG, and Research Programmes
+                                UG, PG, and Research Programmes
                               </p>
                             </div>
                             <Link
@@ -163,9 +163,9 @@ export default function Navbar() {
                                     {dept.name}
                                   </span>
                                 </div>
-                                {dept.nba && (
+                                {dept.accredited && (
                                   <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-bold uppercase text-emerald-700 border border-emerald-200">
-                                    NBA
+                                    Accredited
                                   </span>
                                 )}
                               </Link>
@@ -223,21 +223,76 @@ export default function Navbar() {
                       </button>
 
                       {isOpen && (
-                        <div
-                          className="absolute left-0 top-full z-50 mt-0.5 w-64 rounded-b-lg border border-slate-200 bg-white py-2 text-slate-800 shadow-xl ring-1 ring-black/10"
-                          onMouseLeave={() => setActiveDropdown(null)}
-                        >
-                          {item.children?.map((child) => (
-                            <Link
-                              key={child.to}
-                              to={child.to}
-                              className="block px-4 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 hover:text-[#0b3d91]"
-                              onClick={() => setActiveDropdown(null)}
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
+                        item.label === 'ADMISSION' ? (
+                          <div
+                            className="absolute left-0 top-full z-50 mt-0.5 w-64 max-w-[calc(100vw-2rem)] overflow-hidden rounded-b-xl border border-slate-200 bg-white p-2 text-slate-800 shadow-xl ring-1 ring-black/10"
+                            onMouseLeave={() => setActiveDropdown(null)}
+                          >
+                            <p className="px-2 pb-2 pt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-amber-600">
+                              Admissions 2026-27
+                            </p>
+
+                            <div className="space-y-1.5">
+                              <Link
+                                to="/admission/ug"
+                                onClick={() => setActiveDropdown(null)}
+                                className="group flex items-center gap-3 rounded-lg border border-blue-100 bg-gradient-to-r from-blue-50/80 to-white px-3 py-2.5 transition hover:border-[#0b3d91]/30 hover:from-blue-50 hover:shadow-sm"
+                              >
+                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#0b3d91] to-[#06265e] text-[9px] font-black tracking-wide text-white shadow-sm">
+                                  UG
+                                </span>
+                                <span className="min-w-0 flex-1">
+                                  <span className="block text-xs font-extrabold text-slate-900 group-hover:text-[#0b3d91]">
+                                    Undergraduate
+                                  </span>
+                                  <span className="block text-[10px] font-medium text-slate-500">
+                                    B.E. / B.Tech · 4 Years
+                                  </span>
+                                </span>
+                                <span className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[#0b3d91]">
+                                  &rarr;
+                                </span>
+                              </Link>
+
+                              <Link
+                                to="/admission/pg"
+                                onClick={() => setActiveDropdown(null)}
+                                className="group flex items-center gap-3 rounded-lg border border-amber-100 bg-gradient-to-r from-amber-50/80 to-white px-3 py-2.5 transition hover:border-amber-300 hover:from-amber-50 hover:shadow-sm"
+                              >
+                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-amber-400 to-amber-500 text-[9px] font-black tracking-wide text-slate-900 shadow-sm">
+                                  PG
+                                </span>
+                                <span className="min-w-0 flex-1">
+                                  <span className="block text-xs font-extrabold text-slate-900 group-hover:text-amber-700">
+                                    Postgraduate
+                                  </span>
+                                  <span className="block text-[10px] font-medium text-slate-500">
+                                    M.E. / MBA · 2 Years
+                                  </span>
+                                </span>
+                                <span className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-amber-600">
+                                  &rarr;
+                                </span>
+                              </Link>
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            className="absolute left-0 top-full z-50 mt-0.5 w-64 rounded-b-lg border border-slate-200 bg-white py-2 text-slate-800 shadow-xl ring-1 ring-black/10"
+                            onMouseLeave={() => setActiveDropdown(null)}
+                          >
+                            {item.children?.map((child) => (
+                              <Link
+                                key={child.to}
+                                to={child.to}
+                                className="block px-4 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 hover:text-[#0b3d91]"
+                                onClick={() => setActiveDropdown(null)}
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
+                          </div>
+                        )
                       )}
                     </div>
                   );
@@ -333,8 +388,8 @@ export default function Navbar() {
                               onClick={() => setMobileOpen(false)}
                             >
                               <span>{dept.name}</span>
-                              {dept.nba && (
-                                <span className="rounded bg-emerald-600/80 px-1 text-[9px] text-white">NBA</span>
+                              {dept.accredited && (
+                                <span className="rounded bg-emerald-600/80 px-1 text-[9px] text-white">Accredited</span>
                               )}
                             </Link>
                           ))}
@@ -391,9 +446,7 @@ export default function Navbar() {
               <div className="mt-3 border-t border-white/20 pt-3 text-xs">
                 <p className="px-3 font-semibold uppercase tracking-wider text-amber-300">Quick Links</p>
                 <div className="mt-1 flex flex-col gap-1">
-                  <Link to="/hall-reservation" className="rounded px-3 py-1.5 text-white/90 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Hall Reservation</Link>
                   <Link to="/career" className="rounded px-3 py-1.5 text-white/90 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Career</Link>
-                  <Link to="/online-fee" className="rounded px-3 py-1.5 text-white/90 hover:bg-white/10" onClick={() => setMobileOpen(false)}>On-line Fee</Link>
                   <Link to="/login/student" className="rounded px-3 py-1.5 font-bold text-amber-300 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Student Portal Login</Link>
                   <Link to="/login/faculty" className="rounded px-3 py-1.5 font-bold text-amber-300 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Faculty Portal Login</Link>
                 </div>
@@ -405,7 +458,7 @@ export default function Navbar() {
 
       {/* Floating Vertical "Admission" Side Badge on right edge (as seen in screenshot) */}
       <Link
-        to="/admission/enquiry"
+        to="/admission/ug"
         className="fixed right-0 top-1/2 z-50 -translate-y-1/2 rounded-l-md bg-[#0b3d91] px-2 py-4 text-xs font-extrabold uppercase tracking-widest text-white shadow-2xl transition hover:bg-[#082f70] hover:px-3 focus:outline-none focus:ring-2 focus:ring-amber-400"
         style={{
           writingMode: 'vertical-rl',

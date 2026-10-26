@@ -77,7 +77,7 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
       <div className="relative z-10 w-full max-w-[380px] sm:max-w-[400px]">
         <div className="rounded-3xl border border-white/70 bg-white/80 p-6 sm:p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)] backdrop-blur-xl transition-all duration-300">
           <div className="text-center">
-            <h1 className="font-serif text-3xl font-bold tracking-wider text-slate-800">VCET</h1>
+            <h1 className="font-serif text-3xl font-bold tracking-wider text-slate-800">HIT</h1>
             <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500">{title || 'Sign in to continue'}</p>
             {subtitle && <p className="text-[11px] text-slate-400 mt-0.5">{subtitle}</p>}
           </div>

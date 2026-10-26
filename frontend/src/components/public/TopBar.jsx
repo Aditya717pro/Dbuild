@@ -40,13 +40,21 @@ export default function TopBar() {
     return '/student/dashboard';
   }
 
+  const badgeTones = {
+    code: 'border-slate-300 bg-slate-50 text-slate-900',
+    qs: 'border-amber-300 bg-amber-50 text-amber-900',
+    the: 'border-blue-200 bg-blue-50 text-[#0b3d91]',
+    abet: 'border-cyan-300 bg-cyan-50 text-cyan-900',
+    sdg: 'border-emerald-200 bg-emerald-50 text-emerald-900',
+  };
+
   return (
     <div className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-7xl flex-col gap-1.5 px-4 py-1.5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:py-2">
-        {/* Left: VCET Branding */}
+        {/* Left: HIT Branding */}
         <div className="flex min-w-0 items-center gap-2.5">
           <Link to="/" className="group flex min-w-0 items-center gap-2.5">
-            {/* VCET Crest SVG Logo */}
+            {/* HIT Crest SVG Logo */}
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#0b3d91] to-[#041e42] p-1.5 text-white shadow-sm transition group-hover:scale-105 sm:h-11 sm:w-11">
               <svg viewBox="0 0 40 40" fill="none" className="h-full w-full" aria-hidden="true">
                 {/* Shield Outline */}
@@ -75,24 +83,24 @@ export default function TopBar() {
                   {siteConfig.shortName}
                 </span>
                 <span className="hidden rounded bg-amber-50 px-1 py-0.5 text-[9px] font-bold uppercase leading-none tracking-wide text-amber-700 ring-1 ring-amber-200 sm:inline-block">
-                  Autonomous
+                  Est. 1951
                 </span>
               </div>
               <h1 className="mt-0.5 truncate text-[12px] font-semibold leading-tight text-slate-800 sm:text-[13px] lg:text-sm">
                 {siteConfig.collegeName}
               </h1>
               <p className="truncate text-[10px] leading-tight text-slate-500 sm:text-[11px]">
-                {siteConfig.autonomousText} • Affiliated to Anna University, Chennai
+                {siteConfig.establishmentText} • Koramangala, Bengaluru, India
               </p>
             </div>
           </Link>
 
-          {/* 25 Years of Academic Excellence Badge */}
+          {/* 75 Years of Academic Excellence Badge */}
           <div className="hidden shrink-0 border-l border-slate-200 pl-2.5 md:flex md:items-center">
-            <div className="flex items-center gap-1.5 rounded bg-amber-50 px-2 py-0.5 ring-1 ring-amber-200/70">
-              <span className="text-xs leading-none">🏆</span>
+            <div className="group flex items-center gap-2 rounded-lg bg-gradient-to-br from-amber-100 via-amber-50 to-white px-2.5 py-1 shadow-sm ring-1 ring-amber-300/80 transition hover:shadow-md">
+              <span className="text-lg font-black leading-none text-amber-600 transition group-hover:scale-110">75</span>
               <div className="leading-tight">
-                <p className="text-[10px] font-bold leading-none text-amber-900">25 Years</p>
+                <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-amber-900">Years</p>
                 <p className="text-[9px] leading-tight text-amber-700">of Excellence</p>
               </div>
             </div>
@@ -103,62 +111,24 @@ export default function TopBar() {
         <div className="flex flex-col gap-1 lg:items-end">
           {/* Top Row: Accreditations */}
           <div className="flex flex-wrap items-center gap-1.5 text-[10px] leading-none">
-            {/* TNEA Code Badge */}
-            <div className="flex items-center gap-1 rounded-sm border border-slate-300 bg-slate-50 px-1.5 py-1 font-bold text-slate-900">
-              <span className="text-[8px] uppercase tracking-wide text-slate-500">TNEA</span>
-              <span className="text-[11px] text-[#0b3d91]">{siteConfig.tneaCode}</span>
-            </div>
-
-            {/* NIRF Badge */}
-            <div className="rounded-sm border border-blue-200 bg-blue-50 px-1.5 py-1 font-bold text-[#0b3d91]">
-              NIRF
-            </div>
-
-            {/* NAAC A+ Badge */}
-            <div className="flex items-center gap-1 rounded-sm border border-amber-300 bg-amber-50 px-1.5 py-1 font-bold text-amber-900">
-              <span className="rounded-full bg-amber-500 px-1 text-[8px] text-white">A+</span>
-              <span>NAAC</span>
-            </div>
-
-            {/* NBA Badge */}
-            <div className="rounded-sm border border-cyan-300 bg-cyan-50 px-1.5 py-1 font-bold text-cyan-900">
-              NBA
-            </div>
-
-            {/* IIC Badge */}
-            <div className="hidden items-center gap-1 rounded-sm border border-purple-200 bg-purple-50 px-1.5 py-1 font-semibold text-purple-900 sm:flex">
-              <span>IIC</span>
-              <span className="text-[8px] text-amber-500">★★★★</span>
-            </div>
-
-            {/* SDGs Badge */}
-            <div className="hidden items-center gap-1 rounded-sm border border-emerald-200 bg-emerald-50 px-1.5 py-1 font-semibold text-emerald-900 md:flex">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-gradient-to-tr from-green-500 to-teal-400"></span>
-              <span>SDGs</span>
-            </div>
+            {siteConfig.accreditations.map((item) => (
+              <div
+                key={item.code}
+                title={item.label}
+                className={`rounded-sm border px-1.5 py-1 font-bold ${badgeTones[item.type] || badgeTones.code}`}
+              >
+                {item.code}
+              </div>
+            ))}
           </div>
 
           {/* Bottom Row: Quick Utility Links & ERP Login */}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold tracking-wide text-[#0b3d91] sm:text-[11px]">
             <Link
-              to="/hall-reservation"
-              className="transition hover:text-blue-800 hover:underline"
-            >
-              HALL RESERVATION
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link
               to="/career"
               className="transition hover:text-blue-800 hover:underline"
             >
               CAREER
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link
-              to="/online-fee"
-              className="transition hover:text-blue-800 hover:underline"
-            >
-              ON-LINE FEE
             </Link>
             <span className="text-slate-300">|</span>
 

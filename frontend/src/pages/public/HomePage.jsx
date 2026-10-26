@@ -1,103 +1,100 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../../config/siteConfig.js';
+import campus1 from '../../assets/campus-1.jpg';
+import campus2 from '../../assets/campus-2.jpg';
+import campus3 from '../../assets/campus-3.jpg';
+
+const campusSlides = [
+  { src: campus1, alt: 'College campus building', label: 'College' },
+  { src: campus2, alt: 'Students on campus', label: 'Students' },
+  { src: campus3, alt: 'College library', label: 'Library' },
+];
 
 export default function HomePage() {
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % campusSlides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="bg-slate-50 min-h-screen">
-      {/* Hero Section matching the Screenshot */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0b3d91] via-[#093275] to-[#041e42] text-white">
-        {/* Subtle geometric pattern overlay */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />
-        
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:py-28">
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-amber-300 backdrop-blur-xs border border-white/15">
-                <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
-                <span>Admissions Open for Academic Year 2026-27</span>
+      {/* Hero Section */}
+      <section className="relative isolate overflow-hidden">
+        {campusSlides.map((slide, index) => (
+          <img
+            key={slide.label}
+            src={slide.src}
+            alt=""
+            aria-hidden="true"
+            loading={index === 0 ? 'eager' : 'lazy'}
+            className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity duration-1000 ${
+              index === activeSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ))}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-950/40" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-56 bg-gradient-to-b from-transparent via-slate-900/20 to-slate-50" />
+
+        <div
+          className="pointer-events-none absolute right-4 top-1/2 hidden -translate-y-1/2 select-none text-[16rem] font-black leading-none text-white/[0.05] xl:block"
+          aria-hidden="true"
+        >
+          75
+        </div>
+
+        <div className="relative mx-auto flex min-h-[30rem] max-w-7xl items-center px-4 pb-28 pt-16 sm:min-h-[34rem] sm:px-6 sm:pb-36 sm:pt-24 lg:pb-44 lg:pt-28">
+          <div className="max-w-3xl">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center gap-3 rounded-full border border-amber-300/40 bg-amber-400/10 px-4 py-1.5 backdrop-blur">
+                  <span className="text-2xl font-black leading-none text-amber-300">75</span>
+                  <span className="text-[10px] font-bold uppercase leading-tight tracking-[0.2em] text-amber-100">
+                    Years of<br />Excellence
+                  </span>
+                </div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-amber-200 backdrop-blur">
+                  <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+                  <span>Admissions Open for Academic Year 2026-27</span>
+                </div>
               </div>
 
-              <h1 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl text-white">
+              <h1 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Your Journey <br />
                 <span className="text-amber-400">STARTS HERE</span>
               </h1>
               <p className="mt-4 text-lg font-medium text-blue-100 sm:text-xl">
-                Building Tomorrow's Leaders.
+                Building Tomorrow's Leaders Since 1951.
               </p>
-              <p className="mt-2 text-sm text-slate-300 max-w-xl leading-relaxed">
-                Empowering students through cutting-edge autonomous engineering curriculum, world-class faculty, advanced industry-partnered research labs, and exceptional campus placements.
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-200">
+                A future-focused engineering education, world-class faculty, advanced research labs, and a global alumni network — built on 75 years of academic excellence in Bengaluru.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
-                  to="/admission/enquiry"
-                  className="rounded-lg bg-amber-400 px-5 py-3 text-sm font-extrabold text-slate-900 shadow-lg hover:bg-amber-300 transition"
+                  to="/admission/ug"
+                  className="rounded-lg bg-amber-400 px-5 py-3 text-sm font-extrabold text-slate-900 shadow-lg transition hover:bg-amber-300"
                 >
                   Apply for Admission &rarr;
                 </Link>
                 <Link
                   to="/departments"
-                  className="rounded-lg border-2 border-white/80 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur-xs hover:bg-white/20 transition"
+                  className="rounded-lg border-2 border-white/70 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/20"
                 >
                   Explore Departments
                 </Link>
               </div>
-
-              {/* Badges in hero */}
-              <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-blue-200">
-                <span className="font-semibold text-white">Accreditations:</span>
-                <span className="rounded bg-white/15 px-2 py-0.5">TNEA 2723</span>
-                <span className="rounded bg-white/15 px-2 py-0.5">NAAC A+</span>
-                <span className="rounded bg-white/15 px-2 py-0.5">NBA (7 Depts)</span>
-                <span className="rounded bg-white/15 px-2 py-0.5">Anna Univ Autonomous</span>
-              </div>
-            </div>
-
-            {/* Right Card / Visual Showcase */}
-            <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-md shadow-2xl">
-                <h2 className="text-base font-bold text-amber-300 uppercase tracking-wider">
-                  VCET Highlights
-                </h2>
-                <div className="mt-4 space-y-4 text-xs">
-                  <div className="flex items-start gap-3 rounded-xl bg-white/10 p-3.5 border border-white/10">
-                    <span className="text-2xl">🏆</span>
-                    <div>
-                      <p className="font-bold text-white text-sm">25 Years of Excellence</p>
-                      <p className="text-blue-100">Serving technical education since 2001 with 15,000+ graduates.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 rounded-xl bg-white/10 p-3.5 border border-white/10">
-                    <span className="text-2xl">💼</span>
-                    <div>
-                      <p className="font-bold text-white text-sm">92%+ Placement Record</p>
-                      <p className="text-blue-100">Top recruitments in Zoho, TCS, Cognizant, Wipro, and Qualcomm.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 rounded-xl bg-white/10 p-3.5 border border-white/10">
-                    <span className="text-2xl">🔬</span>
-                    <div>
-                      <p className="font-bold text-white text-sm">Recognized Research Centres</p>
-                      <p className="text-blue-100">Approved by Anna University with AICTE IDEA Lab prototyping.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 border-t border-white/15 pt-4 flex items-center justify-between text-xs">
-                  <span className="text-blue-200">Need Guidance?</span>
-                  <Link to="/contact" className="font-bold text-amber-300 hover:underline">
-                    Contact Admission Desk &rarr;
-                  </Link>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Key Numbers / Stats Bar */}
-      <section className="border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-6 sm:grid-cols-4 sm:px-6">
+      <section className="relative z-10 mx-auto -mt-16 max-w-7xl px-4 sm:-mt-24 sm:px-6">
+        <div className="pointer-events-none absolute inset-x-10 -top-8 h-24 rounded-full bg-[#0b3d91]/25 blur-3xl" aria-hidden="true" />
+        <div className="relative grid grid-cols-2 gap-4 rounded-2xl border border-white/70 bg-white/75 p-5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl sm:grid-cols-4 sm:p-6">
           {siteConfig.stats.map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="text-2xl font-black text-[#0b3d91] sm:text-3xl">{stat.value}</p>
@@ -111,56 +108,47 @@ export default function HomePage() {
 
       {/* Departments Section */}
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-slate-200 pb-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0b3d91]">
-              Academic Programs
-            </span>
-            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
-              Academic Departments
-            </h2>
-            <p className="mt-1 text-xs text-slate-500">
-              Each department features dedicated tabs for Faculty, Labs, Syllabus, and Activities.
-            </p>
-          </div>
-          <Link
-            to="/departments"
-            className="text-xs font-bold text-[#0b3d91] hover:underline"
-          >
-            View All 12 Departments &rarr;
-          </Link>
-        </div>
+        <Link
+          to="/departments"
+          className="group relative block overflow-hidden rounded-3xl bg-gradient-to-br from-[#0b3d91] via-[#0a347c] to-[#041e42] p-7 text-white shadow-xl transition duration-300 hover:-translate-y-0.5 hover:shadow-2xl sm:p-9 lg:p-12"
+        >
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-amber-400/10 blur-2xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-blue-400/10 blur-2xl" aria-hidden="true" />
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {siteConfig.departments.map((dept) => (
-            <Link
-              key={dept.slug}
-              to={`/departments/${dept.slug}`}
-              className="group card p-5 transition hover:-translate-y-1 hover:border-[#0b3d91] hover:shadow-lg"
-            >
-              <div className="flex items-center justify-between">
-                <span className="rounded bg-blue-50 px-2 py-0.5 text-xs font-extrabold text-[#0b3d91] border border-blue-100">
-                  {dept.code}
-                </span>
-                {dept.nba && (
-                  <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-700 border border-emerald-200">
-                    NBA Accredited
-                  </span>
-                )}
-              </div>
-              <h3 className="mt-3 text-base font-bold text-slate-900 group-hover:text-[#0b3d91] transition">
-                {dept.name}
-              </h3>
-              <p className="mt-1 text-xs text-slate-500">
-                {dept.category} • B.E. / B.Tech Autonomous
+          <div className="relative grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center">
+            <div>
+              <span className="inline-flex rounded-full border border-amber-300/30 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200">
+                Academic Departments
+              </span>
+              <h2 className="mt-4 text-2xl font-black leading-tight sm:text-3xl lg:text-4xl">
+                Explore {siteConfig.departments.length} future-focused departments
+              </h2>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-blue-100">
+                From computing and AI to electronics, mechanical, civil, and management — discover the programme that fits your ambition.
               </p>
-              <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-bold text-[#0b3d91]">
-                <span>View Department Tabs</span>
-                <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
-              </div>
-            </Link>
-          ))}
-        </div>
+              <span className="mt-6 inline-flex items-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-extrabold text-slate-900 shadow-lg transition group-hover:bg-amber-300">
+                View all departments
+                <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+              {siteConfig.departments.map((dept) => (
+                <div
+                  key={dept.slug}
+                  className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 backdrop-blur-sm"
+                >
+                  <span className="flex h-7 w-9 shrink-0 items-center justify-center rounded bg-white/15 text-[9px] font-black text-amber-200">
+                    {dept.code}
+                  </span>
+                  <span className="min-w-0 truncate text-[11px] font-semibold text-blue-50">
+                    {dept.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Link>
       </section>
 
       {/* Quick Access Pillars */}
@@ -169,9 +157,9 @@ export default function HomePage() {
           <div className="grid gap-6 md:grid-cols-3">
             <div className="card p-6">
               <span className="text-2xl">🎓</span>
-              <h3 className="mt-2 text-base font-bold text-[#0b3d91]">Autonomous Academics</h3>
+              <h3 className="mt-2 text-base font-bold text-[#0b3d91]">Future-Ready Academics</h3>
               <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                Autonomous curriculum under CBCS system with industry-tailored syllabi, continuous assessment, and Anna University degree award.
+                A flexible credit framework with industry-tailored syllabi, continuous assessment, and a globally recognised degree.
               </p>
               <Link to="/academics" className="mt-3 inline-block text-xs font-bold text-[#0b3d91] hover:underline">
                 Read Regulations &rarr;
@@ -193,7 +181,7 @@ export default function HomePage() {
               <span className="text-2xl">💡</span>
               <h3 className="mt-2 text-base font-bold text-[#0b3d91]">Innovation & Research</h3>
               <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                4-Star IIC Innovation Council, AICTE IDEA Lab, and Startup TN pre-incubation centre supporting student patents and projects.
+                An award-winning Innovation Council, IDEA Lab, and startup incubator supporting student patents, prototypes, and ventures.
               </p>
               <Link to="/innovation" className="mt-3 inline-block text-xs font-bold text-[#0b3d91] hover:underline">
                 Explore Innovations &rarr;
