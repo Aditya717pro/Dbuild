@@ -80,12 +80,12 @@ export default function HomePage() {
                 >
                   Apply for Admission &rarr;
                 </Link>
-                <Link
-                  to="/departments"
+                <a
+                  href="#departments"
                   className="rounded-lg border-2 border-white/70 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/20"
                 >
                   Explore Departments
-                </Link>
+                </a>
               </div>
           </div>
         </div>
@@ -107,11 +107,8 @@ export default function HomePage() {
       </section>
 
       {/* Departments Section */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <Link
-          to="/departments"
-          className="group relative block overflow-hidden rounded-3xl bg-gradient-to-br from-[#0b3d91] via-[#0a347c] to-[#041e42] p-7 text-white shadow-xl transition duration-300 hover:-translate-y-0.5 hover:shadow-2xl sm:p-9 lg:p-12"
-        >
+      <section id="departments" className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div className="relative block overflow-hidden rounded-3xl bg-gradient-to-br from-[#0b3d91] via-[#0a347c] to-[#041e42] p-7 text-white shadow-xl sm:p-9 lg:p-12">
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-amber-400/10 blur-2xl" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-blue-400/10 blur-2xl" aria-hidden="true" />
 
@@ -126,13 +123,12 @@ export default function HomePage() {
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-blue-100">
                 From computing and AI to electronics, mechanical, civil, and management — discover the programme that fits your ambition.
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-extrabold text-slate-900 shadow-lg transition group-hover:bg-amber-300">
-                View all departments
-                <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+              <span className="mt-6 inline-flex items-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-extrabold text-slate-900 shadow-lg">
+                Select a department from the Departments menu
               </span>
             </div>
           </div>
-        </Link>
+        </div>
       </section>
 
       {/* Quick Access Pillars */}

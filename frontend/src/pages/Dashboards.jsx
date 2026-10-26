@@ -60,7 +60,7 @@ export function AdminDashboard() {
         <section className="card h-fit p-5">
           <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
           <div className="mt-4 space-y-2">
-            <Link to="/departments" className="btn btn-secondary w-full justify-start">Manage departments</Link>
+            <Link to="/departments/manage" className="btn btn-secondary w-full justify-start">Manage departments</Link>
             <Link to="/courses" className="btn btn-secondary w-full justify-start">Manage courses</Link>
             <Link to="/students" className="btn btn-secondary w-full justify-start">Manage students</Link>
             <Link to="/faculty" className="btn btn-secondary w-full justify-start">Manage faculty</Link>

@@ -89,21 +89,10 @@ export default function Navbar() {
                       className="relative flex items-center"
                       onMouseEnter={() => setActiveDropdown(item.label)}
                     >
-                      <Link
-                        to={item.to}
-                        onClick={() => setActiveDropdown(null)}
-                        className={`flex items-center rounded-l px-1 py-1 transition uppercase text-[10px] xl:text-[11px] 2xl:text-[12px] ${
-                          isOpen || isSectionActive
-                            ? 'bg-[#06265e] text-amber-300'
-                            : 'text-white/95 hover:bg-white/15 hover:text-white'
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                      </Link>
                       <button
                         type="button"
                         onClick={() => toggleDropdown(item.label)}
-                        className={`flex items-center rounded-r py-1 pl-0.5 pr-1 transition ${
+                        className={`flex items-center gap-1 rounded px-1.5 py-1 transition uppercase text-[10px] xl:text-[11px] 2xl:text-[12px] ${
                           isOpen || isSectionActive
                             ? 'bg-[#06265e] text-amber-300'
                             : 'text-white/95 hover:bg-white/15 hover:text-white'
@@ -111,6 +100,7 @@ export default function Navbar() {
                         aria-expanded={isOpen}
                         aria-label={`Toggle ${item.label} menu`}
                       >
+                        <span>{item.label}</span>
                         <svg
                           className={`h-2.5 w-2.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                           viewBox="0 0 20 20"
@@ -129,22 +119,13 @@ export default function Navbar() {
                           className="absolute left-0 top-full z-50 mt-0.5 w-[760px] max-w-[calc(100vw-2rem)] rounded-b-xl border border-slate-200 bg-white p-5 text-slate-800 shadow-2xl ring-1 ring-black/10"
                           onMouseLeave={() => setActiveDropdown(null)}
                         >
-                          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                            <div>
-                              <h3 className="text-sm font-bold text-[#0b3d91]">
-                                Academic Departments
-                              </h3>
-                              <p className="text-xs text-slate-500">
-                                UG, PG, and Research Programmes
-                              </p>
-                            </div>
-                            <Link
-                              to="/departments"
-                              className="rounded bg-blue-50 px-3 py-1 text-xs font-semibold text-[#0b3d91] hover:bg-blue-100"
-                              onClick={() => setActiveDropdown(null)}
-                            >
-                              View All Departments &rarr;
-                            </Link>
+                          <div className="border-b border-slate-100 pb-3">
+                            <h3 className="text-sm font-bold text-[#0b3d91]">
+                              Academic Departments
+                            </h3>
+                            <p className="text-xs text-slate-500">
+                              Select a department to view details
+                            </p>
                           </div>
 
                           <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2">
@@ -373,13 +354,6 @@ export default function Navbar() {
                       </button>
                       {isExpanded && (
                         <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-white/20 pl-2">
-                          <Link
-                            to="/departments"
-                            className="rounded px-2 py-1.5 text-xs text-amber-300 font-semibold hover:bg-white/10"
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            All Departments Overview
-                          </Link>
                           {siteConfig.departments.map((dept) => (
                             <Link
                               key={dept.slug}

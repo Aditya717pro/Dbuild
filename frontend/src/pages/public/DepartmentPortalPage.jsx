@@ -271,8 +271,8 @@ export default function DepartmentPortalPage() {
       <div className="mx-auto max-w-5xl px-4 py-16 text-center">
         <h1 className="text-3xl font-bold text-slate-800">Department Not Found</h1>
         <p className="mt-2 text-slate-600">The requested department does not exist.</p>
-        <Link to="/departments" className="mt-4 inline-block btn btn-primary">
-          Back to All Departments
+        <Link to="/" className="mt-4 inline-block btn btn-primary">
+          Back to Home
         </Link>
       </div>
     );
@@ -300,7 +300,7 @@ export default function DepartmentPortalPage() {
           <nav className="flex items-center gap-2 text-xs text-blue-200">
             <Link to="/" className="hover:text-white">Home</Link>
             <span>/</span>
-            <Link to="/departments" className="hover:text-white">Departments</Link>
+            <span className="text-white font-medium">Departments</span>
             <span>/</span>
             <span className="text-white font-medium">{dept.code}</span>
           </nav>

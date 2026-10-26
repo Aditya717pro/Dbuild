@@ -1,4 +1,4 @@
-import { Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import ProtectedRoute, { RequireRole } from './components/ProtectedRoute.jsx';
 import Layout from './components/Layout.jsx';
 import PublicLayout from './components/public/PublicLayout.jsx';
@@ -7,7 +7,6 @@ import HomePage from './pages/public/HomePage.jsx';
 import {
   AboutPage,
   AdmissionPage,
-  DepartmentsPage as PublicDepartmentsPage,
   FacultyPage as PublicFacultyPage,
   AcademicsPage,
   AccreditationPage,
@@ -67,7 +66,7 @@ export default function App() {
           <Route path="/admission" element={<AdmissionPage section="admission" />} />
           <Route path="/admission/:section" element={<AdmissionSectionWrapper />} />
           <Route path="/admission/:section/:course" element={<AdmissionSectionWrapper />} />
-          <Route path="/departments" element={<PublicDepartmentsPage />} />
+          <Route path="/departments" element={<Navigate to="/departments/cse" replace />} />
           <Route path="/departments/:slug" element={<DepartmentDetailWrapper />} />
           <Route path="/faculty" element={<PublicFacultyPage />} />
           <Route path="/academics" element={<AcademicsPage section="academics" />} />

@@ -141,7 +141,6 @@ export const siteConfig = {
     { label: 'Home', to: '/' },
     { label: 'About HIT', to: '/about' },
     { label: 'Admission', to: '/admission' },
-    { label: 'Departments', to: '/departments' },
     { label: 'Placements', to: '/career-development/placements' },
     { label: 'Contact Us', to: '/contact' },
   ],
