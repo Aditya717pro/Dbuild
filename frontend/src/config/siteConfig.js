@@ -104,58 +104,21 @@ export const siteConfig = {
       ],
     },
     {
-      label: 'ACCREDITATION',
-      to: '/accreditation',
-      hasDropdown: true,
-      children: [
-        { label: 'NBA Accreditation', to: '/accreditation/nba' },
-        { label: 'NAAC Accreditation (A+)', to: '/accreditation/naac' },
-        { label: 'IQAC Members & Minutes', to: '/accreditation/iqac' },
-        { label: 'AICTE & University Approvals', to: '/accreditation/aicte' },
-      ],
-    },
-    {
-      label: 'NIRF',
-      to: '/nirf',
-      hasDropdown: true,
-      children: [
-        { label: 'NIRF Overview', to: '/nirf' },
-        { label: 'NIRF Ranking Data 2024', to: '/nirf/2024' },
-        { label: 'NIRF Ranking Data 2023', to: '/nirf/2023' },
-      ],
-    },
-    {
       label: 'CAREER DEVELOPMENT',
       to: '/career-development',
       hasDropdown: true,
       children: [
         { label: 'Career Development Cell', to: '/career-development' },
-        { label: 'Placement Statistics & Records', to: '/career-development/placements' },
-        { label: 'Top Recruiting Companies', to: '/career-development/recruiters' },
         { label: 'Training & Skill Development', to: '/career-development/training' },
       ],
     },
     {
-      label: 'CAMPUS',
-      to: '/campus',
+      label: 'PLACEMENT',
+      to: '/career-development/placements',
       hasDropdown: true,
       children: [
-        { label: 'Central Facilities', to: '/campus/central-facilities' },
-        { label: 'Hostel Facilities', to: '/campus/hostel' },
-        { label: 'Physical & Academic Infrastructure', to: '/campus/infrastructure' },
-        { label: 'Games & Sports Facilities', to: '/campus/sports' },
-        { label: 'Transport Facilities', to: '/campus/transport' },
-        { label: 'Green Campus Initiatives', to: '/campus/green' },
-      ],
-    },
-    {
-      label: 'LIBRARY',
-      to: '/library',
-      hasDropdown: true,
-      children: [
-        { label: 'Library Introduction', to: '/library' },
-        { label: 'Digital Library & E-Journals', to: '/library/digital' },
-        { label: 'Library Rules & Timings', to: '/library/rules' },
+        { label: 'Placement Statistics & Records', to: '/career-development/placements' },
+        { label: 'Top Recruiting Companies', to: '/career-development/recruiters' },
       ],
     },
     {
