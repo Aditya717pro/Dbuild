@@ -10,8 +10,12 @@ export async function login(req, res) {
   const { email, password } = req.body;
 
   const { rows } = await query(
-    'SELECT id, name, email, password_hash, role, is_active FROM users WHERE email = ?',
-    [email],
+    `SELECT u.id, u.name, u.email, u.password_hash, u.role, u.is_active
+     FROM users u
+     LEFT JOIN students s ON s.user_id = u.id
+     WHERE u.email = ? OR s.roll_no = ?
+     LIMIT 1`,
+    [email, email],
   );
   const user = rows[0];
   const passwordOk = user ? await bcrypt.compare(password, user.password_hash) : false;

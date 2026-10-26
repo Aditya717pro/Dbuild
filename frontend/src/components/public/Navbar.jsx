@@ -51,9 +51,9 @@ export default function Navbar() {
       {/* Sticky Main Navigation Bar */}
       <header className="sticky top-0 z-40 bg-[#0b3d91] shadow-md border-t border-blue-900/40" ref={navRef}>
         <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-6">
-          <div className="flex h-12 items-center justify-between">
+          <div className="flex h-11 items-center justify-between">
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex lg:items-center lg:gap-0.5 xl:gap-1 text-[13px] font-bold text-white tracking-wide">
+            <nav className="hidden min-w-0 lg:flex lg:flex-nowrap lg:items-center lg:gap-0 xl:gap-0.5 2xl:gap-1 text-[10px] xl:text-[11px] 2xl:text-[12px] font-bold text-white tracking-wide">
               {siteConfig.navItems.map((item) => {
                 // Home Icon button
                 if (item.isHome) {
@@ -62,7 +62,7 @@ export default function Navbar() {
                       key="home"
                       to="/"
                       className={({ isActive }) =>
-                        `flex items-center justify-center rounded px-2.5 py-1.5 transition ${
+                        `flex items-center justify-center rounded px-1.5 py-1 transition ${
                           isActive
                             ? 'bg-[#06265e] text-amber-300'
                             : 'text-white/95 hover:bg-white/15 hover:text-white'
@@ -82,25 +82,37 @@ export default function Navbar() {
                 // Mega-dropdown for DEPARTMENTS
                 if (item.isMega) {
                   const isOpen = activeDropdown === item.label;
+                  const isSectionActive = location.pathname.startsWith('/departments');
                   return (
                     <div
                       key={item.label}
-                      className="relative"
+                      className="relative flex items-center"
                       onMouseEnter={() => setActiveDropdown(item.label)}
                     >
+                      <Link
+                        to={item.to}
+                        onClick={() => setActiveDropdown(null)}
+                        className={`flex items-center rounded-l px-1 py-1 transition uppercase text-[10px] xl:text-[11px] 2xl:text-[12px] ${
+                          isOpen || isSectionActive
+                            ? 'bg-[#06265e] text-amber-300'
+                            : 'text-white/95 hover:bg-white/15 hover:text-white'
+                        }`}
+                      >
+                        <span>{item.label}</span>
+                      </Link>
                       <button
                         type="button"
                         onClick={() => toggleDropdown(item.label)}
-                        className={`flex items-center gap-1 rounded px-2 py-1.5 transition uppercase text-[12px] xl:text-[13px] ${
-                          isOpen || location.pathname.startsWith('/departments')
+                        className={`flex items-center rounded-r py-1 pl-0.5 pr-1 transition ${
+                          isOpen || isSectionActive
                             ? 'bg-[#06265e] text-amber-300'
                             : 'text-white/95 hover:bg-white/15 hover:text-white'
                         }`}
                         aria-expanded={isOpen}
+                        aria-label={`Toggle ${item.label} menu`}
                       >
-                        <span>{item.label}</span>
                         <svg
-                          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                          className={`h-2.5 w-2.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -114,7 +126,7 @@ export default function Navbar() {
 
                       {isOpen && (
                         <div
-                          className="absolute left-0 top-full z-50 mt-0.5 w-[760px] rounded-b-xl border border-slate-200 bg-white p-5 text-slate-800 shadow-2xl ring-1 ring-black/10"
+                          className="absolute left-0 top-full z-50 mt-0.5 w-[760px] max-w-[calc(100vw-2rem)] rounded-b-xl border border-slate-200 bg-white p-5 text-slate-800 shadow-2xl ring-1 ring-black/10"
                           onMouseLeave={() => setActiveDropdown(null)}
                         >
                           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -168,25 +180,37 @@ export default function Navbar() {
                 // Regular dropdown tabs (ABOUT, ADMISSION, ACADEMICS, etc.)
                 if (item.hasDropdown) {
                   const isOpen = activeDropdown === item.label;
+                  const isSectionActive = location.pathname.startsWith(item.to);
                   return (
                     <div
                       key={item.label}
-                      className="relative"
+                      className="relative flex items-center"
                       onMouseEnter={() => setActiveDropdown(item.label)}
                     >
+                      <Link
+                        to={item.to}
+                        onClick={() => setActiveDropdown(null)}
+                        className={`flex items-center rounded-l px-1 py-1 transition uppercase text-[10px] xl:text-[11px] 2xl:text-[12px] ${
+                          isOpen || isSectionActive
+                            ? 'bg-[#06265e] text-amber-300'
+                            : 'text-white/95 hover:bg-white/15 hover:text-white'
+                        }`}
+                      >
+                        <span>{item.label}</span>
+                      </Link>
                       <button
                         type="button"
                         onClick={() => toggleDropdown(item.label)}
-                        className={`flex items-center gap-0.5 rounded px-2 py-1.5 transition uppercase text-[12px] xl:text-[13px] ${
-                          isOpen || location.pathname.startsWith(item.to)
+                        className={`flex items-center rounded-r py-1 pl-0.5 pr-1.5 transition ${
+                          isOpen || isSectionActive
                             ? 'bg-[#06265e] text-amber-300'
                             : 'text-white/95 hover:bg-white/15 hover:text-white'
                         }`}
                         aria-expanded={isOpen}
+                        aria-label={`Toggle ${item.label} menu`}
                       >
-                        <span>{item.label}</span>
                         <svg
-                          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                          className={`h-2.5 w-2.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -225,7 +249,7 @@ export default function Navbar() {
                     key={item.to}
                     to={item.to}
                     className={({ isActive }) =>
-                      `rounded px-2 py-1.5 transition uppercase text-[12px] xl:text-[13px] ${
+                      `rounded px-1 py-1 transition uppercase text-[10px] xl:text-[11px] 2xl:text-[12px] ${
                         isActive
                           ? 'bg-[#06265e] text-amber-300'
                           : 'text-white/95 hover:bg-white/15 hover:text-white'

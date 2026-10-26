@@ -42,12 +42,12 @@ export default function TopBar() {
 
   return (
     <div className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-7xl flex-col px-4 py-2 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:py-3">
+      <div className="mx-auto flex max-w-7xl flex-col gap-1.5 px-4 py-1.5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:py-2">
         {/* Left: VCET Branding */}
-        <div className="flex items-center gap-3">
-          <Link to="/" className="group flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <Link to="/" className="group flex min-w-0 items-center gap-2.5">
             {/* VCET Crest SVG Logo */}
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0b3d91] to-[#041e42] p-2 text-white shadow-md transition group-hover:scale-105">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#0b3d91] to-[#041e42] p-1.5 text-white shadow-sm transition group-hover:scale-105 sm:h-11 sm:w-11">
               <svg viewBox="0 0 40 40" fill="none" className="h-full w-full" aria-hidden="true">
                 {/* Shield Outline */}
                 <path
@@ -69,77 +69,77 @@ export default function TopBar() {
               </svg>
             </div>
 
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-extrabold tracking-tight text-[#0b3d91] sm:text-2xl">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="text-lg font-extrabold leading-none tracking-tight text-[#0b3d91] sm:text-xl">
                   {siteConfig.shortName}
                 </span>
-                <span className="hidden text-xs font-semibold uppercase tracking-wider text-amber-700 sm:inline-block">
+                <span className="hidden rounded bg-amber-50 px-1 py-0.5 text-[9px] font-bold uppercase leading-none tracking-wide text-amber-700 ring-1 ring-amber-200 sm:inline-block">
                   Autonomous
                 </span>
               </div>
-              <h1 className="text-sm font-bold leading-tight text-slate-800 sm:text-base lg:text-lg">
+              <h1 className="mt-0.5 truncate text-[12px] font-semibold leading-tight text-slate-800 sm:text-[13px] lg:text-sm">
                 {siteConfig.collegeName}
               </h1>
-              <p className="text-xs font-medium text-slate-500">
+              <p className="truncate text-[10px] leading-tight text-slate-500 sm:text-[11px]">
                 {siteConfig.autonomousText} • Affiliated to Anna University, Chennai
               </p>
             </div>
           </Link>
 
           {/* 25 Years of Academic Excellence Badge */}
-          <div className="hidden border-l border-slate-200 pl-3 md:flex md:items-center">
-            <div className="flex items-center gap-2 rounded-md bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-900 border border-amber-200/60 shadow-sm">
-              <span className="text-base">🏆</span>
+          <div className="hidden shrink-0 border-l border-slate-200 pl-2.5 md:flex md:items-center">
+            <div className="flex items-center gap-1.5 rounded bg-amber-50 px-2 py-0.5 ring-1 ring-amber-200/70">
+              <span className="text-xs leading-none">🏆</span>
               <div className="leading-tight">
-                <p className="font-bold">25 Years</p>
-                <p className="text-[10px] text-amber-700">of Excellence</p>
+                <p className="text-[10px] font-bold leading-none text-amber-900">25 Years</p>
+                <p className="text-[9px] leading-tight text-amber-700">of Excellence</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right: Accreditation Badges & Utility Bar */}
-        <div className="mt-3 flex flex-col items-start gap-2.5 lg:mt-0 lg:items-end">
+        <div className="flex flex-col gap-1 lg:items-end">
           {/* Top Row: Accreditations */}
-          <div className="flex flex-wrap items-center gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-1.5 text-[10px] leading-none">
             {/* TNEA Code Badge */}
-            <div className="flex items-center gap-1 rounded border-2 border-slate-800 bg-slate-50 px-2 py-0.5 font-bold tracking-tight text-slate-900 shadow-xs">
-              <span className="text-[10px] uppercase text-slate-600">TNEA CODE</span>
-              <span className="text-sm text-[#0b3d91]">{siteConfig.tneaCode}</span>
+            <div className="flex items-center gap-1 rounded-sm border border-slate-300 bg-slate-50 px-1.5 py-1 font-bold text-slate-900">
+              <span className="text-[8px] uppercase tracking-wide text-slate-500">TNEA</span>
+              <span className="text-[11px] text-[#0b3d91]">{siteConfig.tneaCode}</span>
             </div>
 
             {/* NIRF Badge */}
-            <div className="flex items-center rounded border border-blue-200 bg-blue-50/70 px-2 py-0.5 font-semibold text-blue-900 shadow-xs">
-              <span className="font-extrabold text-[#0b3d91]">nirf</span>
+            <div className="rounded-sm border border-blue-200 bg-blue-50 px-1.5 py-1 font-bold text-[#0b3d91]">
+              NIRF
             </div>
 
             {/* NAAC A+ Badge */}
-            <div className="flex items-center gap-1 rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs font-bold text-amber-950 shadow-xs">
-              <span className="rounded-full bg-amber-500 px-1 text-[10px] text-white">A+</span>
+            <div className="flex items-center gap-1 rounded-sm border border-amber-300 bg-amber-50 px-1.5 py-1 font-bold text-amber-900">
+              <span className="rounded-full bg-amber-500 px-1 text-[8px] text-white">A+</span>
               <span>NAAC</span>
             </div>
 
             {/* NBA Badge */}
-            <div className="flex items-center rounded border border-cyan-300 bg-cyan-50 px-2 py-0.5 font-bold text-cyan-950 shadow-xs">
-              <span>NBA</span>
+            <div className="rounded-sm border border-cyan-300 bg-cyan-50 px-1.5 py-1 font-bold text-cyan-900">
+              NBA
             </div>
 
             {/* IIC Badge */}
-            <div className="hidden sm:flex items-center gap-1 rounded border border-purple-200 bg-purple-50 px-2 py-0.5 text-[11px] font-semibold text-purple-900 shadow-xs">
+            <div className="hidden items-center gap-1 rounded-sm border border-purple-200 bg-purple-50 px-1.5 py-1 font-semibold text-purple-900 sm:flex">
               <span>IIC</span>
-              <span className="text-amber-500 text-[10px]">★★★★</span>
+              <span className="text-[8px] text-amber-500">★★★★</span>
             </div>
 
             {/* SDGs Badge */}
-            <div className="hidden md:flex items-center gap-1 rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-900 shadow-xs">
-              <span className="inline-block h-2 w-2 rounded-full bg-gradient-to-tr from-green-500 to-teal-400"></span>
+            <div className="hidden items-center gap-1 rounded-sm border border-emerald-200 bg-emerald-50 px-1.5 py-1 font-semibold text-emerald-900 md:flex">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-gradient-to-tr from-green-500 to-teal-400"></span>
               <span>SDGs</span>
             </div>
           </div>
 
           {/* Bottom Row: Quick Utility Links & ERP Login */}
-          <div className="flex flex-wrap items-center gap-3 text-xs font-bold tracking-wide text-[#0b3d91]">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold tracking-wide text-[#0b3d91] sm:text-[11px]">
             <Link
               to="/hall-reservation"
               className="transition hover:text-blue-800 hover:underline"
@@ -162,91 +162,53 @@ export default function TopBar() {
             </Link>
             <span className="text-slate-300">|</span>
 
-            {/* ERP - LOGIN Dropdown */}
-            <div className="relative" ref={erpRef}>
-              {user ? (
+            {user ? (
+              <div className="relative" ref={erpRef}>
                 <button
                   type="button"
                   onClick={() => setErpOpen((v) => !v)}
-                  className="flex items-center gap-1 rounded-md bg-[#0b3d91] px-2.5 py-1 text-xs font-bold text-white shadow-xs transition hover:bg-[#082f70]"
+                  className="flex items-center gap-1 rounded bg-[#0b3d91] px-2 py-0.5 text-[10px] font-bold text-white transition hover:bg-[#082f70] sm:text-[11px]"
                   aria-expanded={erpOpen}
                 >
-                  <span>{user.name}</span>
-                  <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                  <span className="max-w-[7rem] truncate">{user.name}</span>
+                  <svg className="h-2.5 w-2.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                   </svg>
                 </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setErpOpen((v) => !v)}
-                  className="flex items-center gap-1 rounded bg-[#0b3d91] px-2.5 py-1 text-xs font-bold text-white shadow-xs transition hover:bg-[#082f70]"
-                  aria-expanded={erpOpen}
-                >
-                  <span>ERP - LOGIN</span>
-                  <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              )}
 
-              {erpOpen && (
-                <div
-                  className="absolute right-0 z-50 mt-2 w-48 rounded-lg border border-slate-200 bg-white py-1.5 shadow-xl ring-1 ring-black/5"
-                  role="menu"
-                >
-                  {user ? (
-                    <>
-                      <div className="border-b border-slate-100 px-3 py-1.5 text-xs text-slate-500">
-                        Signed in as <span className="font-semibold text-slate-800">{user.role}</span>
-                      </div>
-                      <Link
-                        to={getDashboardPath(user.role)}
-                        className="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0b3d91]"
-                        onClick={() => setErpOpen(false)}
-                      >
-                        📊 Open Dashboard
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50"
-                      >
-                        🚪 Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="border-b border-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                        Portal Login
-                      </div>
-                      <Link
-                        to="/login/student"
-                        className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-[#0b3d91]"
-                        onClick={() => setErpOpen(false)}
-                      >
-                        🎓 Student Login
-                      </Link>
-                      <Link
-                        to="/login/faculty"
-                        className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-[#0b3d91]"
-                        onClick={() => setErpOpen(false)}
-                      >
-                        👨‍🏫 Faculty Login
-                      </Link>
-                      <div className="border-t border-slate-100" />
-                      <Link
-                        to="/admin/login"
-                        className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                        onClick={() => setErpOpen(false)}
-                      >
-                        🛡️ Admin Portal
-                      </Link>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+                {erpOpen && (
+                  <div
+                    className="absolute right-0 z-50 mt-2 w-48 rounded-lg border border-slate-200 bg-white py-1.5 shadow-xl ring-1 ring-black/5"
+                    role="menu"
+                  >
+                    <div className="border-b border-slate-100 px-3 py-1.5 text-xs text-slate-500">
+                      Signed in as <span className="font-semibold text-slate-800">{user.role}</span>
+                    </div>
+                    <Link
+                      to={getDashboardPath(user.role)}
+                      className="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0b3d91]"
+                      onClick={() => setErpOpen(false)}
+                    >
+                      📊 Open Dashboard
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="w-full px-4 py-2 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50"
+                    >
+                      🚪 Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="rounded bg-[#0b3d91] px-2 py-0.5 text-[10px] font-bold text-white transition hover:bg-[#082f70] sm:text-[11px]"
+              >
+                LOGIN
+              </Link>
+            )}
           </div>
         </div>
       </div>

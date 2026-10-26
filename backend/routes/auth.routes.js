@@ -8,10 +8,15 @@ import * as auth from '../controllers/auth.controller.js';
 
 const router = Router();
 
-const email = z.string().trim().email().max(200).transform((value) => value.toLowerCase());
+const identifier = z
+  .string()
+  .trim()
+  .min(1)
+  .max(200)
+  .transform((value) => value.toLowerCase());
 
 const loginSchema = z.object({
-  email,
+  email: identifier,
   password: z.string().min(1).max(200),
 });
 

@@ -41,7 +41,6 @@ function AccreditationSectionWrapper() {
   return <AccreditationPage section={section} />;
 }
 import RoleLoginPage from './pages/auth/RoleLoginPage.jsx';
-import AdminLoginPage from './pages/auth/AdminLoginPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import { AdminDashboardPage, FacultyDashboardPage, StudentDashboardPage } from './pages/dashboard/RoleDashboardNew.jsx';
 import RoleDashboard from './pages/RoleDashboard.jsx';
@@ -100,9 +99,9 @@ export default function App() {
       />
       <Route
         path="/login/faculty"
-        element={<RoleLoginPage allowedRole="faculty" title="Faculty Login" subtitle="Manage attendance and announcements" />}
+        element={<RoleLoginPage allowedRole="faculty" title="Staff Login" subtitle="Manage attendance and announcements" />}
       />
-      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin/login" element={<LoginPage defaultRole="admin" />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
