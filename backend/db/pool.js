@@ -18,9 +18,19 @@ function buildSslConfig() {
 }
 
 function parseConnectionConfig() {
-  const url = process.env.MYSQL_URL;
+  let url = process.env.MYSQL_URL;
   if (!url) {
-    throw new Error('MYSQL_URL is not configured');
+    // Allow missing password in URL by falling back to constructing from parts if possible
+    const host = process.env.DB_HOST || process.env.MYSQL_HOST;
+    const user = process.env.DB_USER || process.env.MYSQL_USER || 'appuser';
+    const pass = process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD || '';
+    const db = process.env.DB_NAME || process.env.MYSQL_DATABASE || process.env.DB;
+    if (host && db) {
+      const encodedPass = encodeURIComponent(pass);
+      url = `mysql://${user}:${encodedPass}@${host}:${process.env.DB_PORT || process.env.MYSQL_PORT || 3306}/${db}`;
+    } else {
+      throw new Error('MYSQL_URL is not configured');
+    }
   }
 
   let parsed;
@@ -43,7 +53,6 @@ function parseConnectionConfig() {
     host: parsed.hostname,
     port: parsed.port ? Number(parsed.port) : 3306,
     user: decodeURIComponent(parsed.username),
-    password: decodeURIComponent(parsed.password),
     database,
   };
 }
