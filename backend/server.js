@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import app from './api/index.js';
+import { query } from './db/pool.js';
 
 if (process.env.NODE_ENV === 'production') {
   console.error(
@@ -10,6 +11,18 @@ if (process.env.NODE_ENV === 'production') {
 
 const port = Number(process.env.PORT || 5000);
 
-app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}/api`);
-});
+async function start() {
+  try {
+    await query('SELECT 1');
+    console.log('Database connection OK');
+  } catch (err) {
+    console.error(`Database connection failed: ${err.message}`);
+    process.exit(1);
+  }
+
+  app.listen(port, () => {
+    console.log(`API listening on http://localhost:${port}/api`);
+  });
+}
+
+start();

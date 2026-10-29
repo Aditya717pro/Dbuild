@@ -51,6 +51,12 @@ router.post(
 router.get('/me', requireRole('student'), asyncHandler(attendance.myAttendance));
 
 router.get(
+  '/students',
+  requireRole('admin', 'faculty'),
+  asyncHandler(attendance.studentOverview),
+);
+
+router.get(
   '/course/:courseId/summary',
   requireRole('admin', 'faculty'),
   validate(courseParams, 'params'),

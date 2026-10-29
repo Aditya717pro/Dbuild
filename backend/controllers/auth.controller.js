@@ -7,21 +7,38 @@ import { httpError } from '../utils/httpError.js';
 const BCRYPT_ROUNDS = 10;
 
 export async function login(req, res) {
-  const { email, password } = req.body;
+  const { email: identifier, password } = req.body;
+  const isStudentId = /^\d+$/.test(identifier);
 
-  const { rows } = await query(
-    `SELECT u.id, u.name, u.email, u.password_hash, u.role, u.is_active
-     FROM users u
-     LEFT JOIN students s ON s.user_id = u.id
-     WHERE u.email = ? OR s.roll_no = ?
-     LIMIT 1`,
-    [email, email],
-  );
+  let rows;
+  if (isStudentId) {
+    // Students sign in with their numeric student_id (users.id).
+    ({ rows } = await query(
+      `SELECT id, name, email, password_hash, role, is_active
+       FROM users
+       WHERE id = ? AND role = 'student'
+       LIMIT 1`,
+      [Number(identifier)],
+    ));
+  } else {
+    // Admin and faculty accounts sign in with their email address.
+    ({ rows } = await query(
+      `SELECT id, name, email, password_hash, role, is_active
+       FROM users
+       WHERE email = ? AND role <> 'student'
+       LIMIT 1`,
+      [identifier],
+    ));
+  }
+
   const user = rows[0];
   const passwordOk = user ? await bcrypt.compare(password, user.password_hash) : false;
 
   if (!user || !passwordOk) {
-    throw httpError(401, 'Invalid email or password');
+    throw httpError(
+      401,
+      isStudentId ? 'Invalid student ID or password' : 'Invalid email or password',
+    );
   }
   if (!user.is_active) {
     throw httpError(403, 'This account has been deactivated. Contact an administrator.');

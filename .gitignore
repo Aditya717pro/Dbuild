@@ -9,6 +9,10 @@ coverage/
 .env.*
 !.env.example
 
+# Local demo credentials (never commit)
+DEMO_CREDENTIALS.local.md
+backend/DEMO_CREDENTIALS.local.md
+
 # Certificates and keys
 *.pem
 *.crt

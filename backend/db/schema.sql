@@ -1,7 +1,11 @@
--- College Management Portal - schema
--- Target: self-managed MySQL 8.0+ on AWS EC2 (Ubuntu)
+-- College Management Portal - reference schema
+-- Target: MySQL 8.0+ (local or self-managed)
+--
+-- The canonical fresh-install file is database.sql at the repository root.
+-- This file contains the same tables without CREATE DATABASE/USE or starter departments.
+-- If you change a table, update database.sql AND add a migration in backend/db/migrations/.
 -- This script is idempotent: safe to run multiple times.
--- Run as the database owner (e.g. college_owner), NOT as the application user.
+-- Run as the database owner (or root), NOT as the application user.
 
 -- ---------------------------------------------------------------------------
 -- users

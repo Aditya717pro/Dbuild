@@ -17,4 +17,4 @@ ALTER USER 'appuser'@'%' IDENTIFIED BY 'REPLACE_WITH_STRONG_PASSWORD';
 -- ---------------------------------------------------------------------------
 REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'appuser'@'%';
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON college_portal.* TO 'appuser'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON dbuild.* TO 'appuser'@'%';

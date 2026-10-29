@@ -2,343 +2,467 @@
 
 A full-stack College Management Portal for student enrollment, faculty records, department rosters, courses, attendance tracking, and internal announcements.
 
-**Roles**
-
 | Role | Capabilities |
 | --- | --- |
-| **Admin** | Manage departments, courses, students, faculty, enrollments, announcements, and attendance. Create other admin accounts. |
-| **Faculty** | View their department and courses, view the department roster, mark attendance for courses assigned to them, post department/course announcements. |
+| **Admin** | Manage departments, courses, students, faculty, enrollments, attendance, and announcements. Create other admin accounts. |
+| **Faculty** | View their department and courses, view the department roster, mark attendance for courses assigned to them, and post department/course announcements. |
 | **Student** | View only their own enrolled courses, attendance percentage per course, and announcements relevant to them. |
 
-There is **no public sign-up**. Accounts are created by an administrator.
+There is **no public sign-up**. Accounts are created by an administrator or by the demo seed script.
 
 ---
 
 ## Architecture
 
-```
-React + Vite + Tailwind (Vercel)
-        │  HTTPS, JWT in Authorization header
-        ▼
-Express API (Vercel serverless, exported from backend/api/index.js)
-        │  mysql2 Pool + TLS (MYSQL_URL + MYSQL_CA_CERT)
-        ▼
-Self-managed MySQL 8.0+ on AWS EC2 (Ubuntu)
+```text
+React + Vite + Tailwind
+        |  HTTP, JWT in Authorization header
+        v
+Express API (backend/api/index.js)
+        |  mysql2 Pool (DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        v
+MySQL 8.0+
 ```
 
-- Frontend and backend live in this one repository under `frontend/` and `backend/`, and deploy together as two [Vercel Services](https://vercel.com/docs/services) in one project.
-- The frontend never touches the database; it only calls `/api/...` through `frontend/src/services/api.js`. The public `/api/*` rewrite routes those same-origin calls to the backend service.
-- The backend never calls `app.listen()` in production. `backend/api/index.js` exports the Express app, and `backend/server.js` is for local development only.
-- Database access uses the least-privilege `appuser` account (DML only, no DDL, not an administrator).
+- Frontend and backend live in this repository under `frontend/` and `backend/`.
+- The frontend calls `/api/...` through `frontend/src/services/api.js`. The Vite dev proxy forwards `/api` to the backend.
+- The backend exports the Express app from `backend/api/index.js`; `backend/server.js` starts it for local development.
+- The schema and demo data live in tracked files, so a fresh clone can rebuild the database.
+- Git does **not** push a live database. A fresh clone recreates it from `database.sql`, migrations, and the demo seed script.
 
 ---
 
 ## Repository layout
 
-```
+```text
 .
 ├── backend/
-│   ├── api/index.js            # Express app export (Vercel entrypoint)
-│   ├── controllers/            # Request handlers
+│   ├── api/index.js              # Express app export (Vercel entrypoint)
+│   ├── config/demo.js            # Tracked demo account password defaults
+│   ├── controllers/              # Request handlers
 │   ├── db/
-│   │   ├── schema.sql          # Idempotent MySQL schema
-│   │   ├── grants.sql          # Least-privilege appuser account
-│   │   └── pool.js             # mysql2 Pool (reused, TLS, max 3)
-│   ├── middleware/             # auth, roles, validation, errors, rate limits
-│   ├── routes/                 # REST routes with role checks
-│   ├── scripts/create-admin.js # Bootstrap/reset an admin account
-│   ├── utils/                  # jwt, audit, async handler, errors
-│   ├── server.js               # Local dev server ONLY
+│   │   ├── migrations/           # Numbered schema migrations
+│   │   ├── schema.sql            # Reference schema (canonical file is database.sql)
+│   │   ├── grants.sql            # Least-privilege appuser account
+│   │   └── pool.js               # mysql2 Pool
+│   ├── middleware/               # Auth, roles, validation, errors, rate limits
+│   ├── routes/                   # REST routes with role checks
+│   ├── scripts/
+│   │   ├── migrate.js            # Baseline schema + migration runner
+│   │   ├── seed-demo-data.js     # Idempotent demo data seed
+│   │   ├── verify-demo-auth.js   # Checks demo password hashes
+│   │   ├── create-admin.js       # Bootstrap/reset an admin account
+│   │   ├── create-student.js     # Create a student account
+│   │   └── test-db-connection.js # Connection and table check
+│   ├── utils/                    # JWT, audit, async handler, errors
+│   ├── server.js                 # Local dev server
 │   └── .env.example
 ├── frontend/
 │   ├── src/
-│   │   ├── components/         # Layout, tables, modals, states
-│   │   ├── context/            # AuthContext
-│   │   ├── hooks/              # useApiData
-│   │   ├── pages/              # Login, dashboards, CRUD, attendance, announcements
-│   │   ├── services/api.js     # Single API client, attaches JWT
+│   │   ├── components/           # Layout, tables, modals, states
+│   │   ├── context/              # AuthContext
+│   │   ├── hooks/                # useApiData
+│   │   ├── pages/                # Login, dashboards, CRUD, attendance, announcements
+│   │   ├── services/api.js       # Single API client, attaches JWT
 │   │   └── utils/
 │   └── .env.example
-├── vercel.json                 # Services + public routing (/api and SPA)
-└── .gitignore
+├── database.sql                  # Canonical fresh-install schema and starter departments
+├── docker-compose.yml            # Local MySQL 8.0 service
+├── vercel.json                   # Vercel services + public routing
+└── README.md
 ```
 
 ---
 
 ## Prerequisites
 
-- Node.js 18+ and npm
-- MySQL 8.0.16+ (the EC2 instance, or a local MySQL for development)
-- One Vercel project deployed with Services (see section 4)
+- Node.js 18+
+- npm
+- Docker Desktop **or** MySQL 8.0.16+
 
 > MySQL 8.0.16 or newer is required because the schema uses `CHECK` constraints.
 
 ---
 
-## 1. Database setup on the EC2 instance
+## Quick start
 
-All values below are **placeholders**. Replace them with your own; never commit real credentials.
+### 1. Start MySQL
 
-### 1.1 Install MySQL
-
-On Ubuntu:
+The recommended local setup uses Docker:
 
 ```bash
-sudo apt update
-sudo apt install mysql-server
-sudo systemctl enable --now mysql
-sudo mysql_secure_installation
+docker compose up -d --wait
 ```
 
-### 1.2 Create the database and owner
+This starts MySQL 8.0 on `127.0.0.1:3306` with an empty root password and imports `database.sql` the first time the volume is created.
 
-Connect as the MySQL administrator:
+If port `3306` is already in use, choose another host port:
+
+```powershell
+$env:MYSQL_PORT="3307"
+docker compose up -d --wait
+```
+
+Then set `DB_PORT=3307` in `backend/.env`.
+
+To reset the local database completely:
 
 ```bash
-sudo mysql
+docker compose down -v
+docker compose up -d --wait
 ```
 
-```sql
-CREATE DATABASE college_portal
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_0900_ai_ci;
+> `down -v` deletes the Docker database volume. Use it only when you want a clean database.
 
-CREATE USER 'college_owner'@'localhost'
-  IDENTIFIED BY 'REPLACE_WITH_DB_OWNER_PASSWORD';
-
-GRANT ALL PRIVILEGES ON college_portal.* TO 'college_owner'@'localhost';
-
-FLUSH PRIVILEGES;
-```
-
-### 1.3 Apply the schema and grants
-
-Copy `backend/db/schema.sql` and `backend/db/grants.sql` to the instance.
-
-Run the schema as the table owner:
-
-```bash
-mysql -u college_owner -p college_portal < schema.sql
-```
-
-Edit `grants.sql` first and replace `REPLACE_WITH_STRONG_PASSWORD`. Then run it as the MySQL administrator, because creating the application user requires the `CREATE USER` privilege:
-
-```bash
-sudo mysql < grants.sql
-```
-
-`schema.sql` is idempotent (`CREATE TABLE IF NOT EXISTS`), and `grants.sql` is idempotent (guarded user creation + repeatable grants).
-
-The application user `appuser` gets:
-
-- `SELECT, INSERT, UPDATE, DELETE` on `college_portal.*`
-- **No** `CREATE/ALTER/DROP`, no user management, no administrative privileges
-
-Adjust `'appuser'@'%'` in `grants.sql` if you want to restrict the allowed client host.
-
-### 1.4 TLS and network access
-
-The backend connects with TLS by default (`rejectUnauthorized: true`). Provide the CA certificate that signs your MySQL server certificate via `MYSQL_CA_CERT` (PEM, with `\n` escapes if stored on one line).
-
-- For a self-signed server certificate, put that CA/public certificate in `MYSQL_CA_CERT`; do not disable verification.
-- Keep port `3306` closed to the public internet. In the EC2 security group, allow `3306` only from trusted addresses. Vercel serverless egress IPs are not fixed, so use a network design appropriate for your environment (for example, a bastion/VPN/private connectivity or a tightly scoped allowlist). Do not open `3306` to `0.0.0.0/0`.
-- Confirm `bind-address`, MySQL TLS settings, and the firewall/security group are configured for your environment.
-- For managed production environments, consider `require_secure_transport=ON` in the MySQL server configuration.
-
-### 1.5 Create the first admin account
-
-From `backend/` with a valid `MYSQL_URL`:
-
-```bash
-# Windows PowerShell
-$env:ADMIN_NAME="Portal Admin"; $env:ADMIN_EMAIL="admin@college.example"; $env:ADMIN_PASSWORD="REPLACE_WITH_STRONG_PASSWORD"; npm run create-admin
-
-# macOS / Linux
-ADMIN_NAME="Portal Admin" ADMIN_EMAIL="admin@college.example" ADMIN_PASSWORD="REPLACE_WITH_STRONG_PASSWORD" npm run create-admin
-```
-
-If the email already exists, the script updates that account's password, role (`admin`), and active status.
-
----
-
-## 2. Local development
-
-### 2.1 Backend
+### 2. Configure and start the backend
 
 ```bash
 cd backend
-cp .env.example .env        # Windows: copy .env.example .env
+cp .env.example .env
 npm install
-```
-
-Fill in `backend/.env`:
-
-- `MYSQL_URL` — e.g. `mysql://appuser:...@localhost:3306/college_portal`
-- `MYSQL_CA_CERT` — CA PEM if your database uses TLS
-- `JWT_SECRET` — 32+ random characters (`openssl rand -hex 32`)
-- `FRONTEND_URL` — `http://localhost:5173`
-- `MYSQL_SSL=disable` — only for a local MySQL without TLS
-
-Run:
-
-```bash
+npm run test-db
+npm run db:update
+npm run verify-demo
 npm run dev
 ```
 
-API: `http://localhost:5000/api` — health check: `GET /api/health` (runs `SELECT 1`).
+On Windows PowerShell, use `copy .env.example .env` instead of `cp`.
 
-### 2.2 Frontend
+The API runs at `http://localhost:5000/api`. Health check:
+
+```bash
+curl http://localhost:5000/api/health
+```
+
+`npm run db:update` applies the baseline schema, pending migrations, and demo data. It is idempotent and safe to rerun.
+
+### 3. Start the frontend
+
+In another terminal:
 
 ```bash
 cd frontend
-cp .env.example .env.local  # Windows: copy .env.example .env.local
+cp .env.example .env.local
 npm install
 npm run dev
 ```
 
-`VITE_API_BASE_URL=/api` uses the Vite dev proxy to `http://localhost:5000`.
+On Windows PowerShell, use `copy .env.example .env.local` instead of `cp`.
 
-### 2.3 Checks
+Open `http://localhost:5173`.
 
-```bash
-cd backend  && npm run lint && npm run check
-cd frontend && npm run lint && npm run build
-```
+### 4. Log in
 
-To run both services together with the same routing as production, install the Vercel CLI and run `vercel dev` from the repository root.
+| Portal | URL |
+| --- | --- |
+| Student | `http://localhost:5173/login/student` |
+| Teacher/Faculty | `http://localhost:5173/login/teacher` |
+| Admin | `http://localhost:5173/login/admin` |
 
 ---
 
-## 3. Environment variables
+## Demo accounts
 
-### Backend (`backend/.env` / Vercel services project)
+These accounts are created by `npm run db:update` and are for local development only.
+
+| Name | Role | Login | Default password |
+| --- | --- | --- | --- |
+| Admin | admin | `admin@example.com` | `admin@123` |
+| Harry Potter | student | `2` | `student@123` |
+| Ron Weasley | student | `3` | `student@123` |
+| Hermione Granger | student | `4` | `student@123` |
+| Severus Snape | faculty | `severus.snape@example.com` | `faculty@123` |
+| Albus Dumbledore | faculty | `albus.dumbledore@example.com` | `faculty@123` |
+
+Students sign in with their numeric **Student ID** (`users.id`), not their email. Faculty and administrators sign in with email.
+
+The demo passwords are tracked in `backend/config/demo.js` so that password changes can propagate to everyone who pulls the repository. They are intentionally weak demo credentials. Do not use them in production. Override them in `backend/.env` if needed:
+
+```dotenv
+DEMO_STUDENT_PASSWORD=your-local-student-password
+DEMO_FACULTY_PASSWORD=your-local-faculty-password
+DEMO_ADMIN_PASSWORD=your-local-admin-password
+```
+
+After seeding, `DEMO_CREDENTIALS.local.md` is generated at the repository root with the actual logins. That file is gitignored.
+
+---
+
+## Manual MySQL setup
+
+If you do not want to use Docker:
+
+```bash
+mysql -u root -p < database.sql
+```
+
+Then configure `backend/.env`:
+
+```dotenv
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your-mysql-password
+DB_NAME=dbuild
+MYSQL_SSL=disable
+JWT_SECRET=replace-with-a-long-random-secret
+FRONTEND_URL=http://localhost:5173
+```
+
+Run the backend setup:
+
+```bash
+cd backend
+npm install
+npm run test-db
+npm run db:update
+```
+
+### Least-privilege application user
+
+For a non-development environment, create the application user after importing the schema:
+
+1. Edit `backend/db/grants.sql` and replace `REPLACE_WITH_STRONG_PASSWORD`.
+2. Run it as a MySQL administrator:
+   ```bash
+   mysql -u root -p < backend/db/grants.sql
+   ```
+3. Set the application credentials:
+   ```dotenv
+   DB_USER=appuser
+   DB_PASSWORD=the-password-from-grants.sql
+   DB_MIGRATION_USER=root
+   DB_MIGRATION_PASSWORD=the-mysql-admin-password
+   MYSQL_SSL=disable
+   ```
+4. Keep `DB_MIGRATION_USER` for setup only. The application itself uses `appuser`, which has DML privileges only and cannot run DDL.
+
+For production with TLS, omit `MYSQL_SSL=disable` and set `MYSQL_CA_CERT` to a CA file path or PEM contents.
+
+---
+
+## Applying database changes after `git pull`
+
+A Git pull cannot change a running MySQL database by itself. After pulling changes, run:
+
+```bash
+git pull
+docker compose up -d --wait
+cd backend
+npm install
+npm run db:update
+```
+
+`npm run db:update`:
+
+1. Applies the idempotent `database.sql` baseline if needed.
+2. Applies pending files from `backend/db/migrations/`.
+3. Re-runs the demo seed, updating demo accounts, courses, enrollments, attendance, and announcements.
+
+It is safe to rerun. Existing Docker volumes are preserved; Docker only imports `database.sql` when the volume is first created.
+
+For production, run only the schema migration step:
+
+```bash
+cd backend
+npm run db:migrate
+```
+
+`db:migrate` does not seed demo accounts.
+
+### Changing the schema
+
+Every schema change must be made in two places:
+
+1. Update `database.sql` for fresh installs.
+2. Add a new numbered file in `backend/db/migrations/` for existing databases.
+
+Example migration:
+
+```sql
+ALTER TABLE courses ADD COLUMN credits TINYINT UNSIGNED NOT NULL DEFAULT 3;
+```
+
+Then test:
+
+```bash
+cd backend
+npm run db:update
+```
+
+### Changing demo data or passwords
+
+- Demo account passwords: edit `backend/config/demo.js`.
+- Demo accounts, courses, enrollments, attendance, and announcements: edit `backend/scripts/seed-demo-data.js`.
+
+Commit the change, push it, and tell pullers to run `npm run db:update`. The seed script re-hashes and updates the demo accounts.
+
+If a puller has set `DEMO_*` overrides in `backend/.env`, those overrides take precedence over the tracked defaults.
+
+---
+
+## Scripts
+
+Run these from `backend/` unless noted otherwise.
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the API with file watching. |
+| `npm start` | Start the API without watching. |
+| `npm run test-db` | Test the connection and verify the nine application tables. |
+| `npm run db:migrate` | Apply the baseline and pending schema migrations. Safe for production. |
+| `npm run db:update` | Apply migrations and refresh demo data. Local/demo use only. |
+| `npm run seed-demo` | Create/update demo accounts and academic data. |
+| `npm run verify-demo` | Check all six demo passwords against the stored bcrypt hashes. |
+| `npm run create-admin` | Create or reset an admin account from `ADMIN_*` env vars. |
+| `npm run create-student` | Create a student account from `STUDENT_*` env vars. |
+| `npm run lint` | Run backend ESLint. |
+| `npm run check` | Syntax-check the API entrypoints. |
+
+From `frontend/`:
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server. |
+| `npm run build` | Build the production frontend. |
+| `npm run lint` | Run frontend ESLint. |
+| `npm run preview` | Preview the production build. |
+
+---
+
+## Environment variables
+
+### Backend
+
+Create `backend/.env` from `backend/.env.example`.
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `MYSQL_URL` | Yes | MySQL connection string for the EC2 database (use `appuser`). |
-| `MYSQL_CA_CERT` | Yes for TLS | PEM CA certificate used to verify the database server. |
-| `JWT_SECRET` | Yes | Signs short-lived JWTs (>= 32 random chars). |
-| `FRONTEND_URL` | No | Allowed CORS origin(s). Comma-separated. Not needed for same-origin calls in the services deployment. |
+| `DB_HOST` | Yes | MySQL host, usually `localhost`. |
+| `DB_PORT` | Yes | MySQL port, usually `3306`. |
+| `DB_USER` | Yes | Application MySQL user. Use `root` for local Docker; use `appuser` in production. |
+| `DB_PASSWORD` | No | MySQL password; empty for the default local Docker root. |
+| `DB_NAME` | Yes | Database name, `dbuild`. |
+| `MYSQL_SSL` | No | Set `disable` for local MySQL without TLS. |
+| `MYSQL_CA_CERT` | No | Path to a CA file or PEM contents for TLS verification. |
+| `MYSQL_URL` | No | Full connection string; overrides the discrete `DB_*` values. |
+| `MYSQL_POOL_MAX` | No | Pool size, default 3 (clamped to 1-3). |
+| `DB_MIGRATION_USER` | No | DDL-capable user for migrations; defaults to `DB_USER`. |
+| `DB_MIGRATION_PASSWORD` | No | Password for the migration user; defaults to `DB_PASSWORD`. |
+| `DEMO_STUDENT_PASSWORD` | No | Overrides the tracked student demo password. |
+| `DEMO_FACULTY_PASSWORD` | No | Overrides the tracked faculty demo password. |
+| `DEMO_ADMIN_PASSWORD` | No | Overrides the tracked admin demo password. |
+| `ALLOW_DEMO_SEED` | No | Set `true` to allow demo seeding when `NODE_ENV=production`. Not recommended. |
+| `JWT_SECRET` | Yes | Signs short-lived JWTs (at least 32 random characters). |
+| `FRONTEND_URL` | No | Allowed CORS origin(s), comma-separated. |
 | `JWT_EXPIRES_IN` | No | Token lifetime, default `2h`. |
-| `MYSQL_POOL_MAX` | No | Pool size, default 3 (clamped to 1–3). |
-| `MYSQL_SSL` | No | Set `disable` only for a local DB without TLS. |
-| `NODE_ENV` | No | `production` hides stack traces. |
+| `NODE_ENV` | No | `production` hides stack traces and blocks demo seeding. |
 | `PORT` | No | Local dev server port, default 5000. |
 
-### Frontend (Vercel services project)
+Generate a JWT secret with:
+
+```bash
+openssl rand -hex 32
+```
+
+### Frontend
+
+Create `frontend/.env.local` from `frontend/.env.example`.
 
 | Variable | Purpose |
 | --- | --- |
-| `VITE_API_BASE_URL` | API base URL including `/api`. Keep the default `/api` so calls stay same-origin and use the services rewrite. |
+| `VITE_API_BASE_URL` | API base URL including `/api`. Keep the default `/api` for the Vite proxy and Vercel services. |
 
-> Vite embeds `VITE_*` variables at build time. After changing it, redeploy the frontend.
+Vite embeds `VITE_*` variables at build time. Redeploy the frontend after changing them.
 
 ---
 
-## 4. Deploying to Vercel
+## Deployment to Vercel
 
-Do **not** commit `.env` files or certificates. Set all secrets in the Vercel dashboard.
-
-### 4.1 Push the repository
-
-```bash
-git init
-git add .
-git commit -m "Initial College Management Portal"
-git remote add origin REPLACE_WITH_YOUR_GIT_REMOTE
-git push -u origin main
-```
-
-### 4.2 Services project
+Do not commit `.env` files. Set secrets in the Vercel dashboard.
 
 1. Import the repository in Vercel.
 2. Leave **Root Directory** at the repository root. The root `vercel.json` defines both services:
    - `frontend` (Vite) serves the public site at `/`.
    - `backend` (Node) serves the API under `/api/*`.
-3. If Vercel prompts for a framework preset, select **Services**. Otherwise it reads `vercel.json` and builds both services.
-4. Add the backend env vars: `MYSQL_URL`, `MYSQL_CA_CERT`, `JWT_SECRET`, and optionally `FRONTEND_URL`, `JWT_EXPIRES_IN`, `MYSQL_SSL`, `MYSQL_POOL_MAX`.
-5. Deploy. Top-level rewrites send `/api/*` to the `backend` service and everything else to `frontend`; `frontend` rewrites client-side routes to `index.html`.
+3. Add the backend environment variables: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `JWT_SECRET`, and optionally `MYSQL_SSL`, `MYSQL_CA_CERT`, `FRONTEND_URL`, `JWT_EXPIRES_IN`, `MYSQL_POOL_MAX`.
+4. Run `npm run db:migrate` from `backend/` against the production database from a trusted machine before deploying. Do not run `db:update` or `seed-demo` in production.
+5. Deploy.
 6. Verify `https://REPLACE_WITH_PROJECT.vercel.app/api/health` reports `{"status":"ok","database":"up"}`.
 
-`VITE_API_BASE_URL` defaults to `/api`, so the browser calls the same origin and no separate backend URL is needed. Set `FRONTEND_URL` only if you call the API from a different origin.
+`VITE_API_BASE_URL` defaults to `/api`, so the browser calls the same origin and no separate backend URL is needed.
 
-To run both services together locally with the same routing, run `vercel dev` from the repository root.
-
-### 4.3 Post-deploy checklist
+### Post-deploy checklist
 
 - `GET /api/health` returns 200 and `database: up`.
-- Login works with the admin account created in step 1.5.
+- The production admin account works.
 - An unauthenticated API request returns 401.
 - A student token cannot read another student's data or write admin resources.
-- The database port is not publicly open, and TLS verification is enabled.
+- Demo accounts are not enabled in production.
+- The database port is not publicly open, and TLS is enabled when required.
 
 ---
 
-## 5. API overview
+## API overview
 
-All protected endpoints require `Authorization: Bearer <jwt>`. Every permission is enforced server-side; hiding UI is not treated as security.
+All protected endpoints require `Authorization: Bearer <jwt>`. Permissions are enforced server-side.
 
-| Method & path | Roles | Notes |
+| Method and path | Roles | Notes |
 | --- | --- | --- |
-| `POST /api/auth/login` | Public (rate-limited) | Returns JWT + user. |
-| `GET /api/auth/me` | Any authenticated | Current user (and student/faculty profile). |
+| `POST /api/auth/login` | Public (rate-limited) | Students use numeric student ID; admin/faculty use email. Returns JWT + user. |
+| `GET /api/auth/me` | Any authenticated | Current user and student/faculty profile. |
 | `POST /api/auth/change-password` | Any authenticated | Requires current password. |
-| `GET /api/health` | Public | `SELECT 1`. |
+| `GET /api/health` | Public | Runs `SELECT 1`. |
 | `GET/POST/PUT/DELETE /api/departments` | Read: all; write: admin | |
-| `GET/POST/PUT/DELETE /api/courses` | Read: role-filtered; write: admin | Students see enrolled courses only; faculty see assigned/department courses. |
-| `GET/POST/PUT/DELETE /api/students` | Admin; faculty read own department | Faculty list is restricted to their department. |
+| `GET/POST/PUT/DELETE /api/courses` | Read: role-filtered; write: admin | Students see enrolled courses; faculty see assigned/department courses. |
+| `GET/POST/PUT/DELETE /api/students` | Admin; faculty read own department | |
 | `GET/POST/PUT/DELETE /api/faculty` | Admin; faculty read own department | |
-| `GET /api/faculty/roster` | Admin/faculty | Department roster; faculty forced to own department. |
+| `GET /api/faculty/roster` | Admin/faculty | Department roster; faculty limited to own department. |
 | `GET/POST/DELETE /api/enrollments` | Read: role-filtered; write: admin | Unique student+course enforced. |
-| `GET /api/attendance/session` | Admin/faculty | Enrolled students + existing marks for course/date. Faculty limited to own courses. |
-| `POST /api/attendance` | Admin/faculty | Upsert on student+course+date; faculty limited to own courses. |
+| `GET /api/attendance/session` | Admin/faculty | Enrolled students and existing marks for course/date. |
+| `POST /api/attendance` | Admin/faculty | Upsert on student+course+date. |
 | `GET /api/attendance/me` | Student | Own present/total and percentage per course. |
 | `GET /api/attendance/course/:courseId/summary` | Admin/faculty | Per-student summary. |
-| `GET/POST/DELETE /api/announcements` | Read: audience-filtered; write: admin/faculty | Faculty can target own department or own courses only. |
+| `GET/POST/DELETE /api/announcements` | Read: audience-filtered; write: admin/faculty | Faculty can target own department or courses only. |
 | `GET/POST /api/users` | Admin | List users; create another admin. |
-
-### Edge cases handled
-
-- Duplicate enrollment → HTTP 409 (unique constraint).
-- Attendance submitted twice for the same student/course/date → upsert (`ON DUPLICATE KEY UPDATE`).
-- Faculty marking attendance for a course they do not teach → 403.
-- Students reading other students' data → filtered/queries scoped to their own ID.
-- Inactive accounts → rejected at login and on every authenticated request.
-- Invalid/expired JWT → 401; insufficient role → 403.
-- Validation failures → 400 with field-level details.
-- Unexpected errors → generic 500 in production (no stack traces).
 
 ### Security measures
 
-- Parameterized SQL everywhere (no string interpolation of user input).
-- `helmet`, CORS restricted to `FRONTEND_URL`, JSON body size limit, login rate limiting.
-- `bcryptjs` password hashing (bcrypt algorithm) and short-lived JWTs.
-- Least-privilege `appuser` database account; TLS verification with a supplied CA.
-- `audit_logs` records logins, user/profile changes, course/department changes, enrollments, attendance submissions, and announcement changes.
-- Secrets come only from environment variables; `.env`, keys, and certificates are gitignored.
+- Parameterized SQL everywhere.
+- `helmet`, restricted CORS, JSON body size limit, and login rate limiting.
+- `bcryptjs` password hashing and short-lived JWTs.
+- Least-privilege `appuser` database account; migrations use a separate DDL-capable account.
+- `audit_logs` records logins, profile changes, course/department changes, enrollments, attendance, and announcements.
+- Secrets come only from environment variables; `.env` files are gitignored.
+- Demo seeding is blocked when `NODE_ENV=production` unless explicitly overridden.
 
 ---
 
-## 6. Troubleshooting
+## Troubleshooting
 
 | Symptom | Check |
 | --- | --- |
-| `MYSQL_URL is not configured` | Backend env var missing. |
-| Health returns 503 | `MYSQL_URL`, EC2 reachability, security group, TLS/CA (`MYSQL_CA_CERT`). |
-| `Access denied for user 'appuser'@...` | Update the password in `grants.sql`/database and `MYSQL_URL`; confirm the account host matches the client. |
-| `Unknown database 'college_portal'` | Create the database and apply `schema.sql`. |
-| `Table ... doesn't exist` | Run `schema.sql` as the database owner. |
-| `Can't connect to MySQL server` | Check MySQL is running, `bind-address`, port `3306`, and the EC2 security group. |
-| Login always fails | Admin exists? Password correct? Account active? Check `users.role`. |
-| CORS error in browser | Same-origin calls should not need `FRONTEND_URL`; if you call the API from another origin, set it exactly and redeploy. |
-| Frontend calls the wrong host | `VITE_API_BASE_URL` should normally be `/api`; it is embedded at build time, so redeploy after changing. |
-| `permission denied` / `command denied` | Re-run `grants.sql` as the MySQL administrator and verify `appuser` has DML grants only. |
-| Vercel API 404 for `/api/...` | Confirm the root `vercel.json` is present, `services.backend.root` is `backend`, and the public `/api/(.*)` rewrite targets `backend`. |
-| Service build or runtime settings ignored | Keep fields such as `functions`, `framework`, and commands inside each service in the root `vercel.json`. |
+| `Database connection is not configured` | Set `DB_HOST` and `DB_NAME` (or `MYSQL_URL`) in `backend/.env`. |
+| `Database connection failed` on backend start | MySQL is running; run `npm run test-db` from `backend/`. |
+| Health returns 503 | MySQL is running and the `DB_*` values are correct. |
+| `Access denied for user ...` | Check `DB_USER`, `DB_PASSWORD`, `DB_MIGRATION_USER`, and `DB_MIGRATION_PASSWORD`. |
+| `Unknown database 'dbuild'` | Start Docker Compose or import `database.sql`. |
+| `Table ... doesn't exist` | Run `npm run db:update` from `backend/`. |
+| `Can't connect to MySQL server` | Check MySQL is running and listening on `DB_HOST:DB_PORT`. |
+| Docker says port 3306 is already in use | Set `MYSQL_PORT=3307` for Compose and `DB_PORT=3307` in `backend/.env`. |
+| Changes do not appear after `git pull` | Run `npm run db:update`; existing Docker volumes are not re-initialized automatically. |
+| `Refusing to seed demo data in production` | Use `npm run db:migrate` in production, or set `ALLOW_DEMO_SEED=true` only for an intentional demo deployment. |
+| `permission denied` during migration | The migration user needs DDL privileges; set `DB_MIGRATION_USER` and `DB_MIGRATION_PASSWORD`. |
+| CORS error in browser | Same-origin calls should not need `FRONTEND_URL`; set it exactly if calling from another origin. |
+| Login always fails | Confirm the account exists, the password is correct, and the account is active. |
+| Student login fails | Students use their numeric `users.id`, not their email address. |
 
 ---
 
 ## Notes
 
-- No real credentials, hostnames, or deployment results are included in this repository. All placeholders must be replaced.
-- The provided code was verified locally with lint and a production frontend build; it has **not** been deployed as part of this work.
+- A live MySQL database and Docker volume are not stored in Git.
+- A fresh clone rebuilds the database from tracked files after `npm run db:update`.
+- Existing clones apply new schema/data changes by running `npm run db:update` after pulling.
+- `backend/.env`, `DEMO_CREDENTIALS.local.md`, CA files, `node_modules/`, and build output are gitignored.
+- The documented demo passwords are intentionally public local-demo credentials. Do not use them in production.

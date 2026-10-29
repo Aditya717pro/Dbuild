@@ -13,7 +13,8 @@ const NAV_ITEMS = [
   { to: '/faculty/manage', label: 'Faculty', roles: ['admin'] },
   { to: '/enrollments', label: 'Enrollments', roles: ['admin', 'faculty'] },
   { to: '/enrollments/manage', label: 'Manage Enrollments', roles: ['admin'] },
-  { to: '/attendance', label: 'Attendance', roles: ['admin', 'faculty', 'student'] },
+  { to: '/attendance', label: 'My Attendance', roles: ['student'] },
+  { to: '/attendance', label: 'Student Attendance', roles: ['admin', 'faculty'] },
   { to: '/announcements', label: 'Announcements', roles: ['admin', 'faculty', 'student'] },
 ];
 
@@ -74,7 +75,7 @@ export default function Layout() {
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {items.map((item) => (
             <NavLink
-              key={item.to}
+              key={`${item.to}-${item.label}`}
               to={item.to}
               className={({ isActive }) =>
                 `nav-link ${

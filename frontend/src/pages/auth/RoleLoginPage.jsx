@@ -37,7 +37,8 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
       const response = await api.post('/auth/login', { email: email.trim(), password });
       if (response?.user?.role !== allowedRole) {
         logout();
-        setError(`This login is only for ${allowedRole}s. Please use the correct login page.`);
+        const roleLabel = allowedRole === 'faculty' ? 'teachers' : `${allowedRole}s`;
+        setError(`This login is only for ${roleLabel}. Please use the correct login page.`);
         return;
       }
       setToken(response.token);
@@ -70,7 +71,7 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
         <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
         </svg>
-        <span>Unified Login</span>
+        <span>All Logins</span>
       </Link>
 
       {/* Transparent Glass Box */}
@@ -89,11 +90,11 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
               <input
                 id="email"
                 type="text"
-                autoComplete="email"
+                autoComplete="off"
                 required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="User ID / Email"
+                placeholder={allowedRole === 'student' ? 'Student ID' : 'Email'}
                 className="w-full rounded-2xl border border-slate-200/90 bg-white/75 px-4 py-3.5 pr-11 text-sm text-slate-800 placeholder-slate-400 backdrop-blur-sm transition-all focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 shadow-sm"
               />
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-indigo-400">
@@ -108,7 +109,7 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}

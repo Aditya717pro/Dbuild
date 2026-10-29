@@ -1,3 +1,5 @@
+import 'dotenv/config';
+import fs from 'node:fs';
 import mysql from 'mysql2/promise';
 
 function parseIntEnv(value, fallback) {
@@ -5,32 +7,55 @@ function parseIntEnv(value, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-function buildSslConfig() {
+function safeDecode(value) {
+  if (!value) return '';
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+export function buildSslConfig() {
   const mode = (process.env.MYSQL_SSL || '').trim().toLowerCase();
   if (mode === 'disable' || mode === 'false' || mode === 'off') {
     return undefined;
   }
-  const ca = (process.env.MYSQL_CA_CERT || '').replace(/\\n/g, '\n').trim();
-  if (ca) {
+  const certVal = (process.env.MYSQL_CA_CERT || '').trim().replace(/^["']|["']$/g, '');
+  if (certVal) {
+    let ca;
+    if (certVal.includes('BEGIN CERTIFICATE')) {
+      ca = certVal.replace(/\\n/g, '\n');
+    } else {
+      if (!fs.existsSync(certVal)) {
+        throw new Error(`CA certificate file not found at path: ${certVal}`);
+      }
+      ca = fs.readFileSync(certVal, 'utf8');
+    }
     return { rejectUnauthorized: true, ca };
   }
   return { rejectUnauthorized: true };
 }
 
-function parseConnectionConfig() {
+export function parseConnectionConfig() {
   let url = process.env.MYSQL_URL;
   if (!url) {
-    // Allow missing password in URL by falling back to constructing from parts if possible
+    // Construct directly from discrete parts if provided
     const host = process.env.DB_HOST || process.env.MYSQL_HOST;
     const user = process.env.DB_USER || process.env.MYSQL_USER || 'appuser';
     const pass = process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD || '';
     const db = process.env.DB_NAME || process.env.MYSQL_DATABASE || process.env.DB;
-    if (host && db) {
-      const encodedPass = encodeURIComponent(pass);
-      url = `mysql://${user}:${encodedPass}@${host}:${process.env.DB_PORT || process.env.MYSQL_PORT || 3306}/${db}`;
-    } else {
-      throw new Error('MYSQL_URL is not configured');
+    const port = parseIntEnv(process.env.DB_PORT || process.env.MYSQL_PORT, 3306);
+    if (!host || !db) {
+      throw new Error('Database connection is not configured. Set DB_HOST and DB_NAME (or MYSQL_URL).');
     }
+    return {
+      host,
+      port,
+      user,
+      password: pass,
+      database: db,
+    };
   }
 
   let parsed;
@@ -44,7 +69,7 @@ function parseConnectionConfig() {
     throw new Error('MYSQL_URL must use the mysql:// scheme');
   }
 
-  const database = decodeURIComponent(parsed.pathname.replace(/^\//, ''));
+  const database = safeDecode(parsed.pathname.replace(/^\//, ''));
   if (!database) {
     throw new Error('MYSQL_URL must include a database name');
   }
@@ -52,7 +77,8 @@ function parseConnectionConfig() {
   return {
     host: parsed.hostname,
     port: parsed.port ? Number(parsed.port) : 3306,
-    user: decodeURIComponent(parsed.username),
+    user: safeDecode(parsed.username),
+    password: safeDecode(parsed.password),
     database,
   };
 }

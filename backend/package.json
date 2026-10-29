@@ -12,7 +12,13 @@
     "start": "node server.js",
     "lint": "eslint .",
     "check": "node --check api/index.js && node --check server.js",
-    "create-admin": "node scripts/create-admin.js"
+    "test-db": "node scripts/test-db-connection.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:update": "npm run db:migrate && npm run seed-demo",
+    "create-admin": "node scripts/create-admin.js",
+    "create-student": "node scripts/create-student.js",
+    "seed-demo": "node scripts/seed-demo-data.js",
+    "verify-demo": "node scripts/verify-demo-auth.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

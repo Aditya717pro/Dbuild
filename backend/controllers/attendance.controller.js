@@ -104,6 +104,51 @@ export async function myAttendance(req, res) {
   return res.json({ courses });
 }
 
+export async function studentOverview(req, res) {
+  let departmentId = null;
+  if (req.user.role === 'faculty') {
+    const { rows } = await query('SELECT department_id FROM faculty WHERE user_id = ?', [req.user.id]);
+    departmentId = rows[0]?.department_id ?? null;
+    if (!departmentId) {
+      return res.json({ students: [] });
+    }
+  }
+
+  const params = [];
+  let where = '';
+  if (departmentId) {
+    where = 'WHERE s.department_id = ?';
+    params.push(departmentId);
+  }
+
+  const { rows } = await query(
+    `SELECT s.user_id AS student_id, s.roll_no, u.name, u.email,
+            d.name AS department_name,
+            CAST(COALESCE(agg.present, 0) AS UNSIGNED) AS present,
+            CAST(COALESCE(agg.total, 0) AS UNSIGNED) AS total
+     FROM students s
+     JOIN users u ON u.id = s.user_id
+     LEFT JOIN departments d ON d.id = s.department_id
+     LEFT JOIN (
+       SELECT student_id,
+              SUM(status = 'present') AS present,
+              COUNT(*) AS total
+       FROM attendance
+       GROUP BY student_id
+     ) agg ON agg.student_id = s.user_id
+     ${where}
+     ORDER BY s.roll_no`,
+    params,
+  );
+
+  return res.json({
+    students: rows.map((row) => ({
+      ...row,
+      percentage: row.total === 0 ? null : Math.round((row.present / row.total) * 100),
+    })),
+  });
+}
+
 export async function courseSummary(req, res) {
   const courseId = Number(req.params.courseId);
   const course = await getAccessibleCourse(req.user, courseId);

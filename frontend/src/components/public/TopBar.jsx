@@ -159,7 +159,14 @@ export default function TopBar() {
                       className="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0b3d91]"
                       onClick={() => setErpOpen(false)}
                     >
-                      📊 Open Dashboard
+                      dY"S Open Dashboard
+                    </Link>
+                    <Link
+                      to="/attendance"
+                      className="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0b3d91]"
+                      onClick={() => setErpOpen(false)}
+                    >
+                      {user.role === 'student' ? 'My Attendance' : 'Student Attendance'}
                     </Link>
                     <button
                       type="button"

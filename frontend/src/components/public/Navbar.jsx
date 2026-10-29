@@ -422,7 +422,8 @@ export default function Navbar() {
                 <div className="mt-1 flex flex-col gap-1">
                   <Link to="/career" className="rounded px-3 py-1.5 text-white/90 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Career</Link>
                   <Link to="/login/student" className="rounded px-3 py-1.5 font-bold text-amber-300 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Student Portal Login</Link>
-                  <Link to="/login/faculty" className="rounded px-3 py-1.5 font-bold text-amber-300 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Faculty Portal Login</Link>
+                  <Link to="/login/teacher" className="rounded px-3 py-1.5 font-bold text-amber-300 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Teacher Portal Login</Link>
+                  <Link to="/login/admin" className="rounded px-3 py-1.5 font-bold text-amber-300 hover:bg-white/10" onClick={() => setMobileOpen(false)}>Admin Portal Login</Link>
                 </div>
               </div>
             </div>

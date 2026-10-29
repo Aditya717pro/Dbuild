@@ -105,5 +105,6 @@ export function RoleBadge({ role }) {
     faculty: 'bg-emerald-100 text-emerald-700',
     student: 'bg-amber-100 text-amber-700',
   };
-  return <span className={`badge ${tones[role] || 'bg-slate-100 text-slate-700'}`}>{role}</span>;
+  const labels = { admin: 'Admin', faculty: 'Teacher', student: 'Student' };
+  return <span className={`badge ${tones[role] || 'bg-slate-100 text-slate-700'}`}>{labels[role] || role}</span>;
 }

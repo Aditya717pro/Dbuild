@@ -39,7 +39,7 @@ function AccreditationSectionWrapper() {
   return <AccreditationPage section={section} />;
 }
 import RoleLoginPage from './pages/auth/RoleLoginPage.jsx';
-import LoginPage from './pages/LoginPage.jsx';
+import LoginPortalPage from './pages/auth/LoginPortalPage.jsx';
 import { AdminDashboardPage, FacultyDashboardPage, StudentDashboardPage } from './pages/dashboard/RoleDashboardNew.jsx';
 import RoleDashboard from './pages/RoleDashboard.jsx';
 import ManageDepartmentsPage from './pages/manage/ManageDepartmentsPage.jsx';
@@ -91,16 +91,21 @@ export default function App() {
           <Route path="/career" element={<CareerPage />} />
         </Route>
 
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPortalPage />} />
         <Route
           path="/login/student"
-          element={<RoleLoginPage allowedRole="student" title="Student Login" subtitle="Access your courses and attendance" />}
+          element={<RoleLoginPage allowedRole="student" title="Student Login" subtitle="View your courses and your attendance" />}
         />
         <Route
-          path="/login/faculty"
-          element={<RoleLoginPage allowedRole="faculty" title="Staff Login" subtitle="Manage attendance and announcements" />}
+          path="/login/teacher"
+          element={<RoleLoginPage allowedRole="faculty" title="Teacher Login" subtitle="Mark and review attendance for every student" />}
         />
-        <Route path="/admin/login" element={<LoginPage defaultRole="admin" />} />
+        <Route path="/login/faculty" element={<Navigate to="/login/teacher" replace />} />
+        <Route
+          path="/login/admin"
+          element={<RoleLoginPage allowedRole="admin" title="Admin Login" subtitle="Manage the college portal" />}
+        />
+        <Route path="/admin/login" element={<Navigate to="/login/admin" replace />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>

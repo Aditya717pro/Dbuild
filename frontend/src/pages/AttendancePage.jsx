@@ -7,6 +7,83 @@ import { Alert, EmptyState, ErrorState, PageHeader, PageLoader, StatCard } from 
 import { Field, SelectInput, TextInput } from '../components/FormControls.jsx';
 import { todayISO } from '../utils/format.js';
 
+function StudentAttendanceOverview({ data, loading, error, onRetry }) {
+  const students = data?.students || [];
+  const scored = students.filter((student) => student.percentage !== null);
+  const average = scored.length
+    ? Math.round(scored.reduce((sum, student) => sum + student.percentage, 0) / scored.length)
+    : null;
+
+  return (
+    <section className="card mb-6 overflow-hidden">
+      <div className="flex flex-col gap-2 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900">Every student&apos;s attendance</h2>
+          <p className="text-sm text-slate-500">
+            Overall attendance across every class recorded for each student.
+          </p>
+        </div>
+        <p className="text-xs font-medium text-slate-500">
+          {students.length} students
+          {average === null ? '' : ` \u00b7 Average ${average}%`}
+        </p>
+      </div>
+
+      {loading && <p className="px-5 py-6 text-sm text-slate-500">Loading student attendance...</p>}
+
+      {!loading && error && (
+        <div className="px-5 py-4">
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <span>{error}</span>
+            <button type="button" className="text-xs font-semibold underline" onClick={onRetry}>
+              Try again
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!loading && !error && students.length === 0 && (
+        <EmptyState
+          title="No students found"
+          message="Students will appear here once they are added to your department."
+        />
+      )}
+
+      {!loading && !error && students.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-slate-200">
+            <thead className="bg-slate-50">
+              <tr>
+                <th className="th">Roll No</th>
+                <th className="th">Student</th>
+                <th className="th">Department</th>
+                <th className="th">Present</th>
+                <th className="th">Total</th>
+                <th className="th min-w-[12rem]">Attendance</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white">
+              {students.map((student) => (
+                <tr key={student.student_id} className="hover:bg-slate-50">
+                  <td className="td font-medium text-slate-900">{student.roll_no}</td>
+                  <td className="td">
+                    <p className="font-medium text-slate-900">{student.name}</p>
+                    <p className="text-xs text-slate-500">{student.email}</p>
+                  </td>
+                  <td className="td text-slate-600">{student.department_name || '-'}</td>
+                  <td className="td">{student.present}</td>
+                  <td className="td">{student.total}</td>
+                  <td className="td"><AttendanceBar percentage={student.percentage} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function StudentAttendance() {
   const { data, loading, error, reload } = useApiData('/attendance/me');
 
@@ -74,9 +151,11 @@ function StudentAttendance() {
 function StaffAttendance() {
   const { user } = useAuth();
   const courses = useApiData('/courses');
+  const overview = useApiData('/attendance/students');
   const [courseId, setCourseId] = useState('');
   const [date, setDate] = useState(todayISO());
   const [session, setSession] = useState(null);
+  const [summary, setSummary] = useState(null);
   const [statuses, setStatuses] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -89,6 +168,7 @@ function StaffAttendance() {
     async function loadSession() {
       if (!courseId || !date) {
         setSession(null);
+        setSummary(null);
         setStatuses({});
         return;
       }
@@ -96,9 +176,13 @@ function StaffAttendance() {
       setError('');
       setNotice('');
       try {
-        const data = await api.get(`/attendance/session?course_id=${courseId}&date=${date}`);
+        const [data, summaryData] = await Promise.all([
+          api.get(`/attendance/session?course_id=${courseId}&date=${date}`),
+          api.get(`/attendance/course/${courseId}/summary`),
+        ]);
         if (cancelled) return;
         setSession(data);
+        setSummary(summaryData);
         const next = {};
         for (const student of data.students) {
           next[student.student_id] = student.status || 'present';
@@ -108,6 +192,7 @@ function StaffAttendance() {
         if (!cancelled) {
           setError(err.message);
           setSession(null);
+          setSummary(null);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -129,6 +214,11 @@ function StaffAttendance() {
   const students = session?.students || [];
   const presentCount = Object.values(statuses).filter((status) => status === 'present').length;
   const absentCount = Object.values(statuses).filter((status) => status === 'absent').length;
+  const summaryStudents = summary?.students || [];
+  const scoredSummary = summaryStudents.filter((student) => student.percentage !== null);
+  const summaryAverage = scoredSummary.length
+    ? Math.round(scoredSummary.reduce((sum, student) => sum + student.percentage, 0) / scoredSummary.length)
+    : null;
 
   function toggle(studentId, checked) {
     setStatuses((prev) => ({ ...prev, [studentId]: checked ? 'present' : 'absent' }));
@@ -161,6 +251,9 @@ function StaffAttendance() {
     try {
       await api.post('/attendance', { course_id: Number(courseId), date, records });
       setNotice(`Attendance saved for ${records.length} students.`);
+      const summaryData = await api.get(`/attendance/course/${courseId}/summary`);
+      setSummary(summaryData);
+      overview.reload();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -171,8 +264,15 @@ function StaffAttendance() {
   return (
     <div>
       <PageHeader
-        title="Attendance"
-        subtitle="Pick a course and date, then mark each student present or absent."
+        title="Student attendance"
+        subtitle="Mark attendance for a course and review attendance for every student."
+      />
+
+      <StudentAttendanceOverview
+        data={overview.data}
+        loading={overview.loading}
+        error={overview.error}
+        onRetry={overview.reload}
       />
 
       <form className="card p-5" onSubmit={handleSubmit}>
@@ -289,6 +389,47 @@ function StaffAttendance() {
                 </button>
               </div>
             )}
+          </div>
+        )}
+
+        {session && !loading && summaryStudents.length > 0 && (
+          <div className="mt-8 border-t border-slate-200 pt-6">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">Course attendance summary</h3>
+                <p className="text-sm text-slate-500">
+                  {summary?.course?.code} · {summary?.course?.name} — every enrolled student
+                </p>
+              </div>
+              <p className="text-xs font-medium text-slate-500">
+                {summaryStudents.length} students
+                {summaryAverage === null ? '' : ` · Average ${summaryAverage}%`}
+              </p>
+            </div>
+            <div className="overflow-x-auto rounded-lg border border-slate-200">
+              <table className="min-w-full divide-y divide-slate-200">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="th">Roll No</th>
+                    <th className="th">Student</th>
+                    <th className="th">Present</th>
+                    <th className="th">Total</th>
+                    <th className="th min-w-[12rem]">Attendance</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white">
+                  {summaryStudents.map((student) => (
+                    <tr key={student.student_id} className="hover:bg-slate-50">
+                      <td className="td font-medium text-slate-900">{student.roll_no}</td>
+                      <td className="td">{student.name}</td>
+                      <td className="td">{student.present}</td>
+                      <td className="td">{student.total}</td>
+                      <td className="td"><AttendanceBar percentage={student.percentage} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </form>

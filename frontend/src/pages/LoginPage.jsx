@@ -10,7 +10,7 @@ const ROLES = [
     id: 'student',
     label: 'Student',
     allowed: ['student'],
-    userPlaceholder: 'Roll No / Email',
+    userPlaceholder: 'Student ID',
   },
   {
     id: 'staff',
@@ -198,6 +198,7 @@ export default function LoginPage({ defaultRole = 'student' }) {
               <input
                 type="text"
                 required
+                autoComplete="off"
                 value={identifier}
                 onChange={(event) => setIdentifier(event.target.value)}
                 placeholder={selectedRole.userPlaceholder}
@@ -217,7 +218,7 @@ export default function LoginPage({ defaultRole = 'student' }) {
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
-                autoComplete="current-password"
+                autoComplete="new-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="Password"
