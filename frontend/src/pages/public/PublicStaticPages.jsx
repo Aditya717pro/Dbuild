@@ -3,19 +3,35 @@ import { Link, useLocation } from 'react-router-dom';
 import { siteConfig } from '../../config/siteConfig.js';
 
 // Base layout wrapper for public informational pages
-function PublicPageLayout({ title, subtitle, breadcrumbs = [], subNav = [], children }) {
+function PublicPageLayout({
+  title,
+  subtitle,
+  breadcrumbs = [],
+  subNav = [],
+  hero,
+  bannerClassName = 'bg-gradient-to-r from-[#0b3d91] via-[#0a347c] to-[#041e42]',
+  children,
+}) {
   const location = useLocation();
 
   return (
     <div className="min-h-screen bg-slate-50 pb-16">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-[#0b3d91] to-[#041e42] text-white">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
-          <nav className="flex items-center gap-2 text-xs text-blue-200">
+      <div className={`relative overflow-hidden text-white ${bannerClassName}`}>
+        <div
+          className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-amber-400/15 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -bottom-32 left-1/4 h-72 w-72 rounded-full bg-sky-400/15 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-11">
+          <nav className="flex flex-wrap items-center gap-2 text-xs text-blue-200">
             <Link to="/" className="hover:text-white">Home</Link>
             {breadcrumbs.map((crumb, idx) => (
               <span key={idx} className="flex items-center gap-2">
-                <span>/</span>
+                <span className="text-blue-300/70">/</span>
                 {crumb.to ? (
                   <Link to={crumb.to} className="hover:text-white">{crumb.label}</Link>
                 ) : (
@@ -24,8 +40,9 @@ function PublicPageLayout({ title, subtitle, breadcrumbs = [], subNav = [], chil
               </span>
             ))}
           </nav>
-          <h1 className="mt-3 text-2xl font-extrabold sm:text-3xl lg:text-4xl">{title}</h1>
-          {subtitle && <p className="mt-1 text-sm text-blue-100 max-w-2xl">{subtitle}</p>}
+          <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-4xl">{title}</h1>
+          {subtitle && <p className="mt-1.5 max-w-2xl text-sm text-blue-100">{subtitle}</p>}
+          {hero}
         </div>
 
         {/* Sub-navigation tabs (if any) */}
@@ -437,10 +454,55 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
           : [{ label: 'Admission', to: '/admission' }, { label: activeSectionTitle }]
       }
       subNav={selectedCourse ? [] : subNav}
+      hero={
+        !selectedCourse && (
+          <div className="mt-6">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Link
+                to="/admission/enquiry"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-amber-400 px-4 py-2.5 text-xs font-extrabold text-slate-900 shadow-lg transition hover:bg-amber-300"
+              >
+                Apply Online <span aria-hidden="true">&rarr;</span>
+              </Link>
+              <Link
+                to="/admission/ug"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20"
+              >
+                Explore UG Programmes
+              </Link>
+              <Link
+                to="/admission/fees-structure"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20"
+              >
+                Fees &amp; Scholarships
+              </Link>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { value: '10+', label: 'UG Programmes' },
+                { value: '4', label: 'PG Programmes' },
+                { value: '980', label: 'UG Seats' },
+                { value: '100%', label: 'Merit-Based' },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur"
+                >
+                  <p className="text-lg font-black text-amber-300 sm:text-xl">{stat.value}</p>
+                  <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-100">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
     >
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3 lg:gap-10">
         {/* Main Content Area */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="space-y-8 lg:col-span-2">
           {selectedCourse && (
             <div className="card overflow-hidden">
               <div
@@ -508,18 +570,18 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
 
               <div className="border-t border-slate-200 p-6">
                 <h3 className="text-sm font-bold text-slate-900">Programme Highlights</h3>
-                <ul className="mt-3 grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
+                <ul className="mt-3 grid gap-2 text-sm text-slate-700 sm:grid-cols-2">
                   {courseHighlights.map((highlight) => (
-                    <li key={highlight} className="flex items-start gap-2 rounded-lg bg-slate-50 p-2.5">
+                    <li key={highlight} className="flex items-start gap-2 rounded-lg bg-slate-50 p-3">
                       <span className="mt-0.5 font-bold text-emerald-600">✓</span>
-                      <span>{highlight}</span>
+                      <span className="leading-relaxed">{highlight}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
               <div className="border-t border-slate-200 bg-blue-50/50 p-5">
-                <p className="text-xs leading-relaxed text-slate-700">
+                <p className="text-sm leading-relaxed text-slate-700">
                   <strong className="text-[#0b3d91]">Eligibility:</strong> {selectedCourse.eligibility}
                 </p>
               </div>
@@ -528,86 +590,93 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
 
           {/* 1. PROGRAMMES OFFERED */}
           {(isProgrammes || isUG || isPG) && !selectedCourse && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Undergraduate Card */}
               {!isPG && (
-              <div className="card p-6 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
-                  <div>
-                    <span className="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-[#0b3d91]">
-                      4-Year Undergraduate Degree
-                    </span>
-                    <h2 className="mt-1 text-xl font-bold text-[#0b3d91]">
-                      Undergraduate (B.E. / B.Tech) Programmes
-                    </h2>
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Academic Year 2026 - 2027 • Merit-Based Admissions
+              <div className="card overflow-hidden">
+                <div className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-white p-6">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0b3d91]">
+                        4-Year Undergraduate Degree
+                      </span>
+                      <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">
+                        Undergraduate (B.E. / B.Tech) Programmes
+                      </h2>
+                      <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-600">
+                        Admission is based on academic merit in the qualifying examination, followed by a personal interview. Programmes follow a flexible credit framework with industry-aligned electives.
+                      </p>
+                    </div>
+                    <div className="shrink-0 rounded-lg border border-blue-100 bg-white px-3 py-2 text-center shadow-sm">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Academic Year</p>
+                      <p className="text-sm font-black text-[#0b3d91]">2026 - 2027</p>
+                    </div>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Admission to undergraduate programmes is based on academic merit in the qualifying examination, followed by a personal interview. All programmes follow a flexible credit framework with industry-aligned electives and experiential learning.
-                </p>
-
-                <div className="overflow-x-auto rounded-lg border border-slate-200">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-100 font-bold uppercase text-slate-700">
-                      <tr>
-                        <th className="p-3">Programme</th>
-                        <th className="p-3">Degree</th>
-                        <th className="p-3">Code</th>
-                        <th className="p-3 text-center">Sanctioned Intake</th>
-                        <th className="p-3">Accreditation</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
-                      {ugProgrammes.map((dept) => (
-                        <tr key={dept.code} className="group hover:bg-blue-50/40 transition">
-                          <td className="p-3 font-semibold text-slate-900">
-                            <Link
-                              to={`/admission/ug/${dept.slug}`}
-                              className="inline-flex items-center gap-1.5 text-slate-900 transition hover:text-[#0b3d91] hover:underline"
-                            >
-                              {dept.name}
-                              <span className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-[#0b3d91]">
-                                &rarr;
-                              </span>
-                            </Link>
-                          </td>
-                          <td className="p-3">
-                            <span className="rounded bg-slate-100 px-2 py-0.5 font-bold text-slate-700 text-[11px]">
-                              {dept.degree}
-                            </span>
-                          </td>
-                          <td className="p-3 text-slate-600 font-mono font-bold">{dept.code}</td>
-                          <td className="p-3 text-center font-bold text-[#0b3d91]">{dept.intake}</td>
-                          <td className="p-3">
-                            {dept.accredited ? (
-                              <span className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2.5 py-0.5 font-bold text-emerald-800 text-[10px]">
-                                <span>✓</span> Professionally Accredited
-                              </span>
-                            ) : (
-                              <span className="text-slate-500 font-medium text-[11px]">Merit-Based</span>
-                            )}
-                          </td>
+                <div className="space-y-4 p-6">
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                    <table className="w-full text-left text-[13px]">
+                      <thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                        <tr>
+                          <th className="px-4 py-3">Programme</th>
+                          <th className="px-4 py-3">Degree</th>
+                          <th className="px-4 py-3">Code</th>
+                          <th className="px-4 py-3 text-center">Sanctioned Intake</th>
+                          <th className="px-4 py-3">Accreditation</th>
                         </tr>
-                      ))}
-                    </tbody>
-                    <tfoot className="bg-slate-50 font-bold text-slate-800 border-t border-slate-200">
-                      <tr>
-                        <td className="p-3" colSpan={3}>Total Undergraduate Sanctioned Intake</td>
-                        <td className="p-3 text-center text-[#0b3d91] font-black">980 Seats</td>
-                        <td className="p-3 text-xs text-slate-500 font-semibold">Credit Framework 2026</td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {ugProgrammes.map((dept, idx) => (
+                          <tr
+                            key={dept.code}
+                            className={`group transition hover:bg-blue-50/50 ${idx % 2 === 1 ? 'bg-slate-50/40' : ''}`}
+                          >
+                            <td className="px-4 py-3.5 font-semibold text-slate-900">
+                              <Link
+                                to={`/admission/ug/${dept.slug}`}
+                                className="inline-flex items-center gap-1.5 text-slate-900 transition hover:text-[#0b3d91] hover:underline"
+                              >
+                                {dept.name}
+                                <span className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-[#0b3d91]">
+                                  &rarr;
+                                </span>
+                              </Link>
+                            </td>
+                            <td className="px-4 py-3.5">
+                              <span className="rounded bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-700">
+                                {dept.degree}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3.5 font-mono font-bold text-slate-600">{dept.code}</td>
+                            <td className="px-4 py-3.5 text-center font-bold text-[#0b3d91]">{dept.intake}</td>
+                            <td className="px-4 py-3.5">
+                              {dept.accredited ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 ring-1 ring-emerald-200">
+                                  <span>✓</span> Accredited
+                                </span>
+                              ) : (
+                                <span className="text-[11px] font-medium text-slate-500">Merit-Based</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot className="border-t border-slate-200 bg-slate-50 font-bold text-slate-800">
+                        <tr>
+                          <td className="px-4 py-3" colSpan={3}>Total Undergraduate Sanctioned Intake</td>
+                          <td className="px-4 py-3 text-center font-black text-[#0b3d91]">980 Seats</td>
+                          <td className="px-4 py-3 text-xs font-semibold text-slate-500">Credit Framework 2026</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
 
-                <div className="rounded-lg bg-blue-50/70 p-3.5 border border-blue-100 text-xs text-slate-700 flex items-start gap-2">
-                  <span className="text-base text-[#0b3d91]">ℹ️</span>
-                  <div>
-                    <strong className="text-[#0b3d91]">UG Eligibility:</strong> Completed 10+2, A-Levels, IB, or an equivalent qualification with Mathematics, Physics, and Chemistry, and a minimum aggregate of 60% (or equivalent).
+                  <div className="flex items-start gap-2.5 rounded-xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-slate-700">
+                    <span className="mt-0.5 font-bold text-[#0b3d91]">ℹ</span>
+                    <p className="leading-relaxed">
+                      <strong className="text-[#0b3d91]">UG Eligibility:</strong> Completed 10+2, A-Levels, IB, or an equivalent qualification with Mathematics, Physics, and Chemistry, and a minimum aggregate of 60%.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -615,86 +684,103 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
 
               {/* Postgraduate Card */}
               {!isUG && (
-              <div className="card p-6 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
-                  <div>
-                    <span className="rounded bg-purple-100 px-2.5 py-0.5 text-xs font-bold text-purple-900">
-                      2-Year Post Graduate Degree
-                    </span>
-                    <h2 className="mt-1 text-xl font-bold text-[#0b3d91]">
-                      Postgraduate (M.E. / MBA) Programmes
-                    </h2>
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Merit-Based Admission • GATE / GRE / GMAT
+              <div className="card overflow-hidden">
+                <div className="border-b border-slate-200 bg-gradient-to-r from-amber-50 to-white p-6">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-900">
+                        2-Year Post Graduate Degree
+                      </span>
+                      <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">
+                        Postgraduate (M.E. / MBA) Programmes
+                      </h2>
+                      <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-600">
+                        Advanced programmes combining specialised coursework, research seminars, and a supervised dissertation or industry capstone.
+                      </p>
+                    </div>
+                    <div className="shrink-0 rounded-lg border border-amber-100 bg-white px-3 py-2 text-center shadow-sm">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Accepted Scores</p>
+                      <p className="text-sm font-black text-[#0b3d91]">GATE / GRE / GMAT</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-lg border border-slate-200">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-100 font-bold uppercase text-slate-700">
-                      <tr>
-                        <th className="p-3">Programme</th>
-                        <th className="p-3">Degree</th>
-                        <th className="p-3">Code</th>
-                        <th className="p-3 text-center">Intake</th>
-                        <th className="p-3">Eligibility Criteria</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
-                      {pgProgrammes.map((p) => (
-                        <tr key={p.code} className="group hover:bg-amber-50/40 transition">
-                          <td className="p-3 font-semibold text-slate-900">
-                            <Link
-                              to={`/admission/pg/${p.slug}`}
-                              className="inline-flex items-center gap-1.5 text-slate-900 transition hover:text-[#0b3d91] hover:underline"
-                            >
-                              {p.name}
-                              <span className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-[#0b3d91]">
-                                &rarr;
-                              </span>
-                            </Link>
-                          </td>
-                          <td className="p-3">
-                            <span className="rounded bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 font-bold text-[11px]">
-                              {p.degree}
-                            </span>
-                          </td>
-                          <td className="p-3 text-slate-600 font-mono font-bold">{p.code}</td>
-                          <td className="p-3 text-center font-bold text-[#0b3d91]">{p.intake}</td>
-                          <td className="p-3 text-slate-600 text-[11px]">{p.eligibility}</td>
+                <div className="p-6">
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                    <table className="w-full text-left text-[13px]">
+                      <thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                        <tr>
+                          <th className="px-4 py-3">Programme</th>
+                          <th className="px-4 py-3">Degree</th>
+                          <th className="px-4 py-3">Code</th>
+                          <th className="px-4 py-3 text-center">Intake</th>
+                          <th className="px-4 py-3">Eligibility Criteria</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pgProgrammes.map((p, idx) => (
+                          <tr
+                            key={p.code}
+                            className={`group transition hover:bg-amber-50/50 ${idx % 2 === 1 ? 'bg-slate-50/40' : ''}`}
+                          >
+                            <td className="px-4 py-3.5 font-semibold text-slate-900">
+                              <Link
+                                to={`/admission/pg/${p.slug}`}
+                                className="inline-flex items-center gap-1.5 text-slate-900 transition hover:text-[#0b3d91] hover:underline"
+                              >
+                                {p.name}
+                                <span className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-[#0b3d91]">
+                                  &rarr;
+                                </span>
+                              </Link>
+                            </td>
+                            <td className="px-4 py-3.5">
+                              <span className="rounded border border-purple-200 bg-purple-50 px-2 py-0.5 text-[11px] font-bold text-purple-700">
+                                {p.degree}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3.5 font-mono font-bold text-slate-600">{p.code}</td>
+                            <td className="px-4 py-3.5 text-center font-bold text-[#0b3d91]">{p.intake}</td>
+                            <td className="px-4 py-3.5 text-xs text-slate-600">{p.eligibility}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
               )}
 
               {/* Research Centres Card */}
               {isProgrammes && (
-              <div className="card p-6 space-y-4">
-                <h2 className="text-xl font-bold text-[#0b3d91]">Doctoral Research Centres</h2>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  The following departments at HIT are designated as doctoral research centres by the HIT Research Council for full-time and part-time Ph.D. programmes:
+              <div className="card p-6">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0b3d91]/10 text-lg font-black text-[#0b3d91]">
+                    R
+                  </span>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#0b3d91]">Doctoral Research Centres</h2>
+                    <p className="text-xs text-slate-500">Full-time and part-time Ph.D. programmes</p>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-slate-600">
+                  The following departments at HIT are designated as doctoral research centres by the HIT Research Council:
                 </p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200">
-                    <p className="font-bold text-slate-800 text-sm">Computer Science & Engineering</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Ph.D. / M.S. (By Research)</p>
-                  </div>
-                  <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200">
-                    <p className="font-bold text-slate-800 text-sm">Electronics & Communication Engg</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Ph.D. / M.S. (By Research)</p>
-                  </div>
-                  <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200">
-                    <p className="font-bold text-slate-800 text-sm">Electrical & Electronics Engg</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Ph.D. / M.S. (By Research)</p>
-                  </div>
-                  <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200">
-                    <p className="font-bold text-slate-800 text-sm">Mechanical Engineering</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Ph.D. / M.S. (By Research)</p>
-                  </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {[
+                    'Computer Science & Engineering',
+                    'Electronics & Communication Engg',
+                    'Electrical & Electronics Engg',
+                    'Mechanical Engineering',
+                  ].map((dept) => (
+                    <div
+                      key={dept}
+                      className="rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-[#0b3d91]/30 hover:bg-blue-50/40"
+                    >
+                      <p className="text-sm font-bold text-slate-800">{dept}</p>
+                      <p className="mt-0.5 text-xs text-slate-500">Ph.D. / M.S. (By Research)</p>
+                    </div>
+                  ))}
                 </div>
               </div>
               )}
@@ -703,134 +789,152 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
 
           {/* 2. FEES STRUCTURE */}
           {isFees && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Statutory Notification Banner */}
-              <div className="rounded-xl bg-blue-50/90 border border-blue-200 p-5 shadow-xs">
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl text-[#0b3d91]">📋</span>
+              <div className="rounded-xl border border-blue-200 bg-blue-50/90 p-5 shadow-sm">
+                <div className="flex items-start gap-3.5">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0b3d91] text-lg font-black text-white">
+                    ₹
+                  </span>
                   <div>
                     <h2 className="text-base font-bold text-[#0b3d91]">
                       Official Fee Structure (Academic Year 2026 - 2027)
                     </h2>
-                    <p className="mt-1 text-xs text-slate-700 leading-relaxed">
-                      Fees at Hogwarts Institute of Technology are approved by the HIT Finance Committee and published transparently. <strong>No donation or additional admission fee is collected.</strong> Scholarships and payment plans are available for eligible students.
+                    <p className="mt-1 text-sm leading-relaxed text-slate-700">
+                      Fees are approved by the HIT Finance Committee and published transparently. <strong>No donation or additional admission fee is collected.</strong> Scholarships and payment plans are available for eligible students.
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Annual Tuition & Academic Fees Table */}
-              <div className="card p-6 space-y-4">
-                <div className="border-b border-slate-200 pb-3">
-                  <h3 className="text-lg font-bold text-slate-900">1. Annual Academic & Tuition Fees</h3>
+              <div className="card overflow-hidden">
+                <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
+                  <h3 className="text-lg font-bold text-slate-900">1. Annual Academic &amp; Tuition Fees</h3>
                   <p className="text-xs text-slate-500">Merit-Based Admissions (Per Annum)</p>
                 </div>
 
-                <div className="overflow-x-auto rounded-lg border border-slate-200">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-100 font-bold uppercase text-slate-700">
-                      <tr>
-                        <th className="p-3">Programme / Level</th>
-                        <th className="p-3">Annual Tuition Fee</th>
-                        <th className="p-3">Lab & Amenities</th>
-                        <th className="p-3 text-right">Total Per Year</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3">
-                          <span className="font-bold text-slate-900">B.E. / B.Tech (All Branches)</span>
-                          <p className="text-[11px] text-slate-500">CSE, IT, AI & DS, AI & ML, ECE, EEE, MECH, CIVIL, BME, MDE</p>
-                        </td>
-                        <td className="p-3 font-semibold text-slate-800">₹1,50,000</td>
-                        <td className="p-3 text-slate-600">₹25,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹1,75,000</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3">
-                          <span className="font-bold text-slate-900">M.E. Programmes</span>
-                          <p className="text-[11px] text-slate-500">CSE, Applied Electronics, VLSI Design</p>
-                        </td>
-                        <td className="p-3 font-semibold text-slate-800">₹1,20,000</td>
-                        <td className="p-3 text-slate-600">₹20,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹1,40,000</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3">
-                          <span className="font-bold text-slate-900">MBA (Master of Business Administration)</span>
-                          <p className="text-[11px] text-slate-500">2-Year Full-Time Programme</p>
-                        </td>
-                        <td className="p-3 font-semibold text-slate-800">₹1,80,000 (₹90,000/sem)</td>
-                        <td className="p-3 text-slate-600">₹20,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹2,00,000</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3">
-                          <span className="font-bold text-slate-900">Ph.D. / Research Programmes</span>
-                          <p className="text-[11px] text-slate-500">Full-time and part-time doctoral study</p>
-                        </td>
-                        <td className="p-3 font-semibold text-slate-800">₹90,000</td>
-                        <td className="p-3 text-slate-600">₹15,000</td>
-                        <td className="p-3 text-right font-bold text-[#0b3d91] text-sm">₹1,05,000</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="p-6">
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                    <table className="w-full text-left text-[13px]">
+                      <thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                        <tr>
+                          <th className="px-4 py-3">Programme / Level</th>
+                          <th className="px-4 py-3">Annual Tuition Fee</th>
+                          <th className="px-4 py-3">Lab &amp; Amenities</th>
+                          <th className="px-4 py-3 text-right">Total Per Year</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {[
+                          {
+                            name: 'B.E. / B.Tech (All Branches)',
+                            note: 'CSE, IT, AI & DS, AI & ML, ECE, EEE, MECH, CIVIL, BME, MDE',
+                            tuition: '₹1,50,000',
+                            lab: '₹25,000',
+                            total: '₹1,75,000',
+                          },
+                          {
+                            name: 'M.E. Programmes',
+                            note: 'CSE, Applied Electronics, VLSI Design',
+                            tuition: '₹1,20,000',
+                            lab: '₹20,000',
+                            total: '₹1,40,000',
+                          },
+                          {
+                            name: 'MBA (Master of Business Administration)',
+                            note: '2-Year Full-Time Programme',
+                            tuition: '₹1,80,000 (₹90,000/sem)',
+                            lab: '₹20,000',
+                            total: '₹2,00,000',
+                          },
+                          {
+                            name: 'Ph.D. / Research Programmes',
+                            note: 'Full-time and part-time doctoral study',
+                            tuition: '₹90,000',
+                            lab: '₹15,000',
+                            total: '₹1,05,000',
+                          },
+                        ].map((row) => (
+                          <tr key={row.name} className="transition hover:bg-blue-50/40">
+                            <td className="px-4 py-4">
+                              <span className="font-bold text-slate-900">{row.name}</span>
+                              <p className="mt-0.5 text-xs text-slate-500">{row.note}</p>
+                            </td>
+                            <td className="px-4 py-4 font-semibold text-slate-800">{row.tuition}</td>
+                            <td className="px-4 py-4 text-slate-600">{row.lab}</td>
+                            <td className="bg-blue-50/50 px-4 py-4 text-right text-sm font-extrabold text-[#0b3d91]">
+                              {row.total}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="mt-3 text-xs text-slate-500">
+                    International applicants should contact the Admissions Office for fee equivalence and scholarship options.
+                  </p>
                 </div>
-                <p className="text-[11px] text-slate-500">
-                  International applicants should contact the Admissions Office for fee equivalence and scholarship options.
-                </p>
               </div>
 
               {/* Hostel & Transport Section */}
               <div className="grid gap-6 sm:grid-cols-2">
                 {/* Hostel Fee */}
-                <div className="card p-5 space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h3 className="font-bold text-slate-900 text-sm">2. Residence & Dining (Optional)</h3>
-                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Resident</span>
+                <div className="card p-6">
+                  <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
+                    <h3 className="text-sm font-bold text-slate-900">2. Residence &amp; Dining (Optional)</h3>
+                    <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-800">
+                      Resident
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-600">Separate residences for men and women with high-speed Wi-Fi, solar heating, and 24/7 security.</p>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Room Rent, Amenities & Utilities:</span>
-                      <span className="font-bold text-slate-800">₹90,000 / year</span>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                    Separate residences for men and women with high-speed Wi-Fi, solar heating, and 24/7 security.
+                  </p>
+                  <div className="mt-4 space-y-0.5 text-sm">
+                    <div className="flex justify-between gap-3 border-b border-slate-100 py-2.5">
+                      <span className="text-slate-600">Room Rent, Amenities &amp; Utilities</span>
+                      <span className="shrink-0 font-bold text-slate-800">₹90,000 / year</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Dining Charges (Vegetarian & Non-Vegetarian):</span>
-                      <span className="font-bold text-slate-800">₹60,000 / year</span>
+                    <div className="flex justify-between gap-3 border-b border-slate-100 py-2.5">
+                      <span className="text-slate-600">Dining Charges</span>
+                      <span className="shrink-0 font-bold text-slate-800">₹60,000 / year</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Caution Deposit (Refundable, one-time):</span>
-                      <span className="font-bold text-slate-800">₹10,000</span>
+                    <div className="flex justify-between gap-3 border-b border-slate-100 py-2.5">
+                      <span className="text-slate-600">Caution Deposit (Refundable)</span>
+                      <span className="shrink-0 font-bold text-slate-800">₹10,000</span>
                     </div>
-                    <div className="flex justify-between pt-2 text-[#0b3d91] font-extrabold text-sm">
-                      <span>Total Residential Fee:</span>
-                      <span>₹1,60,000 / year</span>
+                    <div className="flex justify-between gap-3 pt-3 text-sm font-extrabold text-[#0b3d91]">
+                      <span>Total Residential Fee</span>
+                      <span className="shrink-0">₹1,60,000 / year</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Shuttle / Transport Fee */}
-                <div className="card p-5 space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h3 className="font-bold text-slate-900 text-sm">3. Campus Shuttle Charges (Optional)</h3>
-                    <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Day Scholar</span>
+                <div className="card p-6">
+                  <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
+                    <h3 className="text-sm font-bold text-slate-900">3. Campus Shuttle (Optional)</h3>
+                    <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-800">
+                      Day Scholar
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-600">Fleet of 40+ GPS-enabled shuttles covering Greater Bengaluru.</p>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Zone A (Koramangala, Indiranagar, Domlur):</span>
-                      <span className="font-bold text-slate-800">₹18,000 / year</span>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                    Fleet of 40+ GPS-enabled shuttles covering Greater Bengaluru.
+                  </p>
+                  <div className="mt-4 space-y-0.5 text-sm">
+                    <div className="flex justify-between gap-3 border-b border-slate-100 py-2.5">
+                      <span className="text-slate-600">Zone A · Koramangala, Indiranagar</span>
+                      <span className="shrink-0 font-bold text-slate-800">₹18,000 / year</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Zone B (Whitefield, Marathahalli, HSR Layout):</span>
-                      <span className="font-bold text-slate-800">₹24,000 / year</span>
+                    <div className="flex justify-between gap-3 border-b border-slate-100 py-2.5">
+                      <span className="text-slate-600">Zone B · Whitefield, HSR Layout</span>
+                      <span className="shrink-0 font-bold text-slate-800">₹24,000 / year</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="text-slate-600">Zone C (Electronic City, Jayanagar, Hebbal):</span>
-                      <span className="font-bold text-slate-800">₹30,000 / year</span>
+                    <div className="flex justify-between gap-3 border-b border-slate-100 py-2.5">
+                      <span className="text-slate-600">Zone C · Electronic City, Hebbal</span>
+                      <span className="shrink-0 font-bold text-slate-800">₹30,000 / year</span>
                     </div>
-                    <div className="p-2 bg-slate-50 rounded text-[11px] text-slate-600">
+                    <div className="mt-3 rounded-lg bg-slate-50 p-2.5 text-xs text-slate-600">
                       GPS tracking and CCTV surveillance on all shuttle routes.
                     </div>
                   </div>
@@ -838,52 +942,53 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
               </div>
 
               {/* Scholarships & Financial Aid */}
-              <div className="card p-6 space-y-4">
-                <div className="border-b border-slate-200 pb-3">
-                  <h3 className="text-lg font-bold text-[#0b3d91]">4. Scholarships & Financial Aid</h3>
+              <div className="card overflow-hidden">
+                <div className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-white px-6 py-4">
+                  <h3 className="text-lg font-bold text-[#0b3d91]">4. Scholarships &amp; Financial Aid</h3>
                   <p className="text-xs text-slate-500">Merit, access, and talent-based awards that make a HIT education more affordable.</p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🎓</span>
-                      <h4 className="font-bold text-slate-900 text-sm">HIT Merit Scholarship</h4>
+                <div className="grid gap-4 p-6 sm:grid-cols-2">
+                  {[
+                    {
+                      initials: 'M',
+                      name: 'HIT Merit Scholarship',
+                      text: <>Up to <strong>50% tuition waiver</strong> for students with outstanding academic records in their qualifying examination.</>,
+                      tone: 'border-blue-200 bg-blue-50/60',
+                      chip: 'bg-blue-100 text-blue-800',
+                    },
+                    {
+                      initials: 'A',
+                      name: 'HIT Access Scholarship',
+                      text: <>Need-based support covering up to <strong>100% of tuition</strong> for first-generation learners and low-income households.</>,
+                      tone: 'border-emerald-200 bg-emerald-50/60',
+                      chip: 'bg-emerald-100 text-emerald-800',
+                    },
+                    {
+                      initials: 'W',
+                      name: 'Women in STEM Award',
+                      text: <>A <strong>30% tuition award</strong> for exceptional women applicants entering engineering, computing, and applied science programmes.</>,
+                      tone: 'border-amber-200 bg-amber-50/60',
+                      chip: 'bg-amber-100 text-amber-800',
+                    },
+                    {
+                      initials: 'S',
+                      name: 'Sports & Global Exchange Awards',
+                      text: <>Up to <strong>50% tuition support</strong> for national-level athletes, plus travel bursaries for semester exchange at partner universities.</>,
+                      tone: 'border-purple-200 bg-purple-50/60',
+                      chip: 'bg-purple-100 text-purple-800',
+                    },
+                  ].map((award) => (
+                    <div key={award.name} className={`rounded-xl border p-5 ${award.tone}`}>
+                      <div className="flex items-center gap-2.5">
+                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-black ${award.chip}`}>
+                          {award.initials}
+                        </span>
+                        <h4 className="text-sm font-bold text-slate-900">{award.name}</h4>
+                      </div>
+                      <p className="mt-2.5 text-sm leading-relaxed text-slate-700">{award.text}</p>
                     </div>
-                    <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      Up to <strong>50% tuition waiver</strong> for students with outstanding academic records in their qualifying examination.
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🏫</span>
-                      <h4 className="font-bold text-slate-900 text-sm">HIT Access Scholarship</h4>
-                    </div>
-                    <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      Need-based support covering up to <strong>100% of tuition</strong> for first-generation learners and students from low-income households.
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">📑</span>
-                      <h4 className="font-bold text-slate-900 text-sm">Women in STEM Award</h4>
-                    </div>
-                    <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      A <strong>30% tuition award</strong> for exceptional women applicants entering engineering, computing, and applied science programmes.
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🏆</span>
-                      <h4 className="font-bold text-slate-900 text-sm">Sports & Global Exchange Awards</h4>
-                    </div>
-                    <p className="mt-2 text-xs text-slate-700 leading-relaxed">
-                      Up to <strong>50% tuition support</strong> for national-level athletes, plus travel bursaries for semester exchange at partner universities.
-                    </p>
-                  </div>
+                  ))}
                 </div>
               </div>
 
@@ -892,30 +997,31 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
 
           {/* 3. ADMISSION PROCEDURE */}
           {isProcedure && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Application & Selection Procedure Card */}
-              <div className="card p-6 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
-                  <div>
-                    <span className="rounded bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
-                      Merit-Based Admission
-                    </span>
-                    <h2 className="mt-1 text-xl font-bold text-[#0b3d91]">
-                      Application & Selection Procedure
-                    </h2>
-                  </div>
-                  <div className="rounded-md bg-blue-50 px-3 py-1.5 border border-blue-200 text-center">
-                    <span className="text-[10px] uppercase font-bold text-slate-500 block">Admissions Cycle</span>
-                    <span className="text-base font-black text-[#0b3d91]">2026 - 2027</span>
+              <div className="card overflow-hidden">
+                <div className="border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-white p-6">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <span className="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-800">
+                        Merit-Based Admission
+                      </span>
+                      <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">
+                        Application &amp; Selection Procedure
+                      </h2>
+                      <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-600">
+                        Admission to all programmes is merit-based and holistic. Submit an online application, upload your documents, and complete an interview with the admissions committee.
+                      </p>
+                    </div>
+                    <div className="shrink-0 rounded-lg border border-blue-100 bg-white px-3 py-2 text-center shadow-sm">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Admissions Cycle</p>
+                      <p className="text-sm font-black text-[#0b3d91]">2026 - 2027</p>
+                    </div>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Admission to all programmes is merit-based and holistic. Submit an online application, upload your documents, and complete an interview with the admissions committee. Follow the sequential stages below:
-                </p>
-
                 {/* Steps List */}
-                <div className="space-y-3 pt-2">
+                <div className="space-y-3 p-6">
                   {[
                     {
                       step: '01',
@@ -948,13 +1054,16 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
                       desc: 'Complete enrolment at the HIT campus in Koramangala, Bengaluru, and join the orientation programme before classes begin.',
                     },
                   ].map((item) => (
-                    <div key={item.step} className="flex gap-4 items-start p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-blue-50/40 transition">
-                      <span className="flex-shrink-0 h-9 w-9 rounded-lg bg-[#0b3d91] text-white flex items-center justify-center font-black text-sm">
+                    <div
+                      key={item.step}
+                      className="flex items-start gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-4 transition hover:border-[#0b3d91]/30 hover:bg-blue-50/40"
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0b3d91] text-sm font-black text-white">
                         {item.step}
                       </span>
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-sm">{item.title}</h3>
-                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-bold text-slate-900">{item.title}</h3>
+                        <p className="mt-1 text-sm leading-relaxed text-slate-600">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -964,16 +1073,16 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
               {/* Merit Admission & Lateral Entry Cards */}
               <div className="grid gap-6 sm:grid-cols-2">
                 {/* Merit Admission */}
-                <div className="card p-5 space-y-3">
-                  <span className="rounded bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-900 uppercase">
+                <div className="card p-6">
+                  <span className="inline-flex rounded-full bg-purple-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-purple-900">
                     Direct Admission
                   </span>
-                  <h3 className="text-base font-bold text-[#0b3d91]">Merit-Based Direct Admission</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <h3 className="mt-2.5 text-base font-bold text-[#0b3d91]">Merit-Based Direct Admission</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
                     Applications are reviewed holistically on academic performance, entrance scores, statement of purpose, and interview. No donation or additional admission fee is involved.
                   </p>
-                  <ol className="list-decimal pl-4 space-y-1.5 text-xs text-slate-700">
-                    <li><Link to="/admission/ug" className="text-[#0b3d91] font-bold underline">Choose your programme</Link> and complete the online application from the course page.</li>
+                  <ol className="mt-4 list-decimal space-y-2 pl-4 text-sm text-slate-700">
+                    <li><Link to="/admission/ug" className="font-bold text-[#0b3d91] underline">Choose your programme</Link> and complete the online application from the course page.</li>
                     <li>Meet our admissions team for programme guidance and scholarship advice.</li>
                     <li>Upload transcripts and complete the interview or assessment.</li>
                     <li>Accept your offer and confirm your seat.</li>
@@ -981,15 +1090,15 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
                 </div>
 
                 {/* Lateral Entry */}
-                <div className="card p-5 space-y-3">
-                  <span className="rounded bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-900 uppercase">
+                <div className="card p-6">
+                  <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-900">
                     Direct 2nd Year
                   </span>
-                  <h3 className="text-base font-bold text-[#0b3d91]">Lateral Entry (B.E. / B.Tech)</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <h3 className="mt-2.5 text-base font-bold text-[#0b3d91]">Lateral Entry (B.E. / B.Tech)</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
                     Diploma holders in Engineering / Technology and B.Sc. graduates with Mathematics may apply for direct entry to the second year (third semester).
                   </p>
-                  <ul className="list-disc pl-4 space-y-1.5 text-xs text-slate-700">
+                  <ul className="mt-4 list-disc space-y-2 pl-4 text-sm text-slate-700">
                     <li>Apply online with diploma or B.Sc. transcripts and a statement of purpose.</li>
                     <li>Minimum 60% aggregate or equivalent in the qualifying programme.</li>
                     <li>A bridging assessment may be required before enrolment.</li>
@@ -999,51 +1108,47 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
               </div>
 
               {/* Minimum Eligibility Criteria Card */}
-              <div className="card p-6 space-y-4">
-                <h3 className="text-lg font-bold text-[#0b3d91]">Minimum Eligibility Requirements</h3>
-                <div className="overflow-x-auto rounded-lg border border-slate-200">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-100 font-bold uppercase text-slate-700">
-                      <tr>
-                        <th className="p-3">Entry Pathway</th>
-                        <th className="p-3">Minimum Qualifying Aggregate</th>
-                        <th className="p-3">Qualifying Subjects / Requirements</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">Undergraduate (Standard Entry)</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">60% Aggregate</td>
-                        <td className="p-3 text-slate-600">Mathematics, Physics & Chemistry</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">Undergraduate (Honours Pathway)</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">75% Aggregate</td>
-                        <td className="p-3 text-slate-600">Mathematics, Physics & Chemistry + Interview</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">International Applicants</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">IB / A-Levels Equivalent</td>
-                        <td className="p-3 text-slate-600">Mathematics and two science subjects</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-900">Lateral Entry</td>
-                        <td className="p-3 font-semibold text-[#0b3d91]">60% Aggregate</td>
-                        <td className="p-3 text-slate-600">Diploma in Engineering / B.Sc. with Mathematics</td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div className="card overflow-hidden">
+                <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
+                  <h3 className="text-lg font-bold text-[#0b3d91]">Minimum Eligibility Requirements</h3>
+                </div>
+                <div className="p-6">
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                    <table className="w-full text-left text-[13px]">
+                      <thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                        <tr>
+                          <th className="px-4 py-3">Entry Pathway</th>
+                          <th className="px-4 py-3">Minimum Qualifying Aggregate</th>
+                          <th className="px-4 py-3">Qualifying Subjects / Requirements</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {[
+                          ['Undergraduate (Standard Entry)', '60% Aggregate', 'Mathematics, Physics & Chemistry'],
+                          ['Undergraduate (Honours Pathway)', '75% Aggregate', 'Mathematics, Physics & Chemistry + Interview'],
+                          ['International Applicants', 'IB / A-Levels Equivalent', 'Mathematics and two science subjects'],
+                          ['Lateral Entry', '60% Aggregate', 'Diploma in Engineering / B.Sc. with Mathematics'],
+                        ].map(([pathway, aggregate, subjects], idx) => (
+                          <tr key={pathway} className={`transition hover:bg-blue-50/40 ${idx % 2 === 1 ? 'bg-slate-50/40' : ''}`}>
+                            <td className="px-4 py-3.5 font-bold text-slate-900">{pathway}</td>
+                            <td className="px-4 py-3.5 font-semibold text-[#0b3d91]">{aggregate}</td>
+                            <td className="px-4 py-3.5 text-slate-600">{subjects}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
 
               {/* Mandatory Documents Checklist */}
-              <div className="card p-6 space-y-4">
-                <div className="border-b border-slate-200 pb-3">
+              <div className="card overflow-hidden">
+                <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
                   <h3 className="text-lg font-bold text-slate-900">Documents Required at Admission</h3>
                   <p className="text-xs text-slate-500">Please bring originals along with two sets of self-attested photocopies.</p>
                 </div>
 
-                <div className="grid gap-2.5 sm:grid-cols-2 text-xs text-slate-700">
+                <div className="grid gap-2.5 p-6 text-sm text-slate-700 sm:grid-cols-2">
                   {[
                     'Class 10 Marksheet / Transcript',
                     'Class 12 Marksheet / Transcript (or predicted grades)',
@@ -1056,8 +1161,10 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
                     'Medical Fitness Certificate',
                     '6 recent passport-size colour photographs',
                   ].map((doc, idx) => (
-                    <div key={idx} className="flex items-center gap-2 p-2.5 rounded-md bg-slate-50 border border-slate-200">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                    <div key={idx} className="flex items-center gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-700">
+                        ✓
+                      </span>
                       <span className="font-medium">{doc}</span>
                     </div>
                   ))}
@@ -1068,17 +1175,17 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
 
           {/* 4. APPLICATION / REGISTRATION FORM */}
           {(isEnquiry || selectedCourse) && (
-            <div id={selectedCourse ? 'course-application' : undefined} className="card p-6">
-              <div className="border-b border-slate-200 pb-4">
-                <span className="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-[#0b3d91]">
+            <div id={selectedCourse ? 'course-application' : undefined} className="card overflow-hidden">
+              <div className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-white p-6">
+                <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0b3d91]">
                   Application Form
                 </span>
-                <h2 className="mt-1 text-xl font-bold text-[#0b3d91]">
+                <h2 className="mt-2 text-xl font-bold text-[#0b3d91]">
                   {selectedCourse
                     ? `Application for ${selectedCourse.degree} ${selectedCourse.name}`
                     : 'Online Application / Registration Form (2026 - 2027)'}
                 </h2>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
                   {selectedCourse
                     ? 'Complete the form below to register your application for this programme. Our admissions team will contact you with the next steps.'
                     : 'Complete the application form below. Our admissions team will review your details and contact you with the next steps.'}
@@ -1086,12 +1193,12 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
               </div>
 
               {formSubmitted ? (
-                <div className="mt-6 rounded-xl bg-emerald-50 p-8 text-center border border-emerald-200 space-y-3">
-                  <div className="mx-auto h-12 w-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-black">
+                <div className="m-6 space-y-3 rounded-xl border border-emerald-200 bg-emerald-50 p-8 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl font-black text-emerald-700">
                     ✓
                   </div>
                   <h3 className="text-lg font-bold text-emerald-900">Application Submitted Successfully!</h3>
-                  <p className="text-xs text-emerald-700 max-w-md mx-auto leading-relaxed">
+                  <p className="mx-auto max-w-md text-sm leading-relaxed text-emerald-700">
                     Thank you for applying to Hogwarts Institute of Technology. Our admissions team will review your application and contact you shortly.
                   </p>
                   <div className="pt-2">
@@ -1119,7 +1226,7 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
                 </div>
               ) : (
                 <form
-                  className="mt-6 space-y-4"
+                  className="space-y-5 p-6"
                   onSubmit={(e) => {
                     e.preventDefault();
                     setFormSubmitted(true);
@@ -1257,7 +1364,7 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
                     />
                   </div>
 
-                  <label className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed text-slate-600">
+                  <label className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3.5 text-sm leading-relaxed text-slate-600">
                     <input
                       type="checkbox"
                       required
@@ -1268,8 +1375,11 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
                     </span>
                   </label>
 
-                  <button type="submit" className="btn btn-primary bg-[#0b3d91] hover:bg-blue-800 text-white font-bold py-2.5 px-6 shadow-md">
-                    Submit Application &rarr;
+                  <button
+                    type="submit"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0b3d91] px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-blue-800 sm:w-auto"
+                  >
+                    Submit Application <span aria-hidden="true">&rarr;</span>
                   </button>
                 </form>
               )}
@@ -1278,30 +1388,37 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
         </div>
 
         {/* Right Sidebar */}
-        <div className="space-y-4">
+        <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           {/* Admissions Badge */}
-          <div className="card p-5 bg-gradient-to-br from-blue-900 to-[#0b3d91] text-white">
-            <span className="rounded bg-amber-400 text-slate-900 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider">
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-900 via-[#0b3d91] to-[#041e42] p-5 text-white shadow-sm">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-amber-400/20 blur-2xl" aria-hidden="true" />
+            <span className="relative inline-flex rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-900">
               Admissions Open
             </span>
-            <p className="mt-3 text-2xl font-black text-amber-300">2026 - 2027</p>
-            <p className="mt-1 text-xs text-blue-100 leading-relaxed">
+            <p className="relative mt-3 text-2xl font-black text-amber-300">2026 - 2027</p>
+            <p className="relative mt-1.5 text-xs leading-relaxed text-blue-100">
               Applications are reviewed on a rolling basis. Apply early to secure your preferred programme and scholarship consideration.
             </p>
+            <Link
+              to="/admission/enquiry"
+              className="relative mt-4 inline-flex items-center gap-1.5 rounded-lg bg-white px-3.5 py-2 text-xs font-bold text-[#0b3d91] transition hover:bg-blue-50"
+            >
+              Start Application <span aria-hidden="true">&rarr;</span>
+            </Link>
           </div>
 
           {/* Quick Navigation Card */}
           <div className="card p-5">
             <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">Admission Resources</h3>
-            <ul className="mt-3 space-y-1.5 text-xs font-medium">
+            <ul className="mt-3 space-y-1 text-sm font-medium">
               {subNav.map((item) => (
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="flex items-center justify-between rounded-md p-2 text-slate-700 hover:bg-blue-50 hover:text-[#0b3d91] transition"
+                    className="flex items-center justify-between rounded-lg px-2.5 py-2 text-slate-700 transition hover:bg-blue-50 hover:text-[#0b3d91]"
                   >
                     <span>{item.label}</span>
-                    <span>&rarr;</span>
+                    <span aria-hidden="true">&rarr;</span>
                   </Link>
                 </li>
               ))}
@@ -1309,48 +1426,43 @@ export function AdmissionPage({ section = 'admission', courseSlug }) {
           </div>
 
           {/* Admission Office Contact Card */}
-          <div className="card p-5 space-y-3">
+          <div className="card p-5">
             <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">Admission Help Desk</h3>
-            <div className="text-xs space-y-2 text-slate-700">
-              <p>
-                <strong className="text-slate-900 block">Phone:</strong>
-                {siteConfig.contact.phone}
-              </p>
-              <p>
-                <strong className="text-slate-900 block">Helpline / WhatsApp:</strong>
-                +91 80 4718 2300 / +91 98450 12345
-              </p>
-              <p>
-                <strong className="text-slate-900 block">Email:</strong>
-                {siteConfig.contact.email}
-              </p>
-              <p>
-                <strong className="text-slate-900 block">Office Hours:</strong>
-                {siteConfig.contact.officeHours}
-              </p>
+            <div className="mt-3 space-y-3 text-sm text-slate-700">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Phone</p>
+                <p className="mt-0.5 font-medium">{siteConfig.contact.phone}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Helpline / WhatsApp</p>
+                <p className="mt-0.5 font-medium">+91 80 4718 2300</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Email</p>
+                <p className="mt-0.5 break-all font-medium">{siteConfig.contact.email}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Office Hours</p>
+                <p className="mt-0.5 font-medium">{siteConfig.contact.officeHours}</p>
+              </div>
             </div>
           </div>
 
           {/* Key Accreditations Mini-Card */}
-          <div className="card p-4 bg-slate-50 border border-slate-200">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Institution Highlights</p>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-center text-xs">
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">QS 5★</p>
-                <p className="text-[10px] text-slate-500">Rated</p>
-              </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">40+</p>
-                <p className="text-[10px] text-slate-500">Global Partners</p>
-              </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">1951</p>
-                <p className="text-[10px] text-slate-500">Established</p>
-              </div>
-              <div className="p-2 bg-white rounded border border-slate-200">
-                <p className="font-extrabold text-[#0b3d91]">96%</p>
-                <p className="text-[10px] text-slate-500">Placements</p>
-              </div>
+          <div className="card border border-slate-200 bg-slate-50 p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Institution Highlights</p>
+            <div className="mt-2.5 grid grid-cols-2 gap-2 text-center">
+              {[
+                { value: 'QS 5★', label: 'Rated' },
+                { value: '40+', label: 'Global Partners' },
+                { value: '1951', label: 'Established' },
+                { value: '96%', label: 'Placements' },
+              ].map((item) => (
+                <div key={item.label} className="rounded-lg border border-slate-200 bg-white p-2.5">
+                  <p className="text-sm font-extrabold text-[#0b3d91]">{item.value}</p>
+                  <p className="text-[10px] text-slate-500">{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
