@@ -281,7 +281,6 @@ export default function DepartmentPortalPage() {
   const tabs = [
     { id: 'overview', label: 'Overview & HOD' },
     { id: 'vision', label: 'Vision & Mission' },
-    { id: 'faculty', label: 'Faculty Members' },
     { id: 'labs', label: 'Laboratories' },
     { id: 'curriculum', label: 'Curriculum & Syllabus' },
     { id: 'association', label: 'Association & Activities' },
@@ -479,37 +478,6 @@ export default function DepartmentPortalPage() {
               </div>
             )}
 
-            {/* TAB 3: FACULTY MEMBERS */}
-            {currentTab === 'faculty' && (
-              <div className="card p-6">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                  <div>
-                    <h2 className="text-xl font-bold text-[#0b3d91]">Faculty Members</h2>
-                    <p className="text-xs text-slate-500">Experienced academic and research mentors</p>
-                  </div>
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-[#0b3d91]">
-                    Total Faculty: {dept.facultyList.length}
-                  </span>
-                </div>
-
-                <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  {dept.facultyList.map((fac, idx) => (
-                    <div key={idx} className="flex gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-[#0b3d91] hover:shadow-md">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#0b3d91] text-sm font-bold text-white">
-                        {fac.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                      </div>
-                      <div className="space-y-0.5">
-                        <p className="text-sm font-bold text-slate-900">{fac.name}</p>
-                        <p className="text-xs font-semibold text-[#0b3d91]">{fac.role}</p>
-                        <p className="text-xs text-slate-600">Qualification: {fac.qual}</p>
-                        <p className="text-xs text-slate-500">Specialization: {fac.spec}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* TAB 4: LABORATORIES */}
             {currentTab === 'labs' && (
               <div className="card p-6">
@@ -645,6 +613,35 @@ export default function DepartmentPortalPage() {
                 </div>
               </div>
             )}
+
+            {/* FACULTY MEMBERS */}
+            <section id="faculty" className="mt-8 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              <div className="flex flex-col gap-3 border-b border-slate-200 bg-gradient-to-r from-[#0b3d91] to-[#0a357f] px-6 py-5 text-white sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-xl font-bold">Faculty Members</h2>
+                  <p className="mt-1 text-sm text-blue-100">Experienced academic and research mentors</p>
+                </div>
+                <span className="w-fit rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold text-white">
+                  Total Faculty: {dept.facultyList.length}
+                </span>
+              </div>
+
+              <div className="grid gap-4 p-6 sm:grid-cols-2">
+                {dept.facultyList.map((fac, idx) => (
+                  <div key={idx} className="flex gap-4 rounded-xl border border-slate-200 p-5 transition hover:border-blue-300 hover:shadow-md">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#0b3d91] text-sm font-bold text-white">
+                      {fac.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-base font-bold text-slate-900">{fac.name}</p>
+                      <p className="text-sm font-semibold text-[#0b3d91]">{fac.role}</p>
+                      <p className="text-sm text-slate-600">Qualification: {fac.qual}</p>
+                      <p className="text-sm text-slate-500">Specialization: {fac.spec}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
 
           {/* Department Quick Switcher Sidebar (1 col) */}

@@ -1243,44 +1243,6 @@ export function DepartmentsPage() {
   );
 }
 
-// ---------------- FACULTY PAGE ---------------- //
-export function FacultyPage() {
-  return (
-    <PublicPageLayout
-      title="Faculty Details"
-      subtitle="Our distinguished professors, researchers, and mentors committed to student excellence"
-      breadcrumbs={[{ label: 'Faculty Details' }]}
-    >
-      <div className="card p-6">
-        <h2 className="text-xl font-bold text-[#0b3d91]">Faculty Directory</h2>
-        <p className="mt-1 text-xs text-slate-500">
-          HIT has over 350 full-time faculty members and researchers across engineering, management, and the sciences.
-        </p>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { name: 'Dr. M. Jayaraman', dept: 'Mechanical Engineering', role: 'Principal & Professor', qual: 'Ph.D.' },
-            { name: 'Dr. S. Jabeen Begum', dept: 'Computer Science & Engg', role: 'Professor & HOD', qual: 'Ph.D.' },
-            { name: 'Dr. M. Nisha Angeline', dept: 'Electronics & Comm Engg', role: 'Professor & HOD', qual: 'Ph.D.' },
-            { name: 'Dr. P. Murugesan', dept: 'Information Technology', role: 'Professor & HOD', qual: 'Ph.D.' },
-            { name: 'Dr. S. Russia', dept: 'Computer Science & Engg', role: 'Professor', qual: 'Ph.D.' },
-            { name: 'Dr. K. S. Kausalya Devi', dept: 'Electronics & Comm Engg', role: 'Professor', qual: 'Ph.D.' },
-          ].map((fac, idx) => (
-            <div key={idx} className="rounded-xl border border-slate-200 p-4 shadow-xs">
-              <p className="text-sm font-bold text-slate-900">{fac.name}</p>
-              <p className="text-xs font-semibold text-[#0b3d91]">{fac.role}</p>
-              <p className="text-xs text-slate-600">{fac.dept}</p>
-              <span className="mt-2 inline-block rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700">
-                {fac.qual}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </PublicPageLayout>
-  );
-}
-
 // ---------------- ACADEMICS PAGE ---------------- //
 export function AcademicsPage({ section = 'academics' }) {
   const subNav = [
