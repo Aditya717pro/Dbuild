@@ -6,7 +6,7 @@ A full-stack College Management Portal for student enrollment, faculty records, 
 | --- | --- |
 | **Admin** | Manage departments, courses, students, faculty, enrollments, attendance, and announcements. Create other admin accounts. |
 | **Faculty** | View their department and courses, view the department roster, mark attendance for courses assigned to them, and post department/course announcements. |
-| **Student** | View only their own enrolled courses, attendance percentage per course, and announcements relevant to them. |
+| **Student** | View only their own enrolled courses, semester-wise marksheets, attendance percentage per course, fees details, and announcements relevant to them. |
 
 There is **no public sign-up**. Accounts are created by an administrator or by the demo seed script.
 
@@ -257,7 +257,7 @@ npm run db:update
 
 1. Applies the idempotent `database.sql` baseline if needed.
 2. Applies pending files from `backend/db/migrations/`.
-3. Re-runs the demo seed, updating demo accounts, courses, enrollments, attendance, and announcements.
+3. Re-runs the demo seed, updating demo accounts, courses, enrollments, attendance, marksheets, fees, and announcements.
 
 It is safe to rerun. Existing Docker volumes are preserved; Docker only imports `database.sql` when the volume is first created.
 
@@ -293,7 +293,7 @@ npm run db:update
 ### Changing demo data or passwords
 
 - Demo account passwords: edit `backend/config/demo.js`.
-- Demo accounts, courses, enrollments, attendance, and announcements: edit `backend/scripts/seed-demo-data.js`.
+- Demo accounts, courses, enrollments, attendance, marksheets, fees, and announcements: edit `backend/scripts/seed-demo-data.js`.
 
 Commit the change, push it, and tell pullers to run `npm run db:update`. The seed script re-hashes and updates the demo accounts.
 
@@ -309,7 +309,7 @@ Run these from `backend/` unless noted otherwise.
 | --- | --- |
 | `npm run dev` | Start the API with file watching. |
 | `npm start` | Start the API without watching. |
-| `npm run test-db` | Test the connection and verify the nine application tables. |
+| `npm run test-db` | Test the connection and verify the eleven application tables. |
 | `npm run db:migrate` | Apply the baseline and pending schema migrations. Safe for production. |
 | `npm run db:update` | Apply migrations and refresh demo data. Local/demo use only. |
 | `npm run seed-demo` | Create/update demo accounts and academic data. |
@@ -423,6 +423,8 @@ All protected endpoints require `Authorization: Bearer <jwt>`. Permissions are e
 | `POST /api/attendance` | Admin/faculty | Upsert on student+course+date. |
 | `GET /api/attendance/me` | Student | Own present/total and percentage per course. |
 | `GET /api/attendance/course/:courseId/summary` | Admin/faculty | Per-student summary. |
+| `GET /api/records/me/marksheets` | Student | Own semester-wise end semester marksheets with all subjects and grades. |
+| `GET /api/records/me/fees` | Student | Own fee invoices, payments, balances, and status. |
 | `GET/POST/DELETE /api/announcements` | Read: audience-filtered; write: admin/faculty | Faculty can target own department or courses only. |
 | `GET/POST /api/users` | Admin | List users; create another admin. |
 

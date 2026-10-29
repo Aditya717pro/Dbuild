@@ -182,6 +182,7 @@ export function StudentDashboard() {
     <div>
       <PageHeader
         title={`Welcome back, ${user.name.split(' ')[0]}`}
+        action={<Link to="/student/records" className="btn btn-primary">View my records</Link>}
         subtitle={user.profile?.department_name ? `${user.profile.department_name} · Year ${user.profile.year}` : 'Your courses and attendance.'}
       />
 

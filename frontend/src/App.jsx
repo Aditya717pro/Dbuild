@@ -51,6 +51,7 @@ import StudentsPage from './pages/StudentsPage.jsx';
 import FacultyPage from './pages/FacultyPage.jsx';
 import EnrollmentsPage from './pages/EnrollmentsPage.jsx';
 import AttendancePage from './pages/AttendancePage.jsx';
+import StudentRecordsPage from './pages/StudentRecordsPage.jsx';
 import AnnouncementsPage from './pages/AnnouncementsPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
@@ -94,7 +95,7 @@ export default function App() {
         <Route path="/login" element={<LoginPortalPage />} />
         <Route
           path="/login/student"
-          element={<RoleLoginPage allowedRole="student" title="Student Login" subtitle="View your courses and your attendance" />}
+          element={<RoleLoginPage allowedRole="student" title="Student Login" subtitle="View your end semester marksheet, attendance, and fees details" />}
         />
         <Route
           path="/login/teacher"
@@ -115,6 +116,10 @@ export default function App() {
           <Route path="/admin/dashboard" element={<RequireRole roles={['admin']}><AdminDashboardPage /></RequireRole>} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/attendance" element={<AttendancePage />} />
+          <Route
+            path="/student/records"
+            element={<RequireRole roles={['student']}><StudentRecordsPage /></RequireRole>}
+          />
           <Route path="/announcements" element={<AnnouncementsPage />} />
           <Route
             path="/students"

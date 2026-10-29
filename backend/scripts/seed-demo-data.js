@@ -87,6 +87,102 @@ const ABSENCES = new Set([
   'ron.weasley@example.com|CSE203|2026-10-27',
 ]);
 
+const MARKSHEET_EXAM_TYPE = 'End Semester Examination';
+const MARKSHEET_COURSES = [
+  { code: 'MA101', name: 'Engineering Mathematics I', semester: 1 },
+  { code: 'PH101', name: 'Engineering Physics', semester: 1 },
+  { code: 'CS101', name: 'Programming Fundamentals', semester: 1 },
+  { code: 'EN101', name: 'English Communication', semester: 1 },
+  { code: 'MA201', name: 'Engineering Mathematics II', semester: 2 },
+  { code: 'CH201', name: 'Engineering Chemistry', semester: 2 },
+  { code: 'CS102', name: 'Digital Logic Design', semester: 2 },
+  { code: 'EE201', name: 'Basic Electrical Engineering', semester: 2 },
+  { code: 'CSE201', name: 'Data Structures', semester: 3 },
+  { code: 'CSE202', name: 'Object-Oriented Programming', semester: 3 },
+  { code: 'CSE203', name: 'Database Management Systems', semester: 3 },
+  { code: 'CSE204', name: 'Operating Systems', semester: 3 },
+  { code: 'CSE401', name: 'Design and Analysis of Algorithms', semester: 4 },
+  { code: 'CSE402', name: 'Software Engineering', semester: 4 },
+  { code: 'CSE403', name: 'Computer Networks', semester: 4 },
+  { code: 'CSE404', name: 'Web Technologies', semester: 4 },
+];
+
+const MARKSHEET_RESULTS = [
+  {
+    semester: 1,
+    publishedOn: '2025-01-20',
+    subjects: [
+      { courseCode: 'MA101', scores: [84, 72, 93] },
+      { courseCode: 'PH101', scores: [79, 68, 90] },
+      { courseCode: 'CS101', scores: [88, 75, 96] },
+      { courseCode: 'EN101', scores: [82, 70, 94] },
+    ],
+  },
+  {
+    semester: 2,
+    publishedOn: '2025-06-20',
+    subjects: [
+      { courseCode: 'MA201', scores: [81, 69, 92] },
+      { courseCode: 'CH201', scores: [77, 66, 89] },
+      { courseCode: 'CS102', scores: [85, 73, 95] },
+      { courseCode: 'EE201', scores: [80, 71, 91] },
+    ],
+  },
+  {
+    semester: 3,
+    publishedOn: '2025-12-20',
+    subjects: [
+      { courseCode: 'CSE201', scores: [82, 74, 92] },
+      { courseCode: 'CSE202', scores: [78, 68, 95] },
+      { courseCode: 'CSE203', scores: [86, 71, 90] },
+      { courseCode: 'CSE204', scores: [83, 70, 94] },
+    ],
+  },
+  {
+    semester: 4,
+    publishedOn: '2026-05-20',
+    subjects: [
+      { courseCode: 'CSE401', scores: [84, 72, 93] },
+      { courseCode: 'CSE402', scores: [80, 69, 91] },
+      { courseCode: 'CSE403', scores: [81, 73, 92] },
+      { courseCode: 'CSE404', scores: [87, 76, 95] },
+    ],
+  },
+];
+
+const FEE_INVOICES = [
+  {
+    feeType: 'Tuition Fee - Semester 3',
+    amount: 75000,
+    dueDate: '2026-07-31',
+    payments: [
+      { paidAmount: 75000, paidOn: '2026-07-18', receiptNo: 'FEE-2026-1001' },
+      { paidAmount: 75000, paidOn: '2026-07-21', receiptNo: 'FEE-2026-1002' },
+      { paidAmount: 75000, paidOn: '2026-07-15', receiptNo: 'FEE-2026-1003' },
+    ],
+  },
+  {
+    feeType: 'Hostel Fee - Semester 3',
+    amount: 48000,
+    dueDate: '2026-08-31',
+    payments: [
+      { paidAmount: 48000, paidOn: '2026-08-12', receiptNo: 'FEE-2026-2001' },
+      { paidAmount: 24000, paidOn: '2026-08-20', receiptNo: 'FEE-2026-2002' },
+      { paidAmount: 48000, paidOn: '2026-08-09', receiptNo: 'FEE-2026-2003' },
+    ],
+  },
+  {
+    feeType: 'Examination Fee - Semester 3',
+    amount: 2500,
+    dueDate: '2026-10-31',
+    payments: [
+      { paidAmount: 2500, paidOn: '2026-10-10', receiptNo: 'FEE-2026-3001' },
+      { paidAmount: 0, paidOn: null, receiptNo: null },
+      { paidAmount: 2500, paidOn: '2026-10-08', receiptNo: 'FEE-2026-3003' },
+    ],
+  },
+];
+
 const ANNOUNCEMENTS = [
   {
     title: 'Welcome to the DBuild College Management Portal',
@@ -287,6 +383,18 @@ async function main() {
         courses.push({ ...saved, facultyEmail: course.facultyEmail });
       }
 
+      for (const course of MARKSHEET_COURSES) {
+        await client.query(
+          `INSERT INTO courses (code, name, department_id, faculty_id, semester)
+           VALUES (?, ?, ?, NULL, ?)
+           ON DUPLICATE KEY UPDATE
+             name = VALUES(name),
+             department_id = VALUES(department_id),
+             semester = VALUES(semester)`,
+          [course.code, course.name, department.id, course.semester],
+        );
+      }
+
       let enrollmentLinks = 0;
       for (const student of studentAccounts) {
         for (const course of courses) {
@@ -321,6 +429,85 @@ async function main() {
       }
 
       const courseByCode = new Map(courses.map((course) => [course.code, course]));
+      for (const course of MARKSHEET_COURSES) {
+        const saved = (
+          await client.query('SELECT id, code, name FROM courses WHERE code = ?', [course.code])
+        ).rows[0];
+        if (!saved) {
+          throw new Error(`Course not found for marksheet: ${course.code}`);
+        }
+        courseByCode.set(course.code, saved);
+      }
+
+      let marksheetRows = 0;
+      for (const semester of MARKSHEET_RESULTS) {
+        for (const subject of semester.subjects) {
+          const course = courseByCode.get(subject.courseCode);
+          if (!course) {
+            throw new Error(`Course not found for marksheet: ${subject.courseCode}`);
+          }
+
+          for (const [index, student] of studentAccounts.entries()) {
+            const marksObtained = subject.scores[index] ?? subject.scores[0];
+            await client.query(
+              `INSERT INTO marksheets
+                 (student_id, course_id, semester, exam_type, marks_obtained, max_marks, published_on)
+               VALUES (?, ?, ?, ?, ?, ?, ?)
+               ON DUPLICATE KEY UPDATE
+                 marks_obtained = VALUES(marks_obtained),
+                 max_marks = VALUES(max_marks),
+                 published_on = VALUES(published_on)`,
+              [
+                student.id,
+                course.id,
+                semester.semester,
+                MARKSHEET_EXAM_TYPE,
+                marksObtained,
+                100,
+                semester.publishedOn,
+              ],
+            );
+            marksheetRows += 1;
+          }
+        }
+      }
+
+      const studentIds = studentAccounts.map((student) => student.id);
+      const studentPlaceholders = studentIds.map(() => '?').join(', ');
+      await client.query(
+        `DELETE FROM marksheets
+         WHERE student_id IN (${studentPlaceholders})
+           AND exam_type <> ?`,
+        [...studentIds, MARKSHEET_EXAM_TYPE],
+      );
+
+      let feeRows = 0;
+      for (const invoice of FEE_INVOICES) {
+        for (const [index, student] of studentAccounts.entries()) {
+          const payment = invoice.payments[index];
+          await client.query(
+            `INSERT INTO fees
+               (student_id, fee_type, amount, paid_amount, due_date, paid_on, receipt_no)
+             VALUES (?, ?, ?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE
+               amount = VALUES(amount),
+               paid_amount = VALUES(paid_amount),
+               paid_on = VALUES(paid_on),
+               receipt_no = VALUES(receipt_no)`,
+            [
+              student.id,
+              invoice.feeType,
+              invoice.amount,
+              payment?.paidAmount ?? 0,
+              invoice.dueDate,
+              payment?.paidOn ?? null,
+              payment?.receiptNo ?? null,
+            ],
+          );
+          feeRows += 1;
+        }
+      }
+
       const userByEmail = new Map(
         [admin, ...studentAccounts, ...facultyAccounts].map((user) => [user.email, user]),
       );
@@ -389,6 +576,8 @@ async function main() {
         courses,
         enrollmentLinks,
         attendanceRows,
+        marksheetRows,
+        feeRows,
         announcementCount,
       };
     });
@@ -405,6 +594,8 @@ async function main() {
     );
     console.log(`Enrollment links ensured: ${summary.enrollmentLinks}`);
     console.log(`Attendance rows upserted: ${summary.attendanceRows}`);
+    console.log(`Marksheet rows upserted: ${summary.marksheetRows}`);
+    console.log(`Fee invoices upserted: ${summary.feeRows}`);
     console.log(`Announcements ensured: ${summary.announcementCount}`);
     writeCredentialsFile(summary);
     console.log(`Demo credentials written to ${CREDENTIALS_PATH}`);

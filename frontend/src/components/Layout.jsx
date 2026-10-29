@@ -13,7 +13,7 @@ const NAV_ITEMS = [
   { to: '/faculty/manage', label: 'Faculty', roles: ['admin'] },
   { to: '/enrollments', label: 'Enrollments', roles: ['admin', 'faculty'] },
   { to: '/enrollments/manage', label: 'Manage Enrollments', roles: ['admin'] },
-  { to: '/attendance', label: 'My Attendance', roles: ['student'] },
+  { to: '/student/records', label: 'My Records', roles: ['student'] },
   { to: '/attendance', label: 'Student Attendance', roles: ['admin', 'faculty'] },
   { to: '/announcements', label: 'Announcements', roles: ['admin', 'faculty', 'student'] },
 ];

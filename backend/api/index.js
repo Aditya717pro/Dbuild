@@ -13,6 +13,7 @@ import studentRoutes from '../routes/students.routes.js';
 import facultyRoutes from '../routes/faculty.routes.js';
 import enrollmentRoutes from '../routes/enrollments.routes.js';
 import attendanceRoutes from '../routes/attendance.routes.js';
+import recordsRoutes from '../routes/records.routes.js';
 import announcementRoutes from '../routes/announcements.routes.js';
 import publicRoutes from '../routes/public.routes.js';
 import userRoutes from '../routes/users.routes.js';
@@ -80,6 +81,7 @@ app.use('/api/students', studentRoutes);
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/records', recordsRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/users', userRoutes);
 

@@ -9,6 +9,8 @@ const REQUIRED_TABLES = [
   'courses',
   'enrollments',
   'attendance',
+  'marksheets',
+  'fees',
   'announcements',
   'audit_logs',
 ];
@@ -80,7 +82,7 @@ async function runTest() {
     console.log(`Existing tables in '${info.currentDb}': ${[...existingTables].join(', ') || '(none)'}`);
 
     if (missingTables.length === 0) {
-      console.log('[PASS] All 9 required application tables are present.');
+      console.log('[PASS] All 11 required application tables are present.');
     } else {
       console.warn(`[NOTICE] Missing tables: ${missingTables.join(', ')}`);
       console.log(
