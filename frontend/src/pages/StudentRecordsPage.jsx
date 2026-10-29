@@ -223,20 +223,25 @@ function AttendanceTab({ attendance }) {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className={`grid gap-4 ${selectedSemester === 5 ? 'sm:grid-cols-3' : ''}`}>
         <StatCard label={`Sem ${selectedSemester} attendance`} value={`${semesterPercentage}%`} tone={semesterPercentage < 75 ? 'rose' : 'emerald'} />
-        <StatCard
-          label="Average attendance"
-          value={average === null ? '-' : `${average}%`}
-          tone={average !== null && average < 75 ? 'rose' : 'emerald'}
-        />
-        <StatCard
-          label="Courses below 75%"
-          value={scored.filter((course) => course.percentage < 75).length}
-          tone="amber"
-        />
+        {selectedSemester === 5 && (
+          <StatCard
+            label="Average attendance"
+            value={average === null ? '-' : `${average}%`}
+            tone={average !== null && average < 75 ? 'rose' : 'emerald'}
+          />
+        )}
+        {selectedSemester === 5 && (
+          <StatCard
+            label="Courses below 75%"
+            value={scored.filter((course) => course.percentage < 75).length}
+            tone="amber"
+          />
+        )}
       </div>
 
+      {selectedSemester === 5 && (
       <div className="card mt-6 overflow-hidden">
         <div className="border-b border-slate-200 px-5 py-4">
           <h2 className="text-lg font-semibold text-slate-900">Attendance by course</h2>
@@ -275,6 +280,7 @@ function AttendanceTab({ attendance }) {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
