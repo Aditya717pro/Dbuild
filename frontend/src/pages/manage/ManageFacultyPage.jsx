@@ -12,6 +12,7 @@ const EMPTY_FORM = {
   password: '',
   designation: '',
   department_id: '',
+  is_cdc: false,
   is_active: true,
 };
 
@@ -50,6 +51,7 @@ export default function FacultyPage() {
       password: '',
       designation: member.designation || '',
       department_id: member.department_id ?? '',
+      is_cdc: Boolean(member.is_cdc),
       is_active: member.is_active,
     });
     setFormError('');
@@ -66,6 +68,7 @@ export default function FacultyPage() {
         email: form.email.trim(),
         designation: form.designation.trim() || null,
         department_id: form.department_id ? Number(form.department_id) : null,
+        is_cdc: form.is_cdc,
       };
       if (form.password) payload.password = form.password;
 
@@ -125,6 +128,17 @@ export default function FacultyPage() {
           { key: 'email', label: 'Email' },
           { key: 'designation', label: 'Designation', render: (row) => row.designation || '—' },
           { key: 'department_name', label: 'Department', render: (row) => row.department_name || '—' },
+          {
+            key: 'is_cdc',
+            label: 'CDC',
+            render: (row) => (
+              row.is_cdc ? (
+                <span className="badge bg-sky-100 text-sky-700">CDC</span>
+              ) : (
+                <span className="text-slate-400">—</span>
+              )
+            ),
+          },
           {
             key: 'is_active',
             label: 'Status',
@@ -217,6 +231,17 @@ export default function FacultyPage() {
               ))}
             </SelectInput>
           </Field>
+          <div className="flex items-end">
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                checked={form.is_cdc}
+                onChange={(event) => setForm((prev) => ({ ...prev, is_cdc: event.target.checked }))}
+              />
+              CDC / Training &amp; Placement staff
+            </label>
+          </div>
           {editing && (
             <div className="flex items-end">
               <label className="flex items-center gap-2 text-sm text-slate-700">

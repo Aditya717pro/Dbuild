@@ -1,3 +1,4 @@
+import { API_BASE } from '../services/api.js';
 import { audienceLabel, formatDate } from '../utils/format.js';
 
 export default function AnnouncementCard({ announcement, canDelete, onDelete }) {
@@ -19,6 +20,17 @@ export default function AnnouncementCard({ announcement, canDelete, onDelete }) 
           )}
         </div>
       </div>
+
+      {Boolean(announcement.has_image) && (
+        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+          <img
+            src={`${API_BASE}/public/announcements/${announcement.id}/image`}
+            alt={announcement.title}
+            className="max-h-96 w-full object-contain sm:object-cover"
+          />
+        </div>
+      )}
+
       <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-slate-600">{announcement.body}</p>
     </article>
   );

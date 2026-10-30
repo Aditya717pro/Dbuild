@@ -167,14 +167,14 @@ These accounts are created by `npm run db:update` and are for local development 
 
 | Name | Role | Login | Default password |
 | --- | --- | --- | --- |
-| Admin | admin | `admin@example.com` | `admin@123` |
+| Admin | admin | `Admin` | `admin@123` |
 | Harry Potter | student | `2` | `student@123` |
 | Ron Weasley | student | `3` | `student@123` |
 | Hermione Granger | student | `4` | `student@123` |
-| Severus Snape | faculty | `severus.snape@example.com` | `faculty@123` |
-| Albus Dumbledore | faculty | `albus.dumbledore@example.com` | `faculty@123` |
+| Severus Snape | faculty | `Severus Snape` | `faculty@123` |
+| Albus Dumbledore | faculty | `Albus Dumbledore` | `faculty@123` |
 
-Students sign in with their numeric **Student ID** (`users.id`), not their email. Faculty and administrators sign in with email.
+Students sign in with their numeric **Student ID** (`users.id`), not their email. Faculty and administrators sign in with their name.
 
 The demo passwords are tracked in `backend/config/demo.js` so that password changes can propagate to everyone who pulls the repository. They are intentionally weak demo credentials. Do not use them in production. Override them in `backend/.env` if needed:
 
@@ -409,7 +409,7 @@ All protected endpoints require `Authorization: Bearer <jwt>`. Permissions are e
 
 | Method and path | Roles | Notes |
 | --- | --- | --- |
-| `POST /api/auth/login` | Public (rate-limited) | Students use numeric student ID; admin/faculty use email. Returns JWT + user. |
+| `POST /api/auth/login` | Public (rate-limited) | Students use numeric student ID; admin/faculty use name. Returns JWT + user. |
 | `GET /api/auth/me` | Any authenticated | Current user and student/faculty profile. |
 | `POST /api/auth/change-password` | Any authenticated | Requires current password. |
 | `GET /api/health` | Public | Runs `SELECT 1`. |
@@ -458,6 +458,7 @@ All protected endpoints require `Authorization: Bearer <jwt>`. Permissions are e
 | CORS error in browser | Same-origin calls should not need `FRONTEND_URL`; set it exactly if calling from another origin. |
 | Login always fails | Confirm the account exists, the password is correct, and the account is active. |
 | Student login fails | Students use their numeric `users.id`, not their email address. |
+| Staff or Admin login fails | Staff and administrators use their account name (e.g. `Admin`, `Severus Snape`). |
 
 ---
 

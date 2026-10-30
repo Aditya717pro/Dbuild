@@ -7,7 +7,9 @@ import { httpError } from '../utils/httpError.js';
 const BCRYPT_ROUNDS = 10;
 
 export async function login(req, res) {
-  const { email: identifier, password } = req.body;
+  const rawIdentifier = req.body.name ?? req.body.identifier ?? req.body.email ?? '';
+  const identifier = typeof rawIdentifier === 'string' ? rawIdentifier.trim() : String(rawIdentifier).trim();
+  const { password } = req.body;
   const isStudentId = /^\d+$/.test(identifier);
 
   let rows;
@@ -21,13 +23,16 @@ export async function login(req, res) {
       [Number(identifier)],
     ));
   } else {
-    // Admin and faculty accounts sign in with their email address.
+    // Admin and faculty accounts sign in with their name (or email).
     ({ rows } = await query(
-      `SELECT id, name, email, password_hash, role, is_active
-       FROM users
-       WHERE email = ? AND role <> 'student'
+      `SELECT u.id, u.name, u.email, u.password_hash, u.role, u.is_active,
+              COALESCE(f.is_cdc, 0) AS is_cdc
+       FROM users u
+       LEFT JOIN faculty f ON f.user_id = u.id
+       WHERE (LOWER(TRIM(u.name)) = LOWER(TRIM(?)) OR LOWER(TRIM(u.email)) = LOWER(TRIM(?)))
+         AND u.role <> 'student'
        LIMIT 1`,
-      [identifier],
+      [identifier, identifier],
     ));
   }
 
@@ -37,7 +42,7 @@ export async function login(req, res) {
   if (!user || !passwordOk) {
     throw httpError(
       401,
-      isStudentId ? 'Invalid student ID or password' : 'Invalid email or password',
+      isStudentId ? 'Invalid student ID or password' : 'Invalid name or password',
     );
   }
   if (!user.is_active) {
@@ -50,7 +55,13 @@ export async function login(req, res) {
   const token = signToken(user);
   return res.json({
     token,
-    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      is_cdc: Boolean(user.is_cdc),
+    },
   });
 }
 
@@ -68,12 +79,12 @@ export async function me(req, res) {
     profile = rows[0] || null;
   } else if (user.role === 'faculty') {
     const { rows } = await query(
-      `SELECT f.department_id, f.designation, d.name AS department_name
+      `SELECT f.department_id, f.designation, f.is_cdc, d.name AS department_name
        FROM faculty f LEFT JOIN departments d ON d.id = f.department_id
        WHERE f.user_id = ?`,
       [user.id],
     );
-    profile = rows[0] || null;
+    profile = rows[0] ? { ...rows[0], is_cdc: Boolean(rows[0].is_cdc) } : null;
   }
 
   return res.json({ user: { ...user, profile } });

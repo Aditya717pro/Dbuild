@@ -3,11 +3,15 @@ import { httpError } from '../utils/httpError.js';
 
 export async function publicAnnouncements(req, res) {
   const { rows } = await query(
-    `SELECT id, title, body, created_at
-     FROM announcements
-     WHERE audience = 'all'
-     ORDER BY created_at DESC
-     LIMIT 10`,
+    `SELECT a.id, a.title, a.body, a.created_at, (a.image_mime IS NOT NULL) AS has_image, u.name AS posted_by_name, COALESCE(d.name, fd.name) AS department_name
+     FROM announcements a
+     LEFT JOIN users u ON u.id = a.posted_by
+     LEFT JOIN departments d ON d.id = a.department_id
+     LEFT JOIN faculty f ON f.user_id = a.posted_by
+     LEFT JOIN departments fd ON fd.id = f.department_id
+     WHERE a.audience = 'all'
+     ORDER BY a.created_at DESC
+     LIMIT 50`,
   );
   return res.json({ announcements: rows });
 }

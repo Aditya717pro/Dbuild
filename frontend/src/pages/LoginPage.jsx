@@ -16,13 +16,13 @@ const ROLES = [
     id: 'staff',
     label: 'Staff',
     allowed: ['faculty'],
-    userPlaceholder: 'Staff ID / Email',
+    userPlaceholder: 'Staff Name',
   },
   {
     id: 'admin',
     label: 'Admin',
     allowed: ['admin'],
-    userPlaceholder: 'Admin Email',
+    userPlaceholder: 'Admin Name',
   },
 ];
 
@@ -62,6 +62,7 @@ export default function LoginPage({ defaultRole = 'student' }) {
     setSubmitting(true);
     try {
       const response = await api.post('/auth/login', {
+        name: identifier.trim(),
         email: identifier.trim(),
         password,
       });
@@ -202,7 +203,7 @@ export default function LoginPage({ defaultRole = 'student' }) {
                 value={identifier}
                 onChange={(event) => setIdentifier(event.target.value)}
                 placeholder={selectedRole.userPlaceholder}
-                aria-label={`${selectedRole.label} ID or email`}
+                aria-label={`${selectedRole.label} ${selectedRole.id === 'student' ? 'ID' : 'Name'}`}
                 className="w-full rounded-2xl border border-slate-200/90 bg-white/75 px-4 py-3.5 pr-11 text-sm text-slate-800 placeholder-slate-400 backdrop-blur-sm transition-all focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 shadow-sm"
               />
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-indigo-400">

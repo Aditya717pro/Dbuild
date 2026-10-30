@@ -143,6 +143,8 @@ CREATE TABLE IF NOT EXISTS announcements (
     audience      VARCHAR(20)   NOT NULL,
     department_id INT           NULL,
     course_id     INT           NULL,
+    image_data    MEDIUMBLOB    NULL,
+    image_mime    VARCHAR(100)  NULL,
     created_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_announcements_department_id (department_id),
     KEY idx_announcements_course_id (course_id),

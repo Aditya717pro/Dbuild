@@ -1,5 +1,9 @@
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
-import ProtectedRoute, { RequireRole } from './components/ProtectedRoute.jsx';
+import ProtectedRoute, {
+
+  RequireCdcOrAdmin,
+  RequireRole,
+} from './components/ProtectedRoute.jsx';
 import Layout from './components/Layout.jsx';
 import PublicLayout from './components/public/PublicLayout.jsx';
 import PageLoader from './components/public/PageLoader.jsx';
@@ -45,6 +49,17 @@ import ManageDepartmentsPage from './pages/manage/ManageDepartmentsPage.jsx';
 import ManageStudentsPage from './pages/manage/ManageStudentsPage.jsx';
 import ManageFacultyPage from './pages/manage/ManageFacultyPage.jsx';
 import ManageEnrollmentsPage from './pages/manage/ManageEnrollmentsPage.jsx';
+import ManagePlacementPostersPage from './pages/manage/ManagePlacementPostersPage.jsx';
+import InnovationPortalLayout from './pages/innovation/InnovationPortalLayout.jsx';
+import InnovationDashboardPage from './pages/innovation/InnovationDashboardPage.jsx';
+import InnovationIdeasPage from './pages/innovation/InnovationIdeasPage.jsx';
+import InnovationProjectsPage from './pages/innovation/InnovationProjectsPage.jsx';
+import InnovationStartupsPage from './pages/innovation/InnovationStartupsPage.jsx';
+import InnovationMentorsPage from './pages/innovation/InnovationMentorsPage.jsx';
+import InnovationEventsPage from './pages/innovation/InnovationEventsPage.jsx';
+import InnovationLabPage from './pages/innovation/InnovationLabPage.jsx';
+import InnovationResearchPage from './pages/innovation/InnovationResearchPage.jsx';
+import InnovationAdminPage from './pages/innovation/InnovationAdminPage.jsx';
 import CoursesPage from './pages/CoursesPage.jsx';
 import StudentsPage from './pages/StudentsPage.jsx';
 import FacultyPage from './pages/FacultyPage.jsx';
@@ -118,14 +133,21 @@ export default function App() {
             path="/student/records"
             element={<RequireRole roles={['student']}><StudentRecordsPage /></RequireRole>}
           />
-          <Route path="/announcements" element={<AnnouncementsPage />} />
+          <Route
+            path="/announcements"
+            element={(
+              <RequireCdcOrAdmin>
+                <AnnouncementsPage />
+              </RequireCdcOrAdmin>
+            )}
+          />
           <Route
             path="/students"
-            element={<RequireRole roles={['admin', 'faculty']}><StudentsPage /></RequireRole>}
+            element={<RequireRole roles={['admin']}><StudentsPage /></RequireRole>}
           />
           <Route
             path="/enrollments"
-            element={<RequireRole roles={['admin', 'faculty']}><EnrollmentsPage /></RequireRole>}
+            element={<RequireRole roles={['admin']}><EnrollmentsPage /></RequireRole>}
           />
           <Route
             path="/faculty/manage"
@@ -147,6 +169,24 @@ export default function App() {
             path="/enrollments/manage"
             element={<RequireRole roles={['admin']}><ManageEnrollmentsPage /></RequireRole>}
           />
+          <Route
+            path="/placement-posters"
+            element={<RequireCdcOrAdmin><ManagePlacementPostersPage /></RequireCdcOrAdmin>}
+          />
+          <Route path="/innovation/portal" element={<RequireRole roles={['admin', 'student']}><InnovationPortalLayout /></RequireRole>}>
+            <Route index element={<InnovationDashboardPage />} />
+            <Route path="ideas" element={<InnovationIdeasPage />} />
+            <Route path="projects" element={<InnovationProjectsPage />} />
+            <Route path="startups" element={<InnovationStartupsPage />} />
+            <Route path="mentors" element={<InnovationMentorsPage />} />
+            <Route path="events" element={<InnovationEventsPage />} />
+            <Route path="lab" element={<InnovationLabPage />} />
+            <Route path="research" element={<InnovationResearchPage />} />
+            <Route
+              path="admin"
+              element={<RequireRole roles={['admin']}><InnovationAdminPage /></RequireRole>}
+            />
+          </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Route>

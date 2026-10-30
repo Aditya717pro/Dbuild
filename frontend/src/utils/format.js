@@ -1,6 +1,7 @@
 export function formatDate(value, { withTime = false } = {}) {
   if (!value) return '—';
-  const date = new Date(value);
+  const dateOnly = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const date = new Date(dateOnly ? `${value}T12:00:00` : value);
   if (Number.isNaN(date.getTime())) return '—';
   return date.toLocaleString(undefined, {
     year: 'numeric',

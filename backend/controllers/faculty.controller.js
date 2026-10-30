@@ -8,7 +8,7 @@ const BCRYPT_ROUNDS = 10;
 const SELECT_SQL = `
   SELECT f.user_id, u.name, u.email, u.is_active,
          f.department_id, d.name AS department_name,
-         f.designation, f.created_at
+         f.designation, f.is_cdc, f.created_at
   FROM faculty f
   JOIN users u ON u.id = f.user_id
   LEFT JOIN departments d ON d.id = f.department_id`;
@@ -43,7 +43,7 @@ export async function list(req, res) {
 
 export async function create(req, res) {
   const {
-    name, email, password, designation, department_id: departmentId,
+    name, email, password, designation, department_id: departmentId, is_cdc: isCdc,
   } = req.body;
 
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
@@ -62,13 +62,13 @@ export async function create(req, res) {
     )).rows[0];
 
     await client.query(
-      `INSERT INTO faculty (user_id, department_id, designation)
-       VALUES (?, ?, ?)`,
-      [userId, departmentId ?? null, designation ?? null],
+      `INSERT INTO faculty (user_id, department_id, designation, is_cdc)
+       VALUES (?, ?, ?, ?)`,
+      [userId, departmentId ?? null, designation ?? null, isCdc ? 1 : 0],
     );
 
     const profile = (await client.query(
-      `SELECT user_id, department_id, designation, created_at FROM faculty WHERE user_id = ?`,
+      `SELECT user_id, department_id, designation, is_cdc, created_at FROM faculty WHERE user_id = ?`,
       [userId],
     )).rows[0];
 
@@ -82,7 +82,8 @@ export async function create(req, res) {
 export async function update(req, res) {
   const { id } = req.params;
   const {
-    name, email, password, designation, department_id: departmentId, is_active: isActive,
+    name, email, password, designation, department_id: departmentId,
+    is_active: isActive, is_cdc: isCdc,
   } = req.body;
 
   const member = await withTransaction(async (client) => {
@@ -107,13 +108,13 @@ export async function update(req, res) {
     }
 
     await client.query(
-      `UPDATE faculty SET department_id = ?, designation = ?
+      `UPDATE faculty SET department_id = ?, designation = ?, is_cdc = COALESCE(?, is_cdc)
        WHERE user_id = ?`,
-      [departmentId ?? null, designation ?? null, id],
+      [departmentId ?? null, designation ?? null, isCdc === undefined ? null : (isCdc ? 1 : 0), id],
     );
 
     const profile = (await client.query(
-      `SELECT user_id, department_id, designation, created_at FROM faculty WHERE user_id = ?`,
+      `SELECT user_id, department_id, designation, is_cdc, created_at FROM faculty WHERE user_id = ?`,
       [id],
     )).rows[0] ?? {};
 
