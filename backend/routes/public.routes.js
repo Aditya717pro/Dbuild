@@ -14,5 +14,6 @@ const publicLimiter = rateLimit({
 });
 
 router.get('/announcements', publicLimiter, asyncHandler(publicController.publicAnnouncements));
+router.get('/departments/:code/faculty', publicLimiter, asyncHandler(publicController.publicDepartmentFaculty));
 
 export default router;

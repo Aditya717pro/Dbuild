@@ -8,6 +8,20 @@ import getPool, { withTransaction } from '../db/pool.js';
 
 const BCRYPT_ROUNDS = 10;
 const DEPARTMENT_CODE = 'CSE';
+const DEPARTMENTS = [
+  { code: 'CSE', name: 'Computer Science and Engineering' },
+  { code: 'IT', name: 'Information Technology' },
+  { code: 'AI&DS', name: 'Artificial Intelligence and Data Science' },
+  { code: 'AI&ML', name: 'Artificial Intelligence and Machine Learning' },
+  { code: 'ECE', name: 'Electronics and Communication Engineering' },
+  { code: 'EEE', name: 'Electrical and Electronics Engineering' },
+  { code: 'MECH', name: 'Mechanical Engineering' },
+  { code: 'CIVIL', name: 'Civil Engineering' },
+  { code: 'BME', name: 'Bio-Medical Engineering' },
+  { code: 'MDE', name: 'Medical Electronics' },
+  { code: 'MBA', name: 'Management Studies (MBA)' },
+  { code: 'S&H', name: 'Science and Humanities' },
+];
 const CREDENTIALS_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../../DEMO_CREDENTIALS.local.md',
@@ -38,17 +52,192 @@ const STUDENTS = [
 ];
 
 const FACULTY = [
+  // CSE
   {
     name: 'Severus Snape',
     email: 'severus.snape@example.com',
     designation: 'Assistant Professor',
     passwordRole: 'faculty',
+    departmentCode: 'CSE',
   },
   {
     name: 'Albus Dumbledore',
     email: 'albus.dumbledore@example.com',
     designation: 'Professor and Head of Department',
     passwordRole: 'faculty',
+    departmentCode: 'CSE',
+  },
+  {
+    name: 'Minerva McGonagall',
+    email: 'minerva.mcgonagall@example.com',
+    designation: 'Associate Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'CSE',
+  },
+  // IT
+  {
+    name: 'Filius Flitwick',
+    email: 'filius.flitwick@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'IT',
+  },
+  {
+    name: 'Sybill Trelawney',
+    email: 'sybill.trelawney@example.com',
+    designation: 'Assistant Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'IT',
+  },
+  // ECE
+  {
+    name: 'Pomona Sprout',
+    email: 'pomona.sprout@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'ECE',
+  },
+  {
+    name: 'Horace Slughorn',
+    email: 'horace.slughorn@example.com',
+    designation: 'Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'ECE',
+  },
+  // EEE
+  {
+    name: 'Remus Lupin',
+    email: 'remus.lupin@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'EEE',
+  },
+  {
+    name: 'Nymphadora Tonks',
+    email: 'nymphadora.tonks@example.com',
+    designation: 'Assistant Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'EEE',
+  },
+  // MECH
+  {
+    name: 'Rubeus Hagrid',
+    email: 'rubeus.hagrid@example.com',
+    designation: 'Associate Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'MECH',
+  },
+  {
+    name: 'Arthur Weasley',
+    email: 'arthur.weasley@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'MECH',
+  },
+  // CIVIL
+  {
+    name: 'Kingsley Shacklebolt',
+    email: 'kingsley.shacklebolt@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'CIVIL',
+  },
+  {
+    name: 'Neville Longbottom',
+    email: 'neville.longbottom@example.com',
+    designation: 'Assistant Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'CIVIL',
+  },
+  // AI&DS
+  {
+    name: 'Luna Lovegood',
+    email: 'luna.lovegood@example.com',
+    designation: 'Assistant Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'AI&DS',
+  },
+  {
+    name: 'Hermione Granger-Weasley',
+    email: 'hermione.granger.faculty@example.com',
+    designation: 'Associate Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'AI&DS',
+  },
+  // AI&ML
+  {
+    name: 'Draco Malfoy',
+    email: 'draco.malfoy@example.com',
+    designation: 'Assistant Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'AI&ML',
+  },
+  {
+    name: 'Gilderoy Lockhart',
+    email: 'gilderoy.lockhart@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'AI&ML',
+  },
+  // BME
+  {
+    name: 'Poppy Pomfrey',
+    email: 'poppy.pomfrey@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'BME',
+  },
+  {
+    name: 'Dobby House',
+    email: 'dobby.house@example.com',
+    designation: 'Assistant Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'BME',
+  },
+  // MDE
+  {
+    name: 'Cedric Diggory',
+    email: 'cedric.diggory@example.com',
+    designation: 'Associate Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'MDE',
+  },
+  {
+    name: 'Cho Chang',
+    email: 'cho.chang@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'MDE',
+  },
+  // MBA
+  {
+    name: 'Percy Weasley',
+    email: 'percy.weasley@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'MBA',
+  },
+  {
+    name: 'Cornelius Fudge',
+    email: 'cornelius.fudge@example.com',
+    designation: 'Visiting Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'MBA',
+  },
+  // S&H
+  {
+    name: 'Dolores Umbridge',
+    email: 'dolores.umbridge@example.com',
+    designation: 'Professor and Head of Department',
+    passwordRole: 'faculty',
+    departmentCode: 'S&H',
+  },
+  {
+    name: 'Xenophilius Lovegood',
+    email: 'xenophilius.lovegood@example.com',
+    designation: 'Assistant Professor',
+    passwordRole: 'faculty',
+    departmentCode: 'S&H',
   },
 ];
 
@@ -296,23 +485,22 @@ async function main() {
     const adminSeed = { ...ADMIN, passwordHash: await hashPassword(ADMIN.passwordRole) };
 
     const summary = await withTransaction(async (client) => {
-      let department = (
-        await client.query('SELECT id, name, code FROM departments WHERE code = ?', [
-          DEPARTMENT_CODE,
-        ])
-      ).rows[0];
+      // Load all departments into a map keyed by code
+      const { rows: allDepts } = await client.query('SELECT id, name, code FROM departments');
+      const deptByCode = new Map(allDepts.map((d) => [d.code, d]));
 
-      if (!department) {
-        const result = await client.query(
-          'INSERT INTO departments (name, code) VALUES (?, ?)',
-          ['Computer Science and Engineering', DEPARTMENT_CODE],
-        );
-        department = {
-          id: result.insertId,
-          name: 'Computer Science and Engineering',
-          code: DEPARTMENT_CODE,
-        };
+      // Ensure every department referenced by the public site exists
+      for (const dept of DEPARTMENTS) {
+        if (!deptByCode.has(dept.code)) {
+          const result = await client.query(
+            'INSERT INTO departments (name, code) VALUES (?, ?)',
+            [dept.name, dept.code],
+          );
+          deptByCode.set(dept.code, { id: result.insertId, ...dept });
+        }
       }
+
+      const department = deptByCode.get(DEPARTMENT_CODE);
 
       const admin = await upsertUser(client, { ...adminSeed, role: 'admin' });
 
@@ -339,13 +527,15 @@ async function main() {
       const facultyAccounts = [];
       for (const member of facultySeeds) {
         const user = await upsertUser(client, { ...member, role: 'faculty' });
+        // Look up the faculty member's department; fall back to CSE if not found
+        const memberDept = deptByCode.get(member.departmentCode) ?? department;
         await client.query(
           `INSERT INTO faculty (user_id, department_id, designation)
            VALUES (?, ?, ?)
            ON DUPLICATE KEY UPDATE
              department_id = VALUES(department_id),
              designation = VALUES(designation)`,
-          [user.id, department.id, member.designation],
+          [user.id, memberDept.id, member.designation],
         );
         facultyAccounts.push({
           ...user,

@@ -63,7 +63,7 @@ export function AdminDashboard() {
             <Link to="/departments/manage" className="btn btn-secondary w-full justify-start">Manage departments</Link>
             <Link to="/courses" className="btn btn-secondary w-full justify-start">Manage courses</Link>
             <Link to="/students" className="btn btn-secondary w-full justify-start">Manage students</Link>
-            <Link to="/faculty/manage-list" className="btn btn-secondary w-full justify-start">Manage faculty</Link>
+            <Link to="/faculty/manage" className="btn btn-secondary w-full justify-start">Manage faculty</Link>
             <Link to="/attendance" className="btn btn-secondary w-full justify-start">Attendance overview</Link>
           </div>
         </section>
@@ -119,7 +119,7 @@ export function FacultyDashboard() {
                       {course.enrolled_count} enrolled
                     </p>
                   </div>
-                  <Link to="/attendance" className="btn btn-secondary btn-sm">Student attendance</Link>
+                  <Link to="/attendance" className="btn btn-secondary btn-sm">Mark attendance</Link>
                 </div>
               ))}
             </div>
@@ -130,7 +130,7 @@ export function FacultyDashboard() {
           <div className="card p-5">
             <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
             <div className="mt-4 space-y-2">
-              <Link to="/attendance" className="btn btn-primary w-full justify-start">Student attendance</Link>
+              <Link to="/attendance" className="btn btn-primary w-full justify-start">Mark attendance</Link>
               <Link to="/announcements" className="btn btn-secondary w-full justify-start">Post an announcement</Link>
               <Link to="/students" className="btn btn-secondary w-full justify-start">View department roster</Link>
             </div>
@@ -182,7 +182,6 @@ export function StudentDashboard() {
     <div>
       <PageHeader
         title={`Welcome back, ${user.name.split(' ')[0]}`}
-        action={<Link to="/student/records" className="btn btn-primary">View my records</Link>}
         subtitle={user.profile?.department_name ? `${user.profile.department_name} · Year ${user.profile.year}` : 'Your courses and attendance.'}
       />
 
