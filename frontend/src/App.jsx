@@ -7,7 +7,6 @@ import HomePage from './pages/public/HomePage.jsx';
 import {
   AboutPage,
   AdmissionPage,
-  FacultyPage as PublicFacultyPage,
   AcademicsPage,
   AccreditationPage,
   RankingsPage,
@@ -68,7 +67,6 @@ export default function App() {
           <Route path="/admission/:section/:course" element={<AdmissionSectionWrapper />} />
           <Route path="/departments" element={<Navigate to="/departments/cse" replace />} />
           <Route path="/departments/:slug" element={<DepartmentDetailWrapper />} />
-          <Route path="/faculty" element={<PublicFacultyPage />} />
           <Route path="/academics" element={<AcademicsPage section="academics" />} />
           <Route path="/academics/:section" element={<AcademicsSectionWrapper />} />
           <Route path="/accreditation" element={<AccreditationPage section="accreditation" />} />

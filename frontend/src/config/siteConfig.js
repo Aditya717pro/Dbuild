@@ -81,10 +81,6 @@ export const siteConfig = {
       isMega: true,
     },
     {
-      label: 'FACULTY DETAILS',
-      to: '/faculty',
-    },
-    {
       label: 'CAREER DEVELOPMENT',
       to: '/career-development',
       hasDropdown: true,

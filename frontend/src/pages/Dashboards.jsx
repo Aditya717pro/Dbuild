@@ -63,7 +63,7 @@ export function AdminDashboard() {
             <Link to="/departments/manage" className="btn btn-secondary w-full justify-start">Manage departments</Link>
             <Link to="/courses" className="btn btn-secondary w-full justify-start">Manage courses</Link>
             <Link to="/students" className="btn btn-secondary w-full justify-start">Manage students</Link>
-            <Link to="/faculty" className="btn btn-secondary w-full justify-start">Manage faculty</Link>
+            <Link to="/faculty/manage" className="btn btn-secondary w-full justify-start">Manage faculty</Link>
             <Link to="/attendance" className="btn btn-secondary w-full justify-start">Attendance overview</Link>
           </div>
         </section>

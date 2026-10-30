@@ -8,6 +8,20 @@ import getPool, { withTransaction } from '../db/pool.js';
 
 const BCRYPT_ROUNDS = 10;
 const DEPARTMENT_CODE = 'CSE';
+const DEPARTMENTS = [
+  { code: 'CSE', name: 'Computer Science and Engineering' },
+  { code: 'IT', name: 'Information Technology' },
+  { code: 'AI&DS', name: 'Artificial Intelligence and Data Science' },
+  { code: 'AI&ML', name: 'Artificial Intelligence and Machine Learning' },
+  { code: 'ECE', name: 'Electronics and Communication Engineering' },
+  { code: 'EEE', name: 'Electrical and Electronics Engineering' },
+  { code: 'MECH', name: 'Mechanical Engineering' },
+  { code: 'CIVIL', name: 'Civil Engineering' },
+  { code: 'BME', name: 'Bio-Medical Engineering' },
+  { code: 'MDE', name: 'Medical Electronics' },
+  { code: 'MBA', name: 'Management Studies (MBA)' },
+  { code: 'S&H', name: 'Science and Humanities' },
+];
 const CREDENTIALS_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../../DEMO_CREDENTIALS.local.md',
@@ -475,20 +489,18 @@ async function main() {
       const { rows: allDepts } = await client.query('SELECT id, name, code FROM departments');
       const deptByCode = new Map(allDepts.map((d) => [d.code, d]));
 
-      // Ensure CSE exists (primary teaching department for students)
-      let department = deptByCode.get(DEPARTMENT_CODE);
-      if (!department) {
-        const result = await client.query(
-          'INSERT INTO departments (name, code) VALUES (?, ?)',
-          ['Computer Science and Engineering', DEPARTMENT_CODE],
-        );
-        department = {
-          id: result.insertId,
-          name: 'Computer Science and Engineering',
-          code: DEPARTMENT_CODE,
-        };
-        deptByCode.set(DEPARTMENT_CODE, department);
+      // Ensure every department referenced by the public site exists
+      for (const dept of DEPARTMENTS) {
+        if (!deptByCode.has(dept.code)) {
+          const result = await client.query(
+            'INSERT INTO departments (name, code) VALUES (?, ?)',
+            [dept.name, dept.code],
+          );
+          deptByCode.set(dept.code, { id: result.insertId, ...dept });
+        }
       }
+
+      const department = deptByCode.get(DEPARTMENT_CODE);
 
       const admin = await upsertUser(client, { ...adminSeed, role: 'admin' });
 
