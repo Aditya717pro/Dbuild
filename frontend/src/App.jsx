@@ -14,11 +14,11 @@ import {
   CampusPage,
   LibraryPage,
   InnovationPage,
-  ResearchPage,
-  AlumniPage,
   ContactPage,
   CareerPage,
 } from './pages/public/PublicStaticPages.jsx';
+import AlumniPage from './pages/public/AlumniPage.jsx';
+import ResearchPage from './pages/public/ResearchPage.jsx';
 import DepartmentDetailWrapper from './pages/public/DepartmentDetailWrapper.jsx';
 
 function AboutSectionWrapper() {

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { siteConfig } from '../../config/siteConfig.js';
 
 // Base layout wrapper for public informational pages
-function PublicPageLayout({
+export function PublicPageLayout({
   title,
   subtitle,
   breadcrumbs = [],
