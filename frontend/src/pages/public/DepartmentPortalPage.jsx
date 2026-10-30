@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { siteConfig } from '../../config/siteConfig.js';
+import { API_BASE } from '../../services/api.js';
 
 // Department-specific data
 const departmentDetails = {
@@ -264,7 +266,36 @@ export default function DepartmentPortalPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get('tab') || 'overview';
 
+  // Faculty fetched live from the database
+  const [facultyList, setFacultyList] = useState([]);
+  const [facultyLoading, setFacultyLoading] = useState(true);
+  const [facultyError, setFacultyError] = useState('');
+
   const dept = getDepartmentData(slug);
+
+  // Map slug → DB department code (e.g. 'cse' → 'CSE', 'aids' → 'AI&DS')
+  const configDept = siteConfig.departments.find((d) => d.slug === slug);
+  // The siteConfig stores codes like 'AI & DS' with a space; DB uses 'AI&DS'.
+  // Normalise by removing all spaces so both sides match.
+  const deptCode = configDept?.code?.replace(/\s+/g, '') ?? slug.toUpperCase();
+
+  useEffect(() => {
+    if (!deptCode) return;
+    setFacultyLoading(true);
+    setFacultyError('');
+    fetch(`${API_BASE}/public/departments/${encodeURIComponent(deptCode)}/faculty`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        setFacultyList(data.faculty || []);
+      })
+      .catch((err) => {
+        setFacultyError(err.message);
+      })
+      .finally(() => setFacultyLoading(false));
+  }, [deptCode]);
 
   if (!dept) {
     return (
@@ -336,7 +367,9 @@ export default function DepartmentPortalPage() {
               </div>
               <div className="h-8 w-px bg-white/20" />
               <div className="text-center">
-                <p className="text-xl font-black text-amber-300">{dept.facultyList.length}+</p>
+                <p className="text-xl font-black text-amber-300">
+                  {facultyLoading ? '…' : `${facultyList.length}+`}
+                </p>
                 <p className="text-[11px] uppercase tracking-wider text-blue-200">Faculty</p>
               </div>
               <div className="h-8 w-px bg-white/20" />
@@ -645,6 +678,72 @@ export default function DepartmentPortalPage() {
                 </div>
               </div>
             )}
+
+            {/* FACULTY MEMBERS — rendered from live DB data */}
+            <section id="faculty" className="mt-8 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              <div className="flex flex-col gap-3 border-b border-slate-200 bg-gradient-to-r from-[#0b3d91] to-[#0a357f] px-6 py-5 text-white sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-xl font-bold">Faculty Members</h2>
+                  <p className="mt-1 text-sm text-blue-100">Experienced academic and research mentors</p>
+                </div>
+                <span className="w-fit rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold text-white">
+                  {facultyLoading ? 'Loading…' : `Total Faculty: ${facultyList.length}`}
+                </span>
+              </div>
+
+              {/* Loading skeleton */}
+              {facultyLoading && (
+                <div className="grid gap-4 p-6 sm:grid-cols-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex gap-4 rounded-xl border border-slate-100 p-5 animate-pulse">
+                      <div className="h-12 w-12 flex-shrink-0 rounded-full bg-slate-200" />
+                      <div className="flex-1 space-y-2 py-1">
+                        <div className="h-3 w-3/4 rounded bg-slate-200" />
+                        <div className="h-3 w-1/2 rounded bg-slate-200" />
+                        <div className="h-3 w-2/3 rounded bg-slate-200" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Error state */}
+              {!facultyLoading && facultyError && (
+                <div className="p-6 text-center text-sm text-red-600">
+                  <p className="font-semibold">Could not load faculty</p>
+                  <p className="mt-1 text-xs text-slate-500">{facultyError}</p>
+                </div>
+              )}
+
+              {/* Empty state */}
+              {!facultyLoading && !facultyError && facultyList.length === 0 && (
+                <div className="p-6 text-center text-sm text-slate-500">
+                  No faculty members assigned to this department yet.
+                </div>
+              )}
+
+              {/* Faculty cards */}
+              {!facultyLoading && !facultyError && facultyList.length > 0 && (
+                <div className="grid gap-4 p-6 sm:grid-cols-2">
+                  {facultyList.map((fac, idx) => (
+                    <div key={idx} className="flex gap-4 rounded-xl border border-slate-200 p-5 transition hover:border-blue-300 hover:shadow-md">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#0b3d91] text-sm font-bold text-white">
+                        {fac.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-base font-bold text-slate-900">{fac.name}</p>
+                        <p className="text-sm font-semibold text-[#0b3d91]">{fac.designation || 'Faculty'}</p>
+                        <p className="text-sm text-slate-500">
+                          <a href={`mailto:${fac.email}`} className="hover:text-blue-600 hover:underline">
+                            {fac.email}
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
           </div>
 
           {/* Department Quick Switcher Sidebar (1 col) */}
