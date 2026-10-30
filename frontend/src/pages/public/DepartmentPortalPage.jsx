@@ -134,6 +134,38 @@ function formatValue(value) {
   return value === null || value === undefined || value === '' ? '—' : value;
 }
 
+function staffPhoto(name) {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  return `/staff/${slug}.jpg`;
+}
+
+function StaffAvatar({ name, className = '' }) {
+  const [failed, setFailed] = useState(false);
+  const initials = name.split(' ').map((part) => part[0]).slice(0, 2).join('');
+
+  if (failed) {
+    return (
+      <div className={`flex flex-shrink-0 items-center justify-center bg-[#0b3d91] font-bold text-white ${className}`}>
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={staffPhoto(name)}
+      alt={`${name} profile`}
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
+      className={`flex-shrink-0 border border-slate-200 bg-slate-100 object-cover ${className}`}
+    />
+  );
+}
+
 export default function DepartmentPortalPage() {
   const { slug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -453,9 +485,7 @@ export default function DepartmentPortalPage() {
                     ) : hod ? (
                       <div>
                         <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                          <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-700 to-indigo-900 text-2xl font-extrabold text-white shadow-md">
-                            {hod.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                          </div>
+                          <StaffAvatar name={hod.name} className="h-20 w-20 rounded-xl text-2xl shadow-md" />
                           <div className="space-y-1">
                             <h3 className="text-lg font-bold text-slate-900">{hod.name}</h3>
                             <p className="text-xs font-semibold uppercase text-[#0b3d91]">{hod.designation || 'Faculty'}</p>
@@ -524,40 +554,6 @@ export default function DepartmentPortalPage() {
                         </div>
                       </div>
                     ))}
-                  </div>
-                </section>
-
-                <section className="card p-6">
-                  <SectionHeader title="Contact Information" subtitle="Department office and communication details" />
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
-                      <Icon name="mail" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
-                      <div>
-                        <p className="text-xs font-semibold uppercase text-slate-500">Email</p>
-                        <a href={`mailto:${content.contact.email}`} className="text-sm text-blue-600 hover:underline">{content.contact.email}</a>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
-                      <Icon name="phone" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
-                      <div>
-                        <p className="text-xs font-semibold uppercase text-slate-500">Phone</p>
-                        <p className="text-sm text-slate-700">{content.contact.phone}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
-                      <Icon name="building" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
-                      <div>
-                        <p className="text-xs font-semibold uppercase text-slate-500">Office</p>
-                        <p className="text-sm text-slate-700">{content.contact.office}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
-                      <Icon name="pin" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
-                      <div>
-                        <p className="text-xs font-semibold uppercase text-slate-500">Address</p>
-                        <p className="text-sm text-slate-700">{content.contact.address}</p>
-                      </div>
-                    </div>
                   </div>
                 </section>
               </div>
@@ -1207,9 +1203,7 @@ export default function DepartmentPortalPage() {
                 <div className="grid gap-4 p-6 sm:grid-cols-2">
                   {facultyList.map((fac) => (
                     <div key={fac.email} className="flex gap-4 rounded-xl border border-slate-200 p-5 transition hover:border-blue-300 hover:shadow-md">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#0b3d91] text-sm font-bold text-white">
-                        {fac.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                      </div>
+                      <StaffAvatar name={fac.name} className="h-12 w-12 rounded-full text-sm" />
                       <div className="space-y-0.5">
                         <p className="text-base font-bold text-slate-900">{fac.name}</p>
                         <p className="text-sm font-semibold text-[#0b3d91]">{fac.designation || 'Faculty'}</p>
@@ -1223,6 +1217,40 @@ export default function DepartmentPortalPage() {
                   ))}
                 </div>
               )}
+            </section>
+
+            <section className="card mt-8 p-6">
+              <SectionHeader title="Contact Information" subtitle="Department office and communication details" />
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
+                  <Icon name="mail" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-slate-500">Email</p>
+                    <a href={`mailto:${content.contact.email}`} className="text-sm text-blue-600 hover:underline">{content.contact.email}</a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
+                  <Icon name="phone" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-slate-500">Phone</p>
+                    <p className="text-sm text-slate-700">{content.contact.phone}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
+                  <Icon name="building" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-slate-500">Office</p>
+                    <p className="text-sm text-slate-700">{content.contact.office}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
+                  <Icon name="pin" className="mt-0.5 h-4 w-4 text-[#0b3d91]" />
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-slate-500">Address</p>
+                    <p className="text-sm text-slate-700">{content.contact.address}</p>
+                  </div>
+                </div>
+              </div>
             </section>
           </div>
 
