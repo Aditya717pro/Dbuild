@@ -1,5 +1,8 @@
-const RAW_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
-export const API_BASE = RAW_BASE.replace(/\/+$/, '');
+const RAW_BASE = (import.meta.env.VITE_API_URL || '/api').trim().replace(/\/+$/, '');
+export const API_BASE =
+  /^https?:\/\//i.test(RAW_BASE) && !/\/api$/i.test(RAW_BASE)
+    ? `${RAW_BASE}/api`
+    : RAW_BASE;
 
 const TOKEN_KEY = 'cmp_token';
 

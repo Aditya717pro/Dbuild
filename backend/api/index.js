@@ -40,10 +40,14 @@ app.use((req, res, next) => {
   return (isUpload ? uploadJsonParser : jsonParser)(req, res, next);
 });
 
-const allowedOrigins = (process.env.FRONTEND_URL || '')
+const defaultOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+const configuredOrigins = [process.env.CORS_ORIGIN, process.env.FRONTEND_URL]
+  .filter(Boolean)
+  .join(',')
   .split(',')
   .map((origin) => origin.trim().replace(/\/+$/, ''))
   .filter(Boolean);
+const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])];
 
 app.use(
   cors({
