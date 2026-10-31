@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext.jsx';
 import { Link, useLocation } from 'react-router-dom';
 import { siteConfig } from '../../config/siteConfig.js';
+import { useApiData } from '../../hooks/useApiData.js';
+import { API_BASE } from '../../services/api.js';
+import { formatDate } from '../../utils/format.js';
 
 // Base layout wrapper for public informational pages
 export function PublicPageLayout({
@@ -1854,14 +1858,222 @@ export function RankingsPage() {
 }
 
 // ---------------- CAREER DEVELOPMENT / PLACEMENTS PAGE ---------------- //
+function PlacementPosterCard({ poster }) {
+  const imageUrl = `${API_BASE}/public/placement-posters/${poster.id}/image`;
+
+  return (
+    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="border-b border-slate-100 bg-slate-100">
+        <img
+          src={imageUrl}
+          alt={`${poster.company} placement drive poster`}
+          className="max-h-[420px] w-full object-contain"
+          loading="lazy"
+        />
+      </div>
+      <div className="space-y-4 p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-md bg-[#0b3d91] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
+            {poster.company}
+          </span>
+          <span className="rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-700">
+            Drive {formatDate(poster.drive_date)}
+          </span>
+          {poster.department_code && (
+            <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600">
+              {poster.department_code}
+            </span>
+          )}
+        </div>
+
+        <div>
+          <h2 className="text-lg font-extrabold leading-snug text-slate-900">{poster.title}</h2>
+          {poster.description && (
+            <p className="mt-2 whitespace-pre-line text-xs leading-relaxed text-slate-600">
+              {poster.description}
+            </p>
+          )}
+        </div>
+
+        <dl className="grid gap-2 text-xs">
+          <div className="flex gap-2">
+            <dt className="w-28 shrink-0 font-bold text-slate-500">Venue</dt>
+            <dd className="text-slate-800">{poster.venue}</dd>
+          </div>
+          <div className="flex gap-2">
+            <dt className="w-28 shrink-0 font-bold text-slate-500">Eligibility</dt>
+            <dd className="whitespace-pre-line text-slate-800">{poster.eligibility}</dd>
+          </div>
+          <div className="flex gap-2">
+            <dt className="w-28 shrink-0 font-bold text-slate-500">Uploaded on</dt>
+            <dd className="text-slate-800">{formatDate(poster.created_at, { withTime: true })}</dd>
+          </div>
+          <div className="flex gap-2">
+            <dt className="w-28 shrink-0 font-bold text-slate-500">Expires on</dt>
+            <dd className="font-semibold text-rose-700">
+              {formatDate(poster.registration_deadline || poster.drive_date)}
+            </dd>
+          </div>
+          <div className="flex gap-2">
+            <dt className="w-28 shrink-0 font-bold text-slate-500">Uploaded by</dt>
+            <dd className="text-slate-800">
+              {poster.posted_by_name ? `CDC · ${poster.posted_by_name}` : 'CDC staff'}
+            </dd>
+          </div>
+        </dl>
+
+        {poster.apply_url && (
+          <a
+            href={poster.apply_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex w-full items-center justify-center rounded-lg bg-[#0b3d91] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#082f70]"
+          >
+            Apply / Register
+          </a>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function PlacementPostersPage() {
+  const posters = useApiData('/public/placement-posters');
+  const items = posters.data?.posters || [];
+
+  return (
+    <PublicPageLayout
+      title="Placement Drives"
+      subtitle="Official placement pool drive posters published by the Career Development Cell"
+      breadcrumbs={[{ label: 'Career Development', to: '/career-development' }, { label: 'Placements' }]}
+    >
+      <div className="space-y-6">
+        <div className="card flex flex-col gap-3 border-l-4 border-l-[#0b3d91] p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-base font-extrabold text-[#0b3d91]">Upcoming Placement Pool Drives</h2>
+            <p className="mt-1 text-xs text-slate-600">
+              Only posters published by CDC faculty and administrators appear here. Check back regularly for new drives.
+            </p>
+          </div>
+          <Link
+            to="/login/faculty"
+            className="inline-flex shrink-0 items-center justify-center rounded-lg border border-[#0b3d91]/20 bg-blue-50 px-4 py-2 text-xs font-bold text-[#0b3d91] transition hover:bg-blue-100"
+          >
+            CDC staff login
+          </Link>
+        </div>
+
+        {posters.loading && (
+          <div className="card p-10 text-center text-sm text-slate-500">Loading placement posters...</div>
+        )}
+
+        {posters.error && (
+          <div className="card border-rose-200 bg-rose-50 p-6 text-center">
+            <p className="text-sm font-semibold text-rose-700">{posters.error}</p>
+            <button type="button" className="btn btn-secondary mt-3" onClick={posters.reload}>
+              Try again
+            </button>
+          </div>
+        )}
+
+        {!posters.loading && !posters.error && items.length === 0 && (
+          <div className="card p-10 text-center">
+            <p className="text-base font-bold text-slate-800">No placement drives announced yet</p>
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+              Official placement posters will appear here as soon as the CDC publishes the next pool drive.
+            </p>
+          </div>
+        )}
+
+        {items.length > 0 && (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {items.map((poster) => (
+              <PlacementPosterCard key={poster.id} poster={poster} />
+            ))}
+          </div>
+        )}
+      </div>
+    </PublicPageLayout>
+  );
+}
+
+function CdcAnnouncementCard({ announcement, onSelectImage }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const hasImage = Boolean(announcement.has_image) && !imageFailed;
+  const imageUrl = `${API_BASE}/public/announcements/${announcement.id}/image`;
+
+  return (
+    <article className="card overflow-hidden border border-slate-200 transition hover:shadow-md">
+      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white px-5 py-3 sm:flex sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-semibold text-[#0b3d91]">
+            CDC Notice
+          </span>
+          <span className="text-xs text-slate-500">
+            {formatDate(announcement.created_at, { withTime: true })}
+          </span>
+        </div>
+        <p className="mt-1 text-xs font-medium text-slate-600 sm:mt-0">
+          Posted by: <span className="font-semibold text-slate-800">{announcement.posted_by_name || 'Career Development Centre'}</span>
+          {announcement.department_name && (
+            <span className="text-slate-500"> ({announcement.department_name})</span>
+          )}
+        </p>
+      </div>
+
+      <div className="p-5 sm:p-6">
+        <h3 className="text-lg font-bold text-slate-900">{announcement.title}</h3>
+
+        {hasImage && (
+          <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+            <button
+              type="button"
+              className="group block w-full text-left focus:outline-hidden"
+              onClick={() => onSelectImage?.(imageUrl, announcement.title)}
+              title="Click to view full image"
+            >
+              <img
+                src={imageUrl}
+                alt={announcement.title}
+                className="max-h-96 w-full object-contain transition duration-200 group-hover:opacity-95"
+                onError={() => setImageFailed(true)}
+              />
+              <span className="block bg-slate-50 py-1.5 text-center text-xs text-slate-500 group-hover:text-indigo-600">
+                🔍 Click to view enlarged image
+              </span>
+            </button>
+          </div>
+        )}
+
+        <div className="mt-4 whitespace-pre-line text-sm leading-relaxed text-slate-700">
+          {announcement.body}
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export function CareerDevelopmentPage() {
+  const location = useLocation();
+  const { user } = useAuth();
+  const announcements = useApiData('/public/announcements');
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  if (location.pathname.includes('/placements')) {
+    return <PlacementPostersPage />;
+  }
+
+  const items = announcements.data?.announcements || [];
+  const canUpload = user?.role === 'admin' || Boolean(user?.is_cdc);
+
   return (
     <PublicPageLayout
       title="Career Development & Placements"
       subtitle="Dedicated placement cell ensuring outstanding placement records across premier global corporations"
       breadcrumbs={[{ label: 'Career Development' }]}
     >
-      <div className="space-y-6">
+      <div className="space-y-8">
+        {/* Key Metrics */}
         <div className="card p-6">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
@@ -1879,6 +2091,134 @@ export function CareerDevelopmentPage() {
           </div>
         </div>
 
+        {/* CDC Quick Nav & Actions Bar */}
+        <div className="card flex flex-col gap-3 border-l-4 border-l-[#0b3d91] p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-base font-extrabold text-[#0b3d91]">
+              Career Development Centre Notice Board
+            </h2>
+            <p className="mt-1 text-xs text-slate-600">
+              Official circulars, placement schedules, and notices posted by the CDC.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/career-development/placements"
+              className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-xs hover:bg-slate-50"
+            >
+              Placement Drives & Posters &rarr;
+            </Link>
+            {canUpload ? (
+              <Link
+                to="/announcements"
+                className="inline-flex items-center rounded-lg bg-[#0b3d91] px-3 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-[#0a347c]"
+              >
+                + Upload Announcement
+              </Link>
+            ) : (
+              <Link
+                to="/login/faculty"
+                className="inline-flex items-center rounded-lg border border-[#0b3d91]/20 bg-blue-50 px-3 py-1.5 text-xs font-bold text-[#0b3d91] hover:bg-blue-100"
+              >
+                CDC Staff Login
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* CDC Announcements Feed */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-black text-[#0b3d91]">
+              Recent Announcements & Notices
+            </h2>
+            <span className="text-xs font-semibold text-slate-500">
+              {items.length} {items.length === 1 ? 'Notice' : 'Notices'}
+            </span>
+          </div>
+
+          {announcements.loading && (
+            <div className="card p-10 text-center text-sm text-slate-500">
+              Loading Career Development Centre announcements...
+            </div>
+          )}
+
+          {announcements.error && (
+            <div className="card border-rose-200 bg-rose-50 p-6 text-center">
+              <p className="text-sm font-semibold text-rose-700">{announcements.error}</p>
+              <button
+                type="button"
+                className="btn btn-secondary mt-3"
+                onClick={announcements.reload}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+
+          {!announcements.loading && !announcements.error && items.length === 0 && (
+            <div className="card p-10 text-center">
+              <p className="text-base font-bold text-slate-800">No CDC announcements posted yet</p>
+              <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+                Notices, schedules, and circulars published by the Career Development Centre will appear here.
+              </p>
+              {canUpload && (
+                <div className="mt-4">
+                  <Link to="/announcements" className="btn btn-primary">
+                    Upload first announcement
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
+          {items.length > 0 && (
+            <div className="space-y-4">
+              {items.map((announcement) => (
+                <CdcAnnouncementCard
+                  key={announcement.id}
+                  announcement={announcement}
+                  onSelectImage={(url, title) => setSelectedImage({ url, title })}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Image Preview Modal */}
+        {selectedImage && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-4"
+            onClick={() => setSelectedImage(null)}
+          >
+            <div
+              className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-2xl bg-white p-2 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-2">
+                <p className="truncate text-sm font-bold text-slate-800">
+                  {selectedImage.title}
+                </p>
+                <button
+                  type="button"
+                  className="rounded-lg p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                  onClick={() => setSelectedImage(null)}
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="max-h-[80vh] overflow-auto p-2">
+                <img
+                  src={selectedImage.url}
+                  alt={selectedImage.title}
+                  className="mx-auto max-h-[75vh] w-auto rounded object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Top Recruiting Companies */}
         <div className="card p-6">
           <h2 className="text-lg font-bold text-[#0b3d91]">Top Recruiting Companies</h2>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -1955,25 +2295,230 @@ export function LibraryPage() {
 }
 
 // ---------------- INNOVATION & R&D ---------------- //
+function titleCase(value) {
+  return String(value || '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function formatFunding(value) {
+  if (value === null || value === undefined || value === '') return 'Not specified';
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(Number(value));
+}
+
 export function InnovationPage() {
+  const showcase = useApiData('/innovation/showcase');
+  const projects = showcase.data?.projects || [];
+  const startups = showcase.data?.startups || [];
+  const events = showcase.data?.events || [];
+  const mentorCount = showcase.data?.mentor_count ?? 0;
+
+  const snapshot = [
+    { label: 'Live projects', value: projects.length },
+    { label: 'Pre-incubated startups', value: startups.length },
+    { label: 'Active mentors', value: mentorCount },
+    { label: 'Upcoming events', value: events.length },
+  ];
+
   return (
     <PublicPageLayout
       title="Innovation & Entrepreneurship"
       subtitle="Incubating ideas into breakthrough patents and thriving startups"
       breadcrumbs={[{ label: 'Innovation' }]}
     >
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="card p-6">
-          <h2 className="text-base font-bold text-[#0b3d91]">Innovation Council</h2>
-          <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-            Recognised nationally for promoting student-led innovation, incubation, and patent development across engineering and management disciplines.
-          </p>
+      <div className="space-y-8">
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="card p-6">
+            <h2 className="text-base font-bold text-[#0b3d91]">Innovation Council</h2>
+            <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+              Recognised nationally for promoting student-led innovation, incubation, and patent development across engineering and management disciplines.
+            </p>
+          </div>
+          <div className="card p-6">
+            <h2 className="text-base font-bold text-[#0b3d91]">IDEA Lab</h2>
+            <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+              Modern prototyping facility equipped with 3D printers, laser cutters, CNC machines, and embedded development boards.
+            </p>
+          </div>
         </div>
-        <div className="card p-6">
-          <h2 className="text-base font-bold text-[#0b3d91]">IDEA Lab</h2>
-          <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-            Modern prototyping facility equipped with 3D printers, laser cutters, CNC machines, and embedded development boards.
-          </p>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {snapshot.map((item) => (
+            <div key={item.label} className="card border-l-4 border-l-[#0b3d91] p-5">
+              <p className="text-3xl font-extrabold text-[#0b3d91]">{item.value}</p>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {item.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {showcase.loading && (
+          <div className="card p-10 text-center text-sm text-slate-500">
+            Loading innovation showcase...
+          </div>
+        )}
+
+        {showcase.error && (
+          <div className="card border-rose-200 bg-rose-50 p-6 text-center">
+            <p className="text-sm font-semibold text-rose-700">{showcase.error}</p>
+            <button type="button" className="btn btn-secondary mt-3" onClick={showcase.reload}>
+              Try again
+            </button>
+          </div>
+        )}
+
+        {!showcase.loading && !showcase.error && projects.length > 0 && (
+          <section className="space-y-4">
+            <div>
+              <h2 className="text-xl font-bold text-[#0b3d91]">Student Innovation Projects</h2>
+              <p className="mt-1 text-sm text-slate-600">
+                Prototypes and products built by students with faculty mentorship.
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {projects.map((project) => {
+                const cover = project.cover_media_id
+                  ? `${API_BASE}/innovation/media/project/${project.cover_media_id}`
+                  : null;
+                return (
+                  <article key={project.id} className="card overflow-hidden">
+                    {cover ? (
+                      <img
+                        src={cover}
+                        alt={project.title}
+                        loading="lazy"
+                        className="h-40 w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-40 items-center justify-center bg-gradient-to-br from-[#0b3d91] to-[#041e42] text-4xl font-extrabold text-white/80">
+                        {project.title?.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="space-y-2 p-5">
+                      <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-wide">
+                        <span className="rounded-full bg-blue-50 px-2 py-1 text-[#0b3d91]">
+                          {titleCase(project.status)}
+                        </span>
+                        {project.department_code && (
+                          <span className="rounded-full bg-slate-100 px-2 py-1 text-slate-600">
+                            {project.department_code}
+                          </span>
+                        )}
+                        {Boolean(project.is_featured) && (
+                          <span className="rounded-full bg-amber-100 px-2 py-1 text-amber-700">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-base font-bold text-slate-900">{project.title}</h3>
+                      <p className="line-clamp-3 text-xs leading-relaxed text-slate-600">
+                        {project.description}
+                      </p>
+                      <div className="pt-2">
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-[#0b3d91]"
+                            style={{ width: `${Math.min(100, Math.max(0, project.progress))}%` }}
+                          />
+                        </div>
+                        <p className="mt-1 text-[11px] text-slate-500">
+                          {project.progress}% complete
+                          {project.owner_name ? ` | Lead: ${project.owner_name}` : ''}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {!showcase.loading && !showcase.error && (startups.length > 0 || events.length > 0) && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            {startups.length > 0 && (
+              <section className="card p-6">
+                <h2 className="text-lg font-bold text-[#0b3d91]">Pre-Incubated Startups</h2>
+                <p className="mt-1 text-xs text-slate-600">
+                  Ventures supported through the Startup TN pre-incubation programme.
+                </p>
+                <ul className="mt-4 divide-y divide-slate-100">
+                  {startups.map((startup) => (
+                    <li key={startup.id} className="py-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-sm font-bold text-slate-900">{startup.name}</p>
+                        <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+                          {titleCase(startup.stage)}
+                        </span>
+                      </div>
+                      {startup.tagline && (
+                        <p className="mt-1 text-xs text-slate-600">{startup.tagline}</p>
+                      )}
+                      <p className="mt-1 text-[11px] text-slate-500">
+                        Funding required: {formatFunding(startup.funding_required)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {events.length > 0 && (
+              <section className="card p-6">
+                <h2 className="text-lg font-bold text-[#0b3d91]">Upcoming Innovation Events</h2>
+                <p className="mt-1 text-xs text-slate-600">
+                  Hackathons, ideathons, workshops, and entrepreneurship sessions.
+                </p>
+                <ul className="mt-4 divide-y divide-slate-100">
+                  {events.map((event) => (
+                    <li key={event.id} className="py-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-sm font-bold text-slate-900">{event.title}</p>
+                        <span className="rounded-full bg-blue-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0b3d91]">
+                          {titleCase(event.type)}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-slate-600">
+                        {formatDate(event.event_date)} | {event.venue}
+                      </p>
+                      <p className="mt-1 line-clamp-2 text-[11px] text-slate-500">
+                        {event.description}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
+        )}
+
+        {!showcase.loading && !showcase.error && projects.length === 0 && startups.length === 0 && events.length === 0 && (
+          <div className="card p-10 text-center">
+            <p className="text-base font-bold text-slate-800">Innovation showcase coming soon</p>
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+              Approved projects, startups, and events will appear here as the innovation community publishes them.
+            </p>
+          </div>
+        )}
+
+        <div className="card flex flex-col gap-3 border-l-4 border-l-amber-400 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-base font-extrabold text-[#0b3d91]">Have an idea worth building?</h2>
+            <p className="mt-1 text-xs text-slate-600">
+              Students and faculty can submit ideas, request mentors, and book IDEA Lab facilities from the portal.
+            </p>
+          </div>
+          <Link
+            to="/login/student"
+            className="inline-flex shrink-0 items-center justify-center rounded-lg bg-[#0b3d91] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#072d6d]"
+          >
+            Sign in to innovate
+          </Link>
         </div>
       </div>
     </PublicPageLayout>

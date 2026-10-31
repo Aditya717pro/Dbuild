@@ -15,6 +15,7 @@ const facultyBase = {
   email,
   department_id: z.coerce.number().int().positive().nullable().optional(),
   designation: z.string().trim().max(120).nullable().optional(),
+  is_cdc: z.boolean().optional(),
 };
 
 const createSchema = z.object({

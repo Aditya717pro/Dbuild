@@ -20,3 +20,24 @@ export function RequireRole({ roles, children }) {
   return children;
 }
 
+export function RequireCdcOrAdmin({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <PageLoader />;
+  if (!user) return <Navigate to="/" replace />;
+  if (user.role === 'admin' || (user.role === 'faculty' && user.is_cdc)) return children;
+  return <Navigate to="/" replace />;
+}
+
+export function RequireAnnouncementsAccess({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <PageLoader />;
+  if (!user) return <Navigate to="/" replace />;
+  const allowed =
+    user.role === 'admin'
+    || user.role === 'student'
+    || (user.role === 'faculty' && user.is_cdc);
+  return allowed ? children : <Navigate to="/dashboard" replace />;
+}
+

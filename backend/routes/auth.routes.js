@@ -12,13 +12,28 @@ const identifier = z
   .string()
   .trim()
   .min(1)
-  .max(200)
-  .transform((value) => value.toLowerCase());
+  .max(200);
 
-const loginSchema = z.object({
-  email: identifier,
-  password: z.string().min(1).max(200),
-});
+const loginSchema = z
+  .object({
+    name: identifier.optional(),
+    email: identifier.optional(),
+    identifier: identifier.optional(),
+    password: z.string().min(1).max(200),
+  })
+  .refine((data) => Boolean(data.name || data.email || data.identifier), {
+    message: 'Name or identifier is required',
+    path: ['name'],
+  })
+  .transform((data) => {
+    const raw = (data.name || data.identifier || data.email || '').trim();
+    return {
+      ...data,
+      name: raw,
+      identifier: raw,
+      email: raw,
+    };
+  });
 
 const changePasswordSchema = z.object({
   current_password: z.string().min(1).max(200),

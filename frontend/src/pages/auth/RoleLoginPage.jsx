@@ -15,11 +15,12 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
   const { user, loading, setSession, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const fieldPlaceholder = allowedRole === 'student' ? 'Student ID' : allowedRole === 'faculty' ? 'Staff Name' : 'Admin Name';
 
   if (loading) return <PageLoader />;
   if (user) {
@@ -34,7 +35,7 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
     setError('');
     setSubmitting(true);
     try {
-      const response = await api.post('/auth/login', { email: email.trim(), password });
+      const response = await api.post('/auth/login', { name: identifier.trim(), email: identifier.trim(), password });
       if (response?.user?.role !== allowedRole) {
         logout();
         const roleLabel = allowedRole === 'faculty' ? 'teachers' : `${allowedRole}s`;
@@ -88,13 +89,14 @@ export default function RoleLoginPage({ allowedRole, title, subtitle }) {
 
             <div className="relative">
               <input
-                id="email"
+                id="identifier"
                 type="text"
                 autoComplete="off"
                 required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder={allowedRole === 'student' ? 'Student ID' : 'Email'}
+                value={identifier}
+                onChange={(event) => setIdentifier(event.target.value)}
+                placeholder={fieldPlaceholder}
+                aria-label={fieldPlaceholder}
                 className="w-full rounded-2xl border border-slate-200/90 bg-white/75 px-4 py-3.5 pr-11 text-sm text-slate-800 placeholder-slate-400 backdrop-blur-sm transition-all focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 shadow-sm"
               />
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-indigo-400">

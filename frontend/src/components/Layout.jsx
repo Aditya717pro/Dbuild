@@ -7,15 +7,22 @@ const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', roles: ['admin', 'faculty', 'student'] },
   { to: '/departments/manage', label: 'Departments', roles: ['admin'] },
   { to: '/courses', label: 'Courses', roles: ['admin', 'faculty', 'student'] },
-  { to: '/students', label: 'Students', roles: ['admin', 'faculty'] },
+  { to: '/students', label: 'Students', roles: ['admin'] },
   { to: '/students/manage', label: 'Manage Students', roles: ['admin'] },
   { to: '/faculty/manage-list', label: 'Manage Faculty', roles: ['admin'] },
   { to: '/faculty/manage', label: 'Faculty', roles: ['admin'] },
-  { to: '/enrollments', label: 'Enrollments', roles: ['admin', 'faculty'] },
+  { to: '/enrollments', label: 'Enrollments', roles: ['admin'] },
   { to: '/enrollments/manage', label: 'Manage Enrollments', roles: ['admin'] },
   { to: '/student/records', label: 'My Records', roles: ['student'] },
   { to: '/attendance', label: 'Student Attendance', roles: ['admin', 'faculty'] },
-  { to: '/announcements', label: 'Announcements', roles: ['admin', 'faculty', 'student'] },
+  {
+    to: '/announcements',
+    label: 'CDC Announcements',
+    roles: ['admin', 'faculty'],
+    cdcOnly: true,
+  },
+  { to: '/placement-posters', label: 'Placement Posters', roles: ['admin', 'faculty'], cdcOnly: true },
+  { to: '/innovation/portal', label: 'Innovation Portal', roles: ['admin', 'student'] },
 ];
 
 function MenuIcon({ open }) {
@@ -40,7 +47,12 @@ export default function Layout() {
     setSidebarOpen(false);
   }, [location.pathname]);
 
-  const items = NAV_ITEMS.filter((item) => item.roles.includes(user?.role));
+  const items = NAV_ITEMS.filter((item) => {
+    if (!item.roles.includes(user?.role)) return false;
+    if (item.cdcOnly) return user?.role === 'admin' || Boolean(user?.is_cdc);
+    if (item.facultyCdcOnly && user?.role === 'faculty') return Boolean(user?.is_cdc);
+    return true;
+  });
 
   function handleLogout() {
     logout();

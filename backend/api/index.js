@@ -16,6 +16,8 @@ import attendanceRoutes from '../routes/attendance.routes.js';
 import recordsRoutes from '../routes/records.routes.js';
 import announcementRoutes from '../routes/announcements.routes.js';
 import publicRoutes from '../routes/public.routes.js';
+import placementPosterRoutes from '../routes/placementPosters.routes.js';
+import innovationRoutes from '../routes/innovation.routes.js';
 import userRoutes from '../routes/users.routes.js';
 
 const app = express();
@@ -23,8 +25,20 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
-app.use(helmet());
-app.use(express.json({ limit: '100kb' }));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }),
+);
+
+const jsonParser = express.json({ limit: '100kb' });
+const uploadJsonParser = express.json({ limit: '12mb' });
+app.use((req, res, next) => {
+  const isUpload =
+    (req.method === 'POST' && /\/(placement-posters|announcements)\/?$/.test(req.url))
+    || (['POST', 'PUT'].includes(req.method) && /\/innovation\/(ideas|projects)(\/|$)/.test(req.url));
+  return (isUpload ? uploadJsonParser : jsonParser)(req, res, next);
+});
 
 const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
@@ -83,6 +97,8 @@ app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/records', recordsRoutes);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/placement-posters', placementPosterRoutes);
+app.use('/api/innovation', innovationRoutes);
 app.use('/api/users', userRoutes);
 
 app.get('/api', (_req, res) => {

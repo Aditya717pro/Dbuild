@@ -23,7 +23,11 @@ export const authenticate = asyncHandler(async (req, res, next) => {
   }
 
   const { rows } = await query(
-    'SELECT id, name, email, role, is_active FROM users WHERE id = ?',
+    `SELECT u.id, u.name, u.email, u.role, u.is_active,
+            COALESCE(f.is_cdc, 0) AS is_cdc
+     FROM users u
+     LEFT JOIN faculty f ON f.user_id = u.id
+     WHERE u.id = ?`,
     [id],
   );
   const user = rows[0];
@@ -32,7 +36,7 @@ export const authenticate = asyncHandler(async (req, res, next) => {
     return res.status(401).json({ error: 'Account is inactive or no longer exists' });
   }
 
-  req.user = user;
+  req.user = { ...user, is_cdc: Boolean(user.is_cdc) };
   return next();
 });
 
@@ -45,5 +49,19 @@ export function requireRole(...roles) {
       return res.status(403).json({ error: 'You do not have permission to perform this action' });
     }
     return next();
+  };
+}
+
+export function requireCdcOrAdmin(
+  message = 'Only CDC faculty and administrators can perform this action',
+) {
+  return function cdcOrAdminGuard(req, res, next) {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    if (req.user.role === 'admin' || (req.user.role === 'faculty' && req.user.is_cdc)) {
+      return next();
+    }
+    return res.status(403).json({ error: message });
   };
 }

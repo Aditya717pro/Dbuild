@@ -9,7 +9,7 @@ function RecentAnnouncements({ announcements, loading, error }) {
   if (loading) return <p className="text-sm text-slate-500">Loading announcements...</p>;
   if (error) return <p className="text-sm text-rose-600">{error}</p>;
   if (!announcements?.length) {
-    return <EmptyState title="No announcements yet" message="New announcements will appear here." />;
+    return <EmptyState title="No CDC announcements yet" message="New notices posted by CDC staff will appear here." />;
   }
   return (
     <div className="space-y-3">
@@ -45,9 +45,9 @@ export function AdminDashboard() {
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <section className="lg:col-span-2">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-900">Recent announcements</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Career Development Centre Announcements</h2>
             <Link to="/announcements" className="text-sm font-medium text-indigo-600 hover:text-indigo-700">
-              View all
+              Manage CDC announcements
             </Link>
           </div>
           <RecentAnnouncements
@@ -64,6 +64,9 @@ export function AdminDashboard() {
             <Link to="/courses" className="btn btn-secondary w-full justify-start">Manage courses</Link>
             <Link to="/students" className="btn btn-secondary w-full justify-start">Manage students</Link>
             <Link to="/faculty/manage" className="btn btn-secondary w-full justify-start">Manage faculty</Link>
+            <Link to="/announcements" className="btn btn-secondary w-full justify-start">CDC announcements</Link>
+            <Link to="/placement-posters" className="btn btn-secondary w-full justify-start">Placement posters</Link>
+            <Link to="/career-development" className="btn btn-secondary w-full justify-start">CDC public page</Link>
             <Link to="/attendance" className="btn btn-secondary w-full justify-start">Attendance overview</Link>
           </div>
         </section>
@@ -74,9 +77,9 @@ export function AdminDashboard() {
 
 export function FacultyDashboard() {
   const { user } = useAuth();
+  const isCdc = Boolean(user.is_cdc);
   const courses = useApiData('/courses');
   const roster = useApiData('/faculty/roster');
-  const announcements = useApiData('/announcements');
 
   const myCourses = (courses.data?.courses || []).filter((course) => course.faculty_id === user.id);
 
@@ -87,10 +90,9 @@ export function FacultyDashboard() {
         subtitle="Your courses and department at a glance."
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <StatCard label="Courses assigned to you" value={myCourses.length} tone="emerald" />
         <StatCard label="Department students" value={roster.data?.students?.length ?? '—'} tone="indigo" />
-        <StatCard label="Announcements" value={announcements.data?.announcements?.length ?? '—'} tone="amber" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
@@ -131,8 +133,13 @@ export function FacultyDashboard() {
             <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
             <div className="mt-4 space-y-2">
               <Link to="/attendance" className="btn btn-primary w-full justify-start">Mark attendance</Link>
-              <Link to="/announcements" className="btn btn-secondary w-full justify-start">Post an announcement</Link>
-              <Link to="/students" className="btn btn-secondary w-full justify-start">View department roster</Link>
+              {isCdc && (
+                <Link to="/announcements" className="btn btn-secondary w-full justify-start">Post CDC announcement</Link>
+              )}
+              {isCdc && (
+                <Link to="/placement-posters" className="btn btn-secondary w-full justify-start">Post placement poster</Link>
+              )}
+              <Link to="/career-development" className="btn btn-secondary w-full justify-start">Career Development Centre</Link>
             </div>
           </div>
           <div className="card p-5">
@@ -148,20 +155,6 @@ export function FacultyDashboard() {
           </div>
         </section>
       </div>
-
-      <section className="mt-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Recent announcements</h2>
-          <Link to="/announcements" className="text-sm font-medium text-indigo-600 hover:text-indigo-700">
-            View all
-          </Link>
-        </div>
-        <RecentAnnouncements
-          announcements={announcements.data?.announcements}
-          loading={announcements.loading}
-          error={announcements.error}
-        />
-      </section>
     </div>
   );
 }
@@ -170,7 +163,6 @@ export function StudentDashboard() {
   const { user } = useAuth();
   const attendance = useApiData('/attendance/me');
   const courses = useApiData('/courses');
-  const announcements = useApiData('/announcements');
 
   const courseAttendance = attendance.data?.courses || [];
   const scored = courseAttendance.filter((course) => course.percentage !== null);
@@ -185,10 +177,9 @@ export function StudentDashboard() {
         subtitle={user.profile?.department_name ? `${user.profile.department_name} · Year ${user.profile.year}` : 'Your courses and attendance.'}
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <StatCard label="Enrolled courses" value={courses.data?.courses?.length ?? '—'} tone="indigo" />
         <StatCard label="Average attendance" value={average === null ? '—' : `${average}%`} tone={average !== null && average < 75 ? 'rose' : 'emerald'} />
-        <StatCard label="Announcements" value={announcements.data?.announcements?.length ?? '—'} tone="amber" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
@@ -224,7 +215,7 @@ export function StudentDashboard() {
           </div>
         </section>
 
-        <section>
+        <section className="space-y-4">
           <div className="card p-5">
             <h2 className="text-lg font-semibold text-slate-900">My courses</h2>
             <div className="mt-3 space-y-2">
@@ -242,22 +233,21 @@ export function StudentDashboard() {
               )}
             </div>
           </div>
+
+          <div className="card p-5 border-l-4 border-l-[#0b3d91]">
+            <h2 className="text-sm font-semibold text-slate-900">Career Development Centre</h2>
+            <p className="mt-2 text-xs text-slate-600">
+              All official CDC announcements, placement drives, and career notices are published on the website portal.
+            </p>
+            <Link
+              to="/career-development"
+              className="mt-3 inline-flex items-center text-xs font-semibold text-[#0b3d91] hover:underline"
+            >
+              Open Career Development Centre &rarr;
+            </Link>
+          </div>
         </section>
       </div>
-
-      <section className="mt-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Relevant announcements</h2>
-          <Link to="/announcements" className="text-sm font-medium text-indigo-600 hover:text-indigo-700">
-            View all
-          </Link>
-        </div>
-        <RecentAnnouncements
-          announcements={announcements.data?.announcements}
-          loading={announcements.loading}
-          error={announcements.error}
-        />
-      </section>
     </div>
   );
 }

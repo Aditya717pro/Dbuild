@@ -38,9 +38,10 @@ export function ErrorState({ message = 'Something went wrong', onRetry }) {
   );
 }
 
-export function EmptyState({ title = 'Nothing here yet', message, action }) {
+export function EmptyState({ title = 'Nothing here yet', message, action, icon }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-12 text-center">
+      {icon && <div className="mb-2">{icon}</div>}
       <p className="text-base font-semibold text-slate-700">{title}</p>
       {message && <p className="max-w-md text-sm text-slate-500">{message}</p>}
       {action}
